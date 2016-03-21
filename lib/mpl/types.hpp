@@ -20,12 +20,16 @@ namespace lib
 	struct Bool : public Value<bool, V>
 	{
 	};
+
+// # ---------------------------------------------------------------------------
 	
 	template<typename T>
 	struct Identity
 	{
 		typedef T Type;
 	};
+
+// # ---------------------------------------------------------------------------
 
 	template<typename T1, typename T2>
 	struct IsSame
@@ -39,6 +43,8 @@ namespace lib
 		static const bool value = true;
 	};
 
+// # ---------------------------------------------------------------------------
+
 	template<typename List, typename T>
 	struct Contains
 	{
@@ -49,6 +55,20 @@ namespace lib
 	struct Contains<Nil, T>
 	{
 		static const bool value = false;
+	};
+
+// # ---------------------------------------------------------------------------
+
+	template<typename Sub, typename Super>
+	struct IsSuperType
+	{
+		struct Yes { char v[1]; };
+		struct No { char v[2]; };
+
+		template<typename T> static Yes f(T *);
+		template<typename T> static No  f(...);
+
+		static const bool value = sizeof(f<Super>(static_cast<Sub *>(NULL))) == sizeof(Yes);
 	};
 }
 

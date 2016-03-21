@@ -1,6 +1,7 @@
 #!/bin/bash
 
 git_root=`git rev-parse --show-toplevel`
+result=0
 
 usage()
 {
@@ -10,6 +11,7 @@ $0 [all/list/help/test [<test1>, <test2>, ...]]
 	list	Lists all found tests.
 	help	Prints this message.
 	test	Executes the specified test files.
+	clean	Cleans the framework build.
 EOF
 }
 
@@ -25,13 +27,18 @@ cleanup_testdir()
 	rm -rf "$testdir"
 }
 
+print_padded()
+{
+	printf '%s%*.*s' "$1" 0 $((74 - ${#1} )) "`printf '%0.1s' " "{1..80}`"
+}
+
 compile_test()
 {
 	tcn="${2/%.test.o/}"
 	tcn="${tcn// /_}"
 	tcn="${tcn##*\/}"
 
-	echo -n "Compiling '$of' ... "
+	print_padded "Compiling '$of' "
 	g++ -Wall -std=gnu++11 -I "$git_root/lib" -DTEST_CASE_NAME=$tcn -c "$1" -o "$2" || exit 1
 	echo "[DONE]"
 }
@@ -59,28 +66,29 @@ execute_tests()
 		compile_test "$of" "$testdir/${nf/%.cc/.o}"
 	done
 
-	pushd "$testdir" > /dev/null
+	cd "$testdir"
 
-	echo -n "Updating framework ... "
+	print_padded "Updating framework "
 	make -C "$git_root/test" > /dev/null || exit 1
 	echo "[DONE]"
 
 	cp "$git_root/test/libut_framework.a" .
 	
-	echo -n "Assembling test executable ... "
+	print_padded "Assembling test executable "
 	g++ -L. *.o -o exec_test -lut_framework || exit 1
 	echo "[DONE]"
 
-	echo "Running test executable ..."
-	echo "================================================="
+	echo "Running test executable"
+	echo "================================================================================"
 	if ./exec_test; then
 		echo "SUCCESS"
+		result=0
 	else
 		echo "-----"
 		echo "FAILURE"
+		result=1
 	fi
-
-	popd > /dev/null
+	echo "================================================================================"
 }
 
 find_tests()
@@ -107,6 +115,13 @@ test_all()
 	execute_tests test_list[@]
 }
 
+clean_framework()
+{
+	print_padded "Cleaning framework files ..."
+	make -C "$git_root/test" clean > /dev/null
+	echo "[DONE]"
+}
+
 if [ $# -lt 1 ]; then
 	usage
 else
@@ -125,11 +140,14 @@ else
 			a_arr=( "$@" )
 			execute_tests a_arr[@]
 			;;
+		"clean")
+			clean_framework
+			;;
 		*)
 			echo "Unknown command."
 			echo "Please try '$0 help'"
 	esac
 fi
 
-exit 0
+exit $result
 

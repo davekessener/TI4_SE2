@@ -285,24 +285,31 @@ struct TryCall_##f <T, void> \
 	
 // ---------------------------------------------------------------------------
 	
-	template<int ID, typename D, typename Lineage>
+	template<int ID, typename I, typename D, typename Lineage>
 	struct FSM : public Lineage
 	{
 		using Lineage::process;
+		typedef TryCall_enter<I, D> EnterFunction;
 	
 		FSM(D d)
 		{
 			FSMBase<D>::set_state(ID);
 			FSMBase<D>::set_data(d);
+			EnterFunction::call(FSMBase<D>::get_data());
 		}
 	};
 	
-	template<int ID, typename Lineage>
-	struct FSM<ID, void, Lineage> : public Lineage
+	template<int ID, typename I, typename Lineage>
+	struct FSM<ID, I, void, Lineage> : public Lineage
 	{
 		using Lineage::process;
+		typedef TryCall_enter<I, void> EnterFunction;
 	
-		FSM( ) { FSMBase<void>::set_state(ID); }
+		FSM( )
+		{
+			FSMBase<void>::set_state(ID);
+			EnterFunction::call();
+		}
 	};
 	
 	template<typename I, typename D, typename T>
@@ -323,7 +330,7 @@ struct TryCall_##f <T, void> \
 	
 		typedef ConstructFSMLineage<DoApply<CreateTransitionTree, Transitions>> Lineage;
 	
-		typedef FSM<InitialID, Data, Lineage> Type;
+		typedef FSM<InitialID, InitialState, Data, Lineage> Type;
 	};
 	
 	template<typename I, typename D, typename T>

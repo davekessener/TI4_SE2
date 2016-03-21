@@ -44,7 +44,9 @@ namespace lib
 				Log& getLog( );
 			private:
 				TestManager( );
+				TestManager(const TestManager&);
 				~TestManager( );
+				TestManager& operator=(const TestManager&);
 			private:
 				class TestManagerImpl;
 				TestManagerImpl *impl_;

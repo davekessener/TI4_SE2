@@ -11,7 +11,7 @@
 
 #define MXT_OVERLOAD(m, ...) MXT_CONCAT(m, MXT_COUNTARGS(__VA_ARGS__))(__VA_ARGS__)
 
-#define ASSERT_TRUE_2(f, msg) assert_true(f, __FILE__, __LINE__, msg)
+#define ASSERT_TRUE_2(f, msg) ::lib::test::UnitTest::assert_true(f, __FILE__, __LINE__, msg)
 #define ASSERT_TRUE_1(f) ASSERT_TRUE_2(f, NULL)
 #define ASSERT_TRUE(...) MXT_OVERLOAD(ASSERT_TRUE_, __VA_ARGS__)
 
@@ -22,8 +22,14 @@ namespace lib
 		class UnitTest
 		{
 			public:
-				virtual ~UnitTest( ) { }
-				void assert_true(bool, const std::string&, int, const char * = NULL);
+				static void assert_true(bool, const std::string&, int, const char * = NULL);
+				static void assert_true(bool f, const std::string& s, int l, const std::string& m)
+					{ assert_true(f, s, l, m.c_str()); }
+			private:
+				UnitTest( );
+				UnitTest(const UnitTest&);
+				~UnitTest( );
+				UnitTest& operator=(const UnitTest&);
 		};
 	}
 }

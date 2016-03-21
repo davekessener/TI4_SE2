@@ -95,19 +95,19 @@ namespace lib
 // ---------------------------------------------------------------------------
 	
 	template<typename List, typename Appendage>
-	struct Append
+	struct Join
 	{
-		typedef Cons<Car<List>, typename Append<Cdr<List>, Appendage>::Type> Type;
+		typedef Cons<Car<List>, typename Join<Cdr<List>, Appendage>::Type> Type;
 	};
 	
 	template<typename Appendage>
-	struct Append<Nil, Appendage>
+	struct Join<Nil, Appendage>
 	{
 		typedef Appendage Type;
 	};
 	
 	template<typename List, typename Appendage>
-	using DoAppend = typename Append<List, Appendage>::Type;
+	using DoJoin = typename Join<List, Appendage>::Type;
 	
 // ---------------------------------------------------------------------------
 	
@@ -125,7 +125,7 @@ namespace lib
 		typedef DoIf
 		<
 			IsList<H>,
-			Append<typename Flatten<H>::Type, Rest>,
+			Join<typename Flatten<H>::Type, Rest>,
 			Identity<Cons<H, Rest>>
 		>
 		Type;

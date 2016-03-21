@@ -11,7 +11,7 @@
 
 #define BEGIN \
 namespace TEST_CASE_NAME { \
-struct Base : public ::lib::test::UnitTest { }; \
+struct Base { }; \
 static ::lib::test::TestManager::Selector select_unit_##TEST_CASE_NAME(MXT_STRINGIFY(TEST_CASE_NAME)); \
 template<typename T> struct Data { }; \
 template<typename T> struct Before : public virtual Data<T> { }; \
