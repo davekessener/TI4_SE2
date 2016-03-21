@@ -1,5 +1,5 @@
 #include <sstream>
-#include "UnitTest.h"
+#include <test/UnitTest.h>
 
 namespace lib { namespace test {
 

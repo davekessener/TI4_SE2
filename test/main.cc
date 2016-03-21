@@ -2,7 +2,7 @@
 #define DAV_TEST_MAIN_H
 
 #include <iostream>
-#include "TestManager.h"
+#include <test/TestManager.h>
 
 int main(int argc, char *argv[])
 {

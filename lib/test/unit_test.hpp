@@ -24,10 +24,9 @@ template<typename T> struct After : public virtual Data<T> { };
 
 // # ---------------------------------------------------------------------------
 
-#define DATA \
-ThereCanBeOnlyOne { }; \
+#define SUPER(super_class) \
 template<> \
-struct Data<Base>
+struct Data<Base> : public super_class { };
 
 // # ---------------------------------------------------------------------------
 

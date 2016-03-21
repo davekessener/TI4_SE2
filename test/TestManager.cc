@@ -1,7 +1,7 @@
 #include <map>
 #include <deque>
 #include <sstream>
-#include "TestManager.h"
+#include <test/TestManager.h>
 
 namespace lib { namespace test {
 

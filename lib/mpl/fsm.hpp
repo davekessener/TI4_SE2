@@ -1,7 +1,7 @@
 #ifndef DAV_MPL_FSM_H
 #define DAV_MPL_FSM_H
 
-#include "map.hpp"
+#include <mpl/map.hpp>
 
 namespace lib
 {
