@@ -3,9 +3,7 @@
 
 #include <test/TestManager.h>
 #include <test/UnitTest.h>
-
-#define MXT_STRINGIFY_IMPL(a) #a
-#define MXT_STRINGIFY(a) MXT_STRINGIFY_IMPL(a)
+#include <aux.h>
 
 // # ---------------------------------------------------------------------------
 

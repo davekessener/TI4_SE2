@@ -126,18 +126,18 @@ namespace
 
 // # ---------------------------------------------------------------------------
 	
-	typedef lib::MakeFSM
+	typedef DO(lib::FSMMaker
 	<
 		A,
 		pStore,
-		lib::MakeList
+		DO(lib::MakeList_4
 		<
 			lib::Rule<A, Ea, B, Rule_AaB>,
 			lib::Rule<A, Eb, A, Rule_AbA>,
 			lib::Rule<B, Ea, A>,
 			lib::Rule<B, Eb, A, Rule_BbA>
-		>
-	>
+		>)
+	>)
 	MyFSM;
 }
 

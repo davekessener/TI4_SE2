@@ -15,7 +15,6 @@ class E : public D { };
 BEGIN
 
 using lib::IsSame;
-using lib::MakeList;
 using lib::Contains;
 using lib::IsSuperType;
 
@@ -28,9 +27,9 @@ TEST(is_same)
 
 TEST(contains)
 {
-	typedef MakeList<A, B> List;
+	typedef MAKELIST(A, B) List;
 
-	ASSERT_TRUE((Contains<List, A>::value), "can't find A in (A B)!");
+	ASSERT_TRUE(( Contains<List, A>::value), "can't find A in (A B)!");
 	ASSERT_TRUE((!Contains<List, D>::value), "can find D in (A B)!");
 }
 

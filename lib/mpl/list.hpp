@@ -10,24 +10,21 @@ namespace lib
 	template<int IDX, typename List>
 	struct GetElem
 	{
-		typedef typename GetElem<IDX - 1, Cdr<List>>::Type Type;
+		typedef DO(GetElem<IDX - 1, DO(Cdr<List>)>) Type;
 	};
 	
 	template<typename List>
 	struct GetElem<0, List>
 	{
-		typedef Car<List> Type;
+		typedef DO(Car<List>) Type;
 	};
-	
-	template<int IDX, typename List>
-	using DoGetElem = typename GetElem<IDX, List>::Type;
 
 // ---------------------------------------------------------------------------
 
 	template<template <typename> class F, typename T>
 	struct Apply
 	{
-		typedef Cons<typename F<Car<T>>::Type, typename Apply<F, Cdr<T>>::Type> Type;
+		typedef Cons<DO(F<DO(Car<T>)>), DO(Apply<F, DO(Cdr<T>)>)> Type;
 	};
 	
 	template<template <typename> class F>
@@ -35,9 +32,6 @@ namespace lib
 	{
 		typedef Nil Type;
 	};
-	
-	template<template <typename> class F, typename T>
-	using DoApply = typename Apply<F, T>::Type;
 
 // ---------------------------------------------------------------------------
 	
@@ -46,8 +40,8 @@ namespace lib
 	{
 		typedef typename ReverseImpl
 		<
-			Cons<Car<ToDo>, Done>,
-			Cdr<ToDo>
+			Cons<DO(Car<ToDo>), Done>,
+			DO(Cdr<ToDo>)
 		>::Type
 		Type;
 	};
@@ -61,22 +55,16 @@ namespace lib
 	template<typename List>
 	struct Reverse
 	{
-		typedef typename ReverseImpl<Nil, List>::Type Type;
+		typedef DO(ReverseImpl<Nil, List>) Type;
 	};
-	
-	template<typename List>
-	using DoReverse = typename Reverse<List>::Type;
 	
 // ---------------------------------------------------------------------------
 	
 	template<typename Cell>
 	struct ReverseCons
 	{
-		typedef Cons<Cdr<Cell>, Car<Cell>> Type;
+		typedef Cons<DO(Cdr<Cell>), DO(Car<Cell>)> Type;
 	};
-	
-	template<typename Cell>
-	using DoReverseCons = typename ReverseCons<Cell>::Type;
 	
 // ---------------------------------------------------------------------------
 	
@@ -87,7 +75,7 @@ namespace lib
 	};
 	
 	template<typename T1, typename T2>
-	struct IsList<Cons<T1, T2>>
+	struct IsList<Cons<T1, T2> >
 	{
 		static const bool value = true;
 	};
@@ -97,7 +85,7 @@ namespace lib
 	template<typename List, typename Appendage>
 	struct Join
 	{
-		typedef Cons<Car<List>, typename Join<Cdr<List>, Appendage>::Type> Type;
+		typedef Cons<DO(Car<List>), DO(Join<DO(Cdr<List>), Appendage>)> Type;
 	};
 	
 	template<typename Appendage>
@@ -105,9 +93,6 @@ namespace lib
 	{
 		typedef Appendage Type;
 	};
-	
-	template<typename List, typename Appendage>
-	using DoJoin = typename Join<List, Appendage>::Type;
 	
 // ---------------------------------------------------------------------------
 	
@@ -118,28 +103,25 @@ namespace lib
 	};
 	
 	template<typename H, typename T>
-	struct Flatten<Cons<H, T>>
+	struct Flatten<Cons<H, T> >
 	{
-		typedef typename Flatten<T>::Type Rest;
+		typedef DO(Flatten<T>) Rest;
 	
-		typedef DoIf
+		typedef typename If
 		<
-			IsList<H>,
-			Join<typename Flatten<H>::Type, Rest>,
-			Identity<Cons<H, Rest>>
-		>
+			IsList<H>::value,
+			Join<DO(Flatten<H>), Rest>,
+			Identity<Cons<H, Rest> >
+		>::Type
 		Type;
 	};
-	
-	template<typename List>
-	using DoFlatten = typename Flatten<List>::Type;
 	
 // ---------------------------------------------------------------------------
 	
 	template<template <typename, typename> class F, typename T, typename List>
 	struct Merge
 	{
-		typedef typename Merge<F, typename F<T, Car<List>>::Type, Cdr<List>>::Type Type;
+		typedef DO(Merge<F, DO(F<T, DO(Car<List>)>), DO(Cdr<List>)>) Type;
 	};
 	
 	template<template <typename, typename> class F, typename T>
@@ -147,9 +129,6 @@ namespace lib
 	{
 		typedef T Type;
 	};
-	
-	template<template <typename, typename> class F, typename T, typename List>
-	using DoMerge = typename Merge<F, T, List>::Type;
 
 // ---------------------------------------------------------------------------
 	
@@ -158,13 +137,13 @@ namespace lib
 	{
 		typedef typename SetifyImpl
 		<
-			DoIf
+			typename If
 			<
-				Contains<Done, Car<ToDo>>,
+				Contains<Done, DO(Car<ToDo>)>::value,
 				Identity<Done>,
-				Identity<Cons<Car<ToDo>, Done>>
-			>,
-			Cdr<ToDo>
+				Identity<Cons<DO(Car<ToDo>), Done> >
+			>::Type,
+			DO(Cdr<ToDo>)
 		>::Type
 		Type;
 	};
@@ -172,31 +151,28 @@ namespace lib
 	template<typename Done>
 	struct SetifyImpl<Done, Nil>
 	{
-		typedef DoReverse<Done> Type;
+		typedef DO(Reverse<Done>) Type;
 	};
 	
 	template<typename List>
 	struct Setify
 	{
-		typedef typename SetifyImpl<Nil, List>::Type Type;
+		typedef DO(SetifyImpl<Nil, List>) Type;
 	};
-	
-	template<typename List>
-	using DoSetify = typename Setify<List>::Type;
 	
 // ---------------------------------------------------------------------------
 	
 	template<template <typename> class F, typename List>
 	struct Filter
 	{
-		typedef typename Filter<F, Cdr<List>>::Type Rest;
+		typedef DO(Filter<F, DO(Cdr<List>)>) Rest;
 	
-		typedef DoIf
+		typedef typename If
 		<
-			F<Car<List>>,
-			Identity<Cons<Car<List>, Rest>>,
+			F<DO(Car<List>)>::value,
+			Identity<Cons<DO(Car<List>), Rest> >,
 			Identity<Rest>
-		>
+		>::Type
 		Type;
 	};
 	
@@ -205,14 +181,11 @@ namespace lib
 	{
 		typedef Nil Type;
 	};
-	
-	template<template <typename> class F, typename List>
-	using DoFilter = typename Filter<F, List>::Type;
 
 // ---------------------------------------------------------------------------
 
 	template<typename T>
-	struct InheritLineage : public Car<T>, public InheritLineage<Cdr<T>>
+	struct InheritLineage : public Car<T>::Type, public InheritLineage<DO(Cdr<T>)>
 	{
 	};
 	
@@ -220,9 +193,6 @@ namespace lib
 	struct InheritLineage<Nil>
 	{
 	};
-	
-	template<typename ... T>
-	using DoInheritLineage = InheritLineage<MakeList<T...>>;
 
 // ---------------------------------------------------------------------------
 
@@ -235,7 +205,7 @@ namespace lib
 			typedef Or<T1, T2> Type;
 		};
 	
-		typedef typename Merge<OrFn, False, List>::Type Type;
+		typedef DO(Merge<OrFn, False, List>) Type;
 		static const bool value = Type::value;
 	};
 
@@ -248,7 +218,7 @@ namespace lib
 			typedef And<T1, T2> Type;
 		};
 	
-		typedef typename Merge<AndFn, True, List>::Type Type;
+		typedef DO(Merge<AndFn, True, List>) Type;
 		static const bool value = Type::value;
 	};
 }

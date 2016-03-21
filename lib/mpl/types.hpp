@@ -29,6 +29,27 @@ namespace lib
 		typedef T Type;
 	};
 
+	template<typename T>
+	struct ValueIdentity;
+
+	template<typename T, T I>
+	struct ValueIdentity<Value<T, I> >
+	{
+		static const T value = I;
+	};
+
+	template<int I>
+	struct ValueIdentity<Int<I> >
+	{
+		static const int value = I;
+	};
+
+	template<bool I>
+	struct ValueIdentity<Bool<I> >
+	{
+		static const int value = I;
+	};
+
 // # ---------------------------------------------------------------------------
 
 	template<typename T1, typename T2>
@@ -48,7 +69,7 @@ namespace lib
 	template<typename List, typename T>
 	struct Contains
 	{
-		static const bool value = IsSame<Car<List>, T>::value || Contains<Cdr<List>, T>::value;
+		static const bool value = IsSame<DO(Car<List>), T>::value || Contains<DO(Cdr<List>), T>::value;
 	};
 	
 	template<typename T>

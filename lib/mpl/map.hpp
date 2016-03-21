@@ -10,8 +10,8 @@ namespace lib
 	{
 		typedef Cons
 		<
-			Cons<Int<IDX>, Car<List>>,
-			typename ListToMapImpl<IDX + 1, Cdr<List>>::Type
+			Cons<Int<IDX>, DO(Car<List>)>,
+			DO(ListToMapImpl<IDX + 1, DO(Cdr<List>)>)
 		> Type;
 	};
 	
@@ -24,27 +24,22 @@ namespace lib
 	template<typename List>
 	struct ListToMap
 	{
-		typedef typename ListToMapImpl<0, List>::Type Type;
+		typedef DO(ListToMapImpl<0, List>) Type;
 	};
-	
-	template<typename List>
-	using DoListToMap = typename ListToMap<List>::Type;
 
 // ---------------------------------------------------------------------------
 
 	template<typename Map, typename Key>
 	struct GetValue
 	{
-		typedef DoIf
+		typedef typename If
 		<
-			IsSame<Caar<Map>, Key>,
-			Identity<Cdar<Map>>,
-			GetValue<Cdr<Map>, Key>
-		> Type;
+			IsSame<DO(Caar<Map>), Key>::value,
+			Identity<DO(Cdar<Map>)>,
+			GetValue<DO(Cdr<Map>), Key>
+		>::Type
+		Type;
 	};
-	
-	template<typename Map, typename Key>
-	using DoGetValue = typename GetValue<Map, Key>::Type;
 }
 
 #endif

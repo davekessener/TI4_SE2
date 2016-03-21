@@ -9,18 +9,15 @@ namespace lib
 	struct CreateStateList
 	{
 		template<typename T>
-		struct DoGetStateFromTransition
+		struct GetStateFromTransition
 		{
-			typedef MakeList<typename T::Origin, typename T::Destination> Type;
+			typedef MAKELIST(typename T::Origin, typename T::Destination) Type;
 		};
 	
-		typedef DoFlatten<DoApply<DoGetStateFromTransition, List>> StateList;
-		typedef DoListToMap<DoSetify<StateList>> StateMap;
-		typedef DoApply<ReverseCons, StateMap> Type;
+		typedef DO(Flatten<DO(Apply<GetStateFromTransition, List>)>) StateList;
+		typedef DO(ListToMap<DO(Setify<StateList>)>) StateMap;
+		typedef DO(Apply<ReverseCons, StateMap>) Type;
 	};
-	
-	template<typename List>
-	using DoCreateStateList = typename CreateStateList<List>::Type;
 	
 // ---------------------------------------------------------------------------
 	
@@ -28,29 +25,26 @@ namespace lib
 	struct CreateTransitionDependencyList
 	{
 		template<typename T>
-		struct DoGetDependency
+		struct GetDependency
 		{
-			typedef MakeList<typename T::Event, Cons<typename T::Origin, typename T::Destination>> Type;
+			typedef Cons<typename T::Origin, typename T::Destination> Tmp;
+			typedef MAKELIST(typename T::Event, Tmp) Type;
 		};
 	
-		typedef DoApply<DoGetDependency, List> RawDependencies;
+		typedef DO(Apply<GetDependency, List>) RawDependencies;
 	
 		template<typename E>
 		struct CollectDependencies
 		{
-			template<typename T>
-			using IsCorrectEvent = IsSame<Car<T>, E>;
+			template<typename T> struct IsCorrectEvent : public IsSame<DO(Car<T>), E> { };
 	
-			typedef DoApply<CadrFn, DoFilter<IsCorrectEvent, RawDependencies>> Dependencies;
-			typedef MakeList<E, Dependencies> Type;
+			typedef DO(Apply<Cadr, DO(Filter<IsCorrectEvent, RawDependencies>)>) Dependencies;
+			typedef MAKELIST(E, Dependencies) Type;
 		};
 	
-		typedef DoSetify<DoApply<CarFn, RawDependencies>> EventList;
-		typedef DoApply<CollectDependencies, EventList> Type;
+		typedef DO(Setify<DO(Apply<Car, RawDependencies>)>) EventList;
+		typedef DO(Apply<CollectDependencies, EventList>) Type;
 	};
-	
-	template<typename List>
-	using DoCreateTransitionDependencyList = typename CreateTransitionDependencyList<List>::Type;
 	
 // ---------------------------------------------------------------------------
 	
@@ -99,7 +93,7 @@ struct TryCall_##f \
 	template<typename, void (*)(D)> struct Check { }; \
 	template<typename TT> static void test(D d, Check<TT, &TT::f>*) { TT::f(d); } \
 	template<typename> static void test(D d, ...) { } \
-	static void call(D d) { test<T>(d, nullptr); } \
+	static void call(D d) { test<T>(d, NULL); } \
 }
 
 	MXT_HASFN(enter);
@@ -113,24 +107,24 @@ struct TryCall_##f \
 		template<typename, void (*)(const E&, D)> struct Check { };
 		template<typename TT> static void test(const E& e, D d, Check<TT, &TT::apply>*) { TT::apply(e, d); }
 		template<typename> static void test(const E& e, D d, ...) { }
-		static void call(const E& e, D d) { test<T>(e, d, nullptr); }
+		static void call(const E& e, D d) { test<T>(e, d, NULL); }
 	};
 	
 	template<typename E, typename D, typename L, typename S, typename T>
-	struct TransImpl : public TransImpl<E, D, Cdr<L>, S, T>
+	struct TransImpl : public TransImpl<E, D, DO(Cdr<L>), S, T>
 	{
-		typedef TransImpl<E, D, Cdr<L>, S, T> Super;
+		typedef TransImpl<E, D, DO(Cdr<L>), S, T> Super;
 		typedef E Event;
 		typedef D Data;
 		typedef S StateList;
 		typedef T TransitionList;
-		typedef Caar<L> Origin;
-		typedef Cdar<L> Destination;
+		typedef DO(Caar<L>) Origin;
+		typedef DO(Cdar<L>) Destination;
 		typedef TryCall_leave<Origin, Data> LeaveFunction;
 		typedef TryCall_enter<Destination, Data> EnterFunction;
-		typedef TryCall_apply<DoGetValue<TransitionList, Transition<Origin, Event, Destination>>, Event, Data> TransitionFunction;
-		static const int OriginID = DoGetValue<StateList, Origin>::value;
-		static const int DestinationID = DoGetValue<StateList, Destination>::value;
+		typedef TryCall_apply<DO(GetValue<TransitionList, Transition<Origin, Event, Destination> >), Event, Data> TransitionFunction;
+		static const int OriginID = ValueIdentity<DO(GetValue<StateList, Origin>)>::value;
+		static const int DestinationID = ValueIdentity<DO(GetValue<StateList, Destination>)>::value;
 		static const bool IsActualTransition = !IsSame<Origin, Destination>::value;
 	
 		using FSMBase<D>::get_state;
@@ -177,7 +171,7 @@ struct TryCall_##f <T, void> \
 	template<typename, void (*)(void)> struct Check { }; \
 	template<typename TT> static void test(Check<TT, &TT::f>*) { TT::f(); } \
 	template<typename> static void test(...) { } \
-	static void call(void) { test<T>(nullptr); } \
+	static void call(void) { test<T>(NULL); } \
 }
 
 	MXT_HASFN(enter);
@@ -191,23 +185,23 @@ struct TryCall_##f <T, void> \
 		template<typename, void (*)(const E&)> struct Check { };
 		template<typename TT> static void test(const E& e, Check<TT, &TT::apply>*) { TT::apply(e); }
 		template<typename> static void test(const E& e, ...) { }
-		static void call(const E& e) { test<T>(e, nullptr); }
+		static void call(const E& e) { test<T>(e, NULL); }
 	};
 	
 	template<typename E, typename L, typename S, typename T>
-	struct TransImpl<E, void, L, S, T> : public TransImpl<E, void, Cdr<L>, S, T>
+	struct TransImpl<E, void, L, S, T> : public TransImpl<E, void, DO(Cdr<L>), S, T>
 	{
-		typedef TransImpl<E, void, Cdr<L>, S, T> Super;
+		typedef TransImpl<E, void, DO(Cdr<L>), S, T> Super;
 		typedef E Event;
 		typedef S StateList;
 		typedef T TransitionList;
-		typedef Caar<L> Origin;
-		typedef Cdar<L> Destination;
+		typedef DO(Caar<L>) Origin;
+		typedef DO(Cdar<L>) Destination;
 		typedef TryCall_leave<Origin, void> LeaveFunction;
 		typedef TryCall_enter<Destination, void> EnterFunction;
-		typedef TryCall_apply<DoGetValue<TransitionList, Transition<Origin, Event, Destination>>, Event, void> TransitionFunction;
-		static const int OriginID = DoGetValue<StateList, Origin>::value;
-		static const int DestinationID = DoGetValue<StateList, Destination>::value;
+		typedef TryCall_apply<DO(GetValue<TransitionList, Transition<Origin, Event, Destination> >), Event, void> TransitionFunction;
+		static const int OriginID = ValueIdentity<DO(GetValue<StateList, Origin>)>::value;
+		static const int DestinationID = ValueIdentity<DO(GetValue<StateList, Destination>)>::value;
 		static const bool IsActualTransition = !IsSame<Origin, Destination>::value;
 	
 		using FSMBase<void>::get_state;
@@ -239,21 +233,20 @@ struct TryCall_##f <T, void> \
 	{
 		virtual void process(const E& e)
 		{
-			throw new std::string("ERR: transition does not exist!");
 		}
 	};
 	
 // ---------------------------------------------------------------------------
 	
 	template<typename T>
-	struct ConstructFSMLineage : public Car<T>, public ConstructFSMLineage<Cdr<T>>
+	struct ConstructFSMLineage : public Car<T>::Type, public ConstructFSMLineage<DO(Cdr<T>)>
 	{
-		using Car<T>::process;
-		using ConstructFSMLineage<Cdr<T>>::process;
+		using DO(Car<T>)::process;
+		using ConstructFSMLineage<DO(Cdr<T>)>::process;
 	};
 	
 	template<typename T>
-	struct ConstructFSMLineage<Cons<T, Nil>> : public T
+	struct ConstructFSMLineage<Cons<T, Nil> > : public T
 	{
 		using T::process;
 	};
@@ -277,11 +270,8 @@ struct TryCall_##f <T, void> \
 			Type;
 		};
 
-		typedef DoApply<Transform, List> Type;
+		typedef DO(Apply<Transform, List>) Type;
 	};
-
-	template<typename List>
-	using DoCreateTransitionMap = typename CreateTransitionMap<List>::Type;
 	
 // ---------------------------------------------------------------------------
 	
@@ -317,24 +307,21 @@ struct TryCall_##f <T, void> \
 	{
 		typedef I InitialState;
 		typedef D Data;
-		typedef DoCreateStateList<T> StateList;
-		typedef DoCreateTransitionDependencyList<T> Transitions;
-		typedef DoCreateTransitionMap<T> TransitionMap;
-		static const int InitialID = DoGetValue<StateList, InitialState>::value;
+		typedef DO(CreateStateList<T>) StateList;
+		typedef DO(CreateTransitionDependencyList<T>) Transitions;
+		typedef DO(CreateTransitionMap<T>) TransitionMap;
+		static const int InitialID = ValueIdentity<DO(GetValue<StateList, InitialState>)>::value;
 	
 		template<typename TT>
 		struct CreateTransitionTree
 		{
-			typedef TransImpl<Car<TT>, Data, Cadr<TT>, StateList, TransitionMap> Type;
+			typedef TransImpl<DO(Car<TT>), Data, DO(Cadr<TT>), StateList, TransitionMap> Type;
 		};
 	
-		typedef ConstructFSMLineage<DoApply<CreateTransitionTree, Transitions>> Lineage;
+		typedef ConstructFSMLineage<DO(Apply<CreateTransitionTree, Transitions>)> Lineage;
 	
 		typedef FSM<InitialID, InitialState, Data, Lineage> Type;
 	};
-	
-	template<typename I, typename D, typename T>
-	using MakeFSM = typename FSMMaker<I, D, T>::Type;
 }
 
 #endif

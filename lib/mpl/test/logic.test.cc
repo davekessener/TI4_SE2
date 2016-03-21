@@ -12,15 +12,13 @@ class B { };
 BEGIN
 
 using lib::IsSame;
-using lib::DoIf;
-using lib::True;
-using lib::False;
+using lib::If;
 using lib::Identity;
 
 TEST(meta_if)
 {
-	ASSERT_TRUE((IsSame<A, DoIf<True,  Identity<A>, Identity<B>>>::value));
-	ASSERT_TRUE((IsSame<B, DoIf<False, Identity<A>, Identity<B>>>::value));
+	ASSERT_TRUE((IsSame<A, DO(If<true,  Identity<A>, Identity<B> >)>::value));
+	ASSERT_TRUE((IsSame<B, DO(If<false, Identity<A>, Identity<B> >)>::value));
 }
 
 END

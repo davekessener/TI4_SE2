@@ -23,9 +23,6 @@ namespace lib
 		typedef typename T2::Type Type;
 	};
 	
-	template<typename C, typename T1, typename T2>
-	using DoIf = typename If<C::value, T1, T2>::Type;
-
 	template<typename T>
 	struct Not
 	{

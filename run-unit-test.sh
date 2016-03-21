@@ -39,7 +39,7 @@ compile_test()
 	tcn="${tcn##*\/}"
 
 	print_padded "Compiling '$of' "
-	g++ -Wall -std=gnu++11 -I "$git_root/lib" -DTEST_CASE_NAME=$tcn -c "$1" -o "$2" || exit 1
+	g++ -Wall -std=c++03 -I "$git_root/lib" -DTEST_CASE_NAME=$tcn -c "$1" -o "$2" || exit 1
 	echo "[DONE]"
 }
 

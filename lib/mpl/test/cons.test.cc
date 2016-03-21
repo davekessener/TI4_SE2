@@ -17,13 +17,12 @@ BEGIN
 
 using lib::Nil;
 using lib::Cons;
-using lib::MakeList;
 using lib::IsSame;
 
 TEST(make_list)
 {
-	typedef Cons<A, Cons<B, Cons<C, Cons<D, Nil>>>> Expected;
-	typedef MakeList<A, B, C, D> Result;
+	typedef Cons<A, Cons<B, Cons<C, Cons<D, Nil> > > > Expected;
+	typedef MAKELIST(A, B, C, D) Result;
 
 	ASSERT_TRUE((IsSame<Expected, Result>::value));
 }

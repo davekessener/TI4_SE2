@@ -13,29 +13,29 @@ class C { };
 
 BEGIN
 
-using lib::DoListToMap;
-using lib::DoGetValue;
-using lib::MakeList;
+using lib::MakeList_3;
+using lib::ListToMap;
+using lib::GetValue;
 using lib::Cons;
 using lib::IsSame;
 using lib::Int;
 
-typedef MakeList<A, B, C> List;
-typedef MakeList
+typedef MAKELIST(A, B, C) List;
+typedef DO(MakeList_3
 <
 	Cons<Int<0>, A>,
 	Cons<Int<1>, B>,
 	Cons<Int<2>, C>
-> Map;
+>) Map;
 
 TEST(list_to_map)
 {
-	ASSERT_TRUE((IsSame<Map, DoListToMap<List>>::value));
+	ASSERT_TRUE((IsSame<Map, DO(ListToMap<List>)>::value));
 }
 
 TEST(get_value)
 {
-	ASSERT_TRUE((IsSame<C, DoGetValue<Map, Int<2>>>::value));
+	ASSERT_TRUE((IsSame<C, DO(GetValue<Map, Int<2> >)>::value));
 }
 
 END
