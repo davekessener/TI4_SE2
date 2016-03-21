@@ -1,5 +1,6 @@
 CC=g++
-CPPFLAGS=-Wall -std=c++03 -I../lib
+GIT_ROOT=$(shell git rev-parse --show-toplevel)
+CPPFLAGS=-Wall -std=c++03 -I$(GIT_ROOT)/lib
 SRC=$(wildcard *.cc)
 OBJ=$(SRC:.cc=.o)
 DEP=$(SRC:.cc=.d)

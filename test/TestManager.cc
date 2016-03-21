@@ -90,9 +90,11 @@ int TestManager::run(void)
 		log << Logger::flush;
 	}
 
+	log.write("-----");
+
 	log << err;
 
-	return 0;
+	return err.isEmpty() ? 0 : 1;
 }
 
 TestManager::Log& TestManager::getLog(void)
