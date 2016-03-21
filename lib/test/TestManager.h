@@ -31,8 +31,8 @@ namespace lib
 
 				struct Log
 				{
-					virtual std::string read( );
-					virtual bool isEmpty( ) const;
+					virtual std::string read( ) = 0;
+					virtual bool isEmpty( ) const = 0;
 				};
 
 			public:

@@ -131,16 +131,6 @@ TestManager::TestManagerImpl::tests_t *TestManager::TestManagerImpl::getUnit(con
 
 // # ---------------------------------------------------------------------------
 
-std::string TestManager::Log::read(void)
-{
-	throw std::string("ERR: this is not supposed to be executed!");
-}
-
-bool TestManager::Log::isEmpty(void) const
-{
-	return true;
-}
-
 void Logger::write(const std::string& s)
 {
 	log_.push_back(s);
