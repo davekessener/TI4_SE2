@@ -57,7 +57,26 @@ struct test_name : public Before<Base>, public After<Base>, public Base \
 void test_name::wrapper(void) \
 { \
 	test_name t; \
-	t.test(); \
+	try \
+	{ \
+		t.test(); \
+	} \
+	catch(std::string& s) \
+	{ \
+		throw s; \
+	} \
+	catch(std::exception& e) \
+	{ \
+		throw std::string(e.what()); \
+	} \
+	catch(const char *s) \
+	{ \
+		throw std::string(s); \
+	} \
+	catch(...) \
+	{ \
+		throw std::string("an error occured!"); \
+	} \
 } \
 static ::lib::test::TestManager::Registrar register_##test_name(#test_name, &test_name::wrapper); \
 void test_name::test(void)
