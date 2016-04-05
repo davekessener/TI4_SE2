@@ -1,6 +1,7 @@
 CC=g++
 GIT_ROOT=$(shell git rev-parse --show-toplevel)
-CPPFLAGS=-Wall -std=c++03 -I$(GIT_ROOT)/lib
+PROJECT_ROOT=$(GIT_ROOT)/src
+CPPFLAGS=-Wall -std=c++03 -I$(PROJECT_ROOT)/lib
 SRC=$(wildcard *.cc)
 OBJ=$(SRC:.cc=.o)
 DEP=$(SRC:.cc=.d)

@@ -1,6 +1,9 @@
 #!/bin/bash
 
 git_root=`git rev-parse --show-toplevel`
+project_root="$git_root/src"
+lib_path="$project_root/lib"
+framework_path="$project_root/test"
 result=0
 
 usage()
@@ -39,7 +42,7 @@ compile_test()
 	tcn="${tcn##*\/}"
 
 	print_padded "Compiling '$of' "
-	g++ -Wall -std=c++03 -I "$git_root/lib" -DTEST_CASE_NAME=$tcn -c "$1" -o "$2" || exit 1
+	g++ -Wall -std=c++03 -I "$lib_path" -DTEST_CASE_NAME=$tcn -c "$1" -o "$2" || exit 1
 	echo "[DONE]"
 }
 
@@ -69,10 +72,10 @@ execute_tests()
 	cd "$testdir"
 
 	print_padded "Updating framework "
-	make -C "$git_root/test" > /dev/null || exit 1
+	make -C "$framework_path" > /dev/null || exit 1
 	echo "[DONE]"
 
-	cp "$git_root/test/libut_framework.a" .
+	cp "$framework_path/libut_framework.a" .
 	
 	print_padded "Assembling test executable "
 	g++ -L. *.o -o exec_test -lut_framework || exit 1
@@ -118,7 +121,7 @@ test_all()
 clean_framework()
 {
 	print_padded "Cleaning framework files ..."
-	make -C "$git_root/test" clean > /dev/null
+	make -C "$framework_path" clean > /dev/null
 	echo "[DONE]"
 }
 
