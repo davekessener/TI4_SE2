@@ -24,7 +24,7 @@
 * For example, priorities could be passed as constructor 
 * argument.
 */
-namespace HAW 
+namespace lib
 {
 	class Thread
 	{
@@ -97,7 +97,7 @@ namespace HAW
 			 */
 			void run( );
 
-			static void* entryPoint(void*);
+			static void *entryPoint(void *);
 
 		private:
 			Thread(const Thread&); // Default copy constructor deleted
@@ -111,7 +111,7 @@ namespace HAW
 
 	template<typename F>
 	Thread::Thread(F f)
-		: f_(new ActualFunctor<typename lib::decay<F>::Type>(f))
+		: f_(new ActualFunctor<typename Decay<F>::Type>(f))
 		, joinable_(false)
 	{
 		int err = pthread_create(&tid_, NULL, &Thread::entryPoint, this);

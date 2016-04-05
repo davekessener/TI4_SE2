@@ -2,9 +2,11 @@
 #	define TEST_CASE_NAME ThreadTest
 #endif
 
-#include <test/unit_test.hpp>
-#include <Thread.h>
 #include <iostream>
+
+#include <test/unit_test.hpp>
+
+#include <concurrent/Thread.h>
 
 #define MXT_COUNT 5
 
@@ -41,7 +43,7 @@ TEST(threads)
 
 	Keeper five(5, i), seven(7, i);
 
-	HAW::Thread t5(five), t7(seven);
+	lib::Thread t5(five), t7(seven);
 
 	t5.join();
 	t7.join();

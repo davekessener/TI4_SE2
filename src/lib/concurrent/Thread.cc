@@ -10,7 +10,7 @@
 #include "Thread.h"
 
 
-namespace HAW
+namespace lib
 {
 
 Thread::Thread(void)

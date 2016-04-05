@@ -24,27 +24,33 @@ namespace lib
 // # ---------------------------------------------------------------------------
 
 	template<typename T>
-	struct decay
+	struct Decay
 	{
 		typedef T Type;
 	};
 
 	template<typename T>
-	struct decay<const T>
+	struct Decay<const T>
 	{
-		typedef typename decay<T>::Type Type;
+		typedef typename Decay<T>::Type Type;
 	};
 
 	template<typename T>
-	struct decay<T&>
+	struct Decay<T&>
 	{
-		typedef typename decay<T>::Type Type;
+		typedef typename Decay<T>::Type Type;
 	};
 
 	template<typename T>
-	struct decay<volatile T>
+	struct Decay<volatile T>
 	{
-		typedef typename decay<T>::Type Type;
+		typedef typename Decay<T>::Type Type;
+	};
+
+	template<typename T>
+	struct Decay<const volatile T>
+	{
+		typedef typename Decay<T>::Type Type;
 	};
 
 // # ---------------------------------------------------------------------------

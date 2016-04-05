@@ -17,6 +17,7 @@ BEGIN
 using lib::IsSame;
 using lib::Contains;
 using lib::IsSuperType;
+using lib::Decay;
 
 TEST(is_same)
 {
@@ -38,6 +39,11 @@ TEST(is_supertype)
 	ASSERT_TRUE(( IsSuperType<E, D>::value), "doesn't recognize inheritance!");
 	ASSERT_TRUE((!IsSuperType<D, E>::value), "incorrectly recognizes inverse inheritance!");
 	ASSERT_TRUE((!IsSuperType<A, B>::value), "incorrectly recognizes inheritance!");
+}
+
+TEST(type_decay)
+{
+	ASSERT_TRUE((IsSame<A, typename Decay<const volatile A&>::Type>::value));
 }
 
 END
