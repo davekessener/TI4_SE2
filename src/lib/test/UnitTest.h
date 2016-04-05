@@ -2,7 +2,7 @@
 #define DAV_TEST_UNITTEST_H
 
 #include <string>
-#include <aux.h>
+#include <macro.h>
 
 #define ASSERT_TRUE_2(f, msg) ::lib::test::UnitTest::assert_true(f, __FILE__, __LINE__, msg)
 #define ASSERT_TRUE_1(f) ASSERT_TRUE_2(f, NULL)

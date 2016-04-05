@@ -3,7 +3,7 @@
 
 #include <test/TestManager.h>
 #include <test/UnitTest.h>
-#include <aux.h>
+#include <macro.h>
 
 // # ---------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 #ifndef DAV_MPL_CONS_H
 #define DAV_MPL_CONS_H
 
-#include <aux.h>
+#include <macro.h>
 
 #define MAKELIST_0    ::lib::Nil
 #define MAKELIST_1(a) ::lib::Cons<a, MAKELIST_0>
