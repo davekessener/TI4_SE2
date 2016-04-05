@@ -1,4 +1,5 @@
 #include "LightsController.h"
+#include "Lights.h"
 
 namespace SE
 {
@@ -10,12 +11,20 @@ LightsController& LightsController::instance(void)
 	return inst;
 }
 
-void LightsController::turnOn(std::uint16_t bitmask) const
+LightsController::LightsController(void)
+{
+}
+
+LightsController::~LightsController(void)
+{
+}
+
+void LightsController::turnOn(std::uint16_t bitmask)
 {
 	buf_.enqueue(std::make_pair(true, bitmask));
 }
 
-void LightsController::turnOff(std::uint16_t bitmask) const
+void LightsController::turnOff(std::uint16_t bitmask)
 {
 	buf_.enqueue(std::make_pair(false, bitmask));
 }
@@ -29,9 +38,9 @@ void LightsController::light_controller_thread(void)
 
 	while(true)
 	{
-		value_type v = buf_.dequeue();
+		value_type v = c.buf_.dequeue();
 
-		if(!running()) break;
+		if(!c.running()) break;
 
 		(lights.*(v.first ? &Lights::turnOn : &Lights::turnOff))(v.second);
 	}

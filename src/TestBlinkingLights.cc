@@ -1,8 +1,10 @@
 #include <iostream>
+#include <unistd.h>
 
 #include <concurrent/Thread.h>
 
 #include "LightsController.h"
+#include "Lights.h"
 
 int main(int argc, char *argv[])
 {

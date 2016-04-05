@@ -18,7 +18,7 @@ HWAccess& HWAccess::instance(void)
 
 HWAccess::HWAccess(void)
 {
-	out8(MXT_IO_CONTROL_ADDR, IO_CONTROL_BITMASK);
+	out8(MXT_IO_CONTROL_ADDR, MXT_IO_CONTROL_BITMASK);
 }
 
 HWAccess::~HWAccess(void)

@@ -1,7 +1,7 @@
 #ifndef HAW_LIB_HWACCESS_H
 #define HAW_LIB_HWACCESS_H
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace lib
 {
@@ -10,10 +10,10 @@ namespace lib
 		public:
 			static HWAccess& instance( );
 
-			std::uint16_t in(std::uint16_t) const;
-			void out(std::uint16_t, std::uint16_t) const;
-			void setBits(std::uint16_t, std::uint16_t) const;
-			void resetBits(std::uint16_t, std::uint16_t) const;
+			uint16_t in(uint16_t) const;
+			void out(uint16_t, uint16_t) const;
+			void setBits(uint16_t, uint16_t) const;
+			void resetBits(uint16_t, uint16_t) const;
 		private:
 			HWAccess( );
 			~HWAccess( );
