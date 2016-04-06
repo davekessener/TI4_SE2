@@ -39,5 +39,5 @@
 !Makefile
 !README
 !TI4_SE2_1_1/**
-TI4_SE2_1_1/**/*.o
+*.o
 
