@@ -1,5 +1,6 @@
 #include <sys/neutrino.h>
 #include <hw/inout.h>
+#include <stdexcept>
 
 #include "HWAccess.h"
 
@@ -18,6 +19,9 @@ HWAccess& HWAccess::instance(void)
 
 HWAccess::HWAccess(void)
 {
+    if(ThreadCtl(_NTO_TCTL_IO_PRIV, 0))
+    	throw std::runtime_error("no access to hw");
+
 	out8(MXT_IO_CONTROL_ADDR, MXT_IO_CONTROL_BITMASK);
 }
 

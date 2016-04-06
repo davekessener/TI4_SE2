@@ -12,24 +12,27 @@ USEFILE=
 
 # Next lines are for C++ projects only
 
-EXTRA_SUFFIXES+=cxx cpp
+EXTRA_SUFFIXES+=cxx cc
 
 #===== LDFLAGS - add the flags to the linker command line.
 LDFLAGS+=-lang-c++ -Y _gpp
 
-VFLAG_g=-gstabs+
+#===== LIBS - a space-separated list of library items to be included in the link.
+LIBS+=cpt_terminal
+
+#===== CCFLAGS - add the flags to the C compiler command line. 
+CCFLAGS+=-Y _gpp
+
+#===== EXTRA_INCVPATH - a space-separated list of directories to search for include files.
+EXTRA_INCVPATH+=$(PROJECT_ROOT)/src $(PROJECT_ROOT)/src/lib
 
 #===== EXTRA_SRCVPATH - a space-separated list of directories to search for source files.
 EXTRA_SRCVPATH+= \
 	$(PROJECT_ROOT)/src  \
 	$(PROJECT_ROOT)/src/lib  \
-	$(QNX_TARGET)/usr/include
-
-#===== LIBS - a space-separated list of library items to be included in the link.
-LIBS+=IOaccess cpt_terminal
-
-#===== CCFLAGS - add the flags to the C compiler command line. 
-CCFLAGS+=-Y _gpp
+	$(PROJECT_ROOT)/src/lib/concurrent  \
+	$(PROJECT_ROOT)/src/lib/mpl  \
+	$(PROJECT_ROOT)/src/lib/test
 
 include $(MKFILES_ROOT)/qmacros.mk
 ifndef QNX_INTERNAL
