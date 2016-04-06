@@ -1,7 +1,7 @@
 #ifndef HAW_LIB_SEMAPHORE_H
 #define HAW_LIB_SEMAPHORE_H
 
-#include <semaphore.h>
+#include <pthread.h>
 
 namespace lib
 {
@@ -14,7 +14,8 @@ namespace lib
 			void down( );
 			unsigned get( ) const { return val_; }
 		private:
-			sem_t sem_;
+			pthread_mutex_t mtx_;
+			pthread_cond_t cond_;
 			unsigned val_;
 	};
 }

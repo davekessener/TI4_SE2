@@ -7,24 +7,33 @@ namespace lib
 
 Semaphore::Semaphore(unsigned v) : val_(v)
 {
-	sem_init(&sem_, 0, v);
+	pthread_mutex_init(&mtx_, NULL);
+	pthread_cond_init(&cond_, NULL);
 }
 
 Semaphore::~Semaphore(void)
 {
-	sem_destroy(&sem_);
+	pthread_mutex_destroy(&mtx_);
+	pthread_cond_destroy(&cond_);
 }
 
 void Semaphore::up(void)
 {
-	sem_post(&sem_);
+	pthread_mutex_lock(&mtx_);
 	++val_;
+	if(val_ == 1) pthread_cond_broadcast(&cond_);
+	pthread_mutex_unlock(&mtx_);
 }
 
 void Semaphore::down(void)
 {
-	sem_wait(&sem_);
+	pthread_mutex_lock(&mtx_);
+	while(!val_)
+	{
+		pthread_cond_wait(&cond_, &mtx_);
+	}
 	--val_;
+	pthread_mutex_unlock(&mtx_);
 }
 
 }
