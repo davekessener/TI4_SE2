@@ -30,6 +30,7 @@
 !*.g4
 !*.mini
 !*.doc
+!*.pages
 !*.pdf
 !*.schema
 !*.chip
