@@ -30,6 +30,7 @@
 !*.g4
 !*.mini
 !*.doc
+!*.docx
 !*.pages
 !*.pdf
 !*.schema
