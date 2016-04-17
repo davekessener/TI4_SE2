@@ -105,7 +105,7 @@ namespace lib
 
 		private:
 			pthread_t tid_;/**< Thread id to be passed to pthread_create*/
-			Functor *f_;
+			std::auto_ptr<Functor> f_;
 			bool joinable_;
 	};
 

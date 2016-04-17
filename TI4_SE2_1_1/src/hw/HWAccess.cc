@@ -2,12 +2,12 @@
 #include <hw/inout.h>
 #include <stdexcept>
 
-#include "HWAccess.h"
+#include "hw/HWAccess.h"
 
 #define MXT_IO_CONTROL_ADDR 0x303
 #define MXT_IO_CONTROL_BITMASK 0x8A //10001010
 
-namespace lib
+namespace hw
 {
 
 HWAccess& HWAccess::instance(void)
@@ -29,24 +29,24 @@ HWAccess::~HWAccess(void)
 {
 }
 
-std::uint16_t HWAccess::in(std::uint16_t addr) const
+uint8_t HWAccess::in(port_t addr) const
 {
 	return in8(addr);
 }
 
-void HWAccess::out(std::uint16_t addr, std::uint16_t v) const
+void HWAccess::out(port_t addr, pin_t v) const
 {
 	out8(addr, v);
 }
 
-void HWAccess::setBits(std::uint16_t addr, std::uint16_t mask) const
+void HWAccess::setBits(port_t addr, pin_t mask) const
 {
-	out(addr, in(addr) | mask);
+	out(addr, MXT_SETBITS(in(addr), mask));
 }
 
-void HWAccess::resetBits(std::uint16_t addr, std::uint16_t mask) const
+void HWAccess::resetBits(port_t addr, pin_t mask) const
 {
-	out(addr, in(addr) & ~mask);
+	out(addr, MXT_RESETBITS(in(addr), ~mask));
 }
 
 }

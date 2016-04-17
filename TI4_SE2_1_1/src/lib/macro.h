@@ -24,5 +24,12 @@
  *
  *************************************/
 
+#define MXT_PINPORT(port, pin) ((((uint32_t)(port))<<16)|((uint32_t)(pin)))
+#define MXT_PORT(pp) ((uint16_t)((pp)>>16))
+#define MXT_PINS(pp) ((uint8_t)((pp)&0xff))
+
+#define MXT_SETBITS(v,m) ((v)|(m))
+#define MXT_RESETBITS(v,m) ((v)&~(m))
+
 #endif
 
