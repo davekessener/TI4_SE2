@@ -10,14 +10,7 @@
 namespace hw
 {
 
-HWAccess& HWAccess::instance(void)
-{
-	static HWAccess inst;
-
-	return inst;
-}
-
-HWAccess::HWAccess(void)
+HWAccessImpl::HWAccessImpl(void)
 {
     if(ThreadCtl(_NTO_TCTL_IO_PRIV, 0))
     	throw std::runtime_error("no access to hw");
@@ -25,26 +18,22 @@ HWAccess::HWAccess(void)
 	out8(MXT_IO_CONTROL_ADDR, MXT_IO_CONTROL_BITMASK);
 }
 
-HWAccess::~HWAccess(void)
-{
-}
-
-uint8_t HWAccess::in(port_t addr) const
+uint8_t HWAccessImpl::in(port_t addr) const
 {
 	return in8(addr);
 }
 
-void HWAccess::out(port_t addr, pin_t v) const
+void HWAccessImpl::out(port_t addr, pin_t v) const
 {
 	out8(addr, v);
 }
 
-void HWAccess::setBits(port_t addr, pin_t mask) const
+void HWAccessImpl::setBits(port_t addr, pin_t mask) const
 {
 	out(addr, MXT_SETBITS(in(addr), mask));
 }
 
-void HWAccess::resetBits(port_t addr, pin_t mask) const
+void HWAccessImpl::resetBits(port_t addr, pin_t mask) const
 {
 	out(addr, MXT_RESETBITS(in(addr), ~mask));
 }

@@ -3,16 +3,16 @@
 
 #include <stdint.h>
 #include <concurrent/Lock.hpp>
+#include <Singleton.hpp>
 
 namespace hw
 {
-	class HWAccess : public lib::LockableClass<HWAccess>
+	class HWAccessImpl : public lib::LockableClass<HWAccessImpl>
 	{
-		typedef lib::LockableClass<HWAccess> Super;
+		typedef lib::LockableClass<HWAccessImpl> Super;
+		typedef lib::Singleton<HWAccessImpl, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
 
 		public:
-			static HWAccess& instance( );
-
 			typedef uint16_t port_t;
 			typedef uint8_t pin_t;
 
@@ -27,11 +27,15 @@ namespace hw
 
 			struct Lock : public Super::Lock { Lock( ) : Super::Lock(NULL) { } };
 		private:
-			HWAccess( );
-			~HWAccess( );
-			HWAccess(const HWAccess&);
-			HWAccess& operator=(const HWAccess&);
+			HWAccessImpl( );
+			~HWAccessImpl( ) { }
+			HWAccessImpl(const HWAccessImpl&);
+			HWAccessImpl& operator=(const HWAccessImpl&);
+
+			friend class SingletonInst;
 	};
+
+	typedef HWAccessImpl::SingletonInst HWAccess;
 }
 
 #endif

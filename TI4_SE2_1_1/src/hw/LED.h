@@ -2,15 +2,22 @@
 #define HAW_HW_LED_H
 
 #include <Time.h>
+#include <Singleton.hpp>
+#include <qnx/Channel.h>
+#include <concurrent/Lock.hpp>
 
 namespace hw
 {
-	class Controller;
+	class Actuator;
 
-	class LED
+	class LED : public lib::LockableObject<LED>
 	{
 		public:
 			using HWAccess::PORT_A, HWAccess::PORT_C;
+
+			typedef lib::LockableObject<LED> Super;
+			typedef lib::Singleton<LED, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
+			typedef Super::Lock Lock;
 
 			typedef uint32_t led_t;
 			static const led_t GREEN  = MXT_PINPORT(PORT_A, 0x20); // port A pin 5
@@ -22,15 +29,27 @@ namespace hw
 			static const led_t Q2     = MXT_PINPORT(PORT_C, 0x04); // port C pin 3
 
 		public:
-			static void turnOn(led_t);
-			static void turnOff(led_t);
-			static void blink(led_t, const Time&);
+			void turnOn(led_t);
+			void turnOff(led_t);
+			void blink(led_t, const Time&);
 		private:
-			static void doTurnOn(led_t);
-			static void doTurnOff(led_t);
+			void doTurnOn(led_t);
+			void doTurnOff(led_t);
 
-			friend class Controller;
+		private:
+			qnx::Connection con_;
+
+		private:
+			LED( );
+			LED(const LED&);
+			~LED( ) { }
+			LED& operator=(const LED&);
+
+			friend class Actuator;
+			friend class SingletonInst;
 	};
+
+	typedef LED::SingletonInst LEDs;
 }
 
 #endif

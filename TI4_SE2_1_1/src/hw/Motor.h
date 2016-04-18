@@ -1,11 +1,18 @@
 #ifndef HAW_HW_MOTOR_H
 #define HAW_HW_MOTOR_H
 
+#include <Singleton.hpp>
+#include <qnx/Channel.h>
+#include <concurrent/Lock.hpp>
+
 namespace hw
 {
-	class Motor
+	class Motor : public lib::LockableObject<Motor>
 	{
 		public:
+			typedef lib::LockableObject<Motor> Super;
+			typedef lib::Singleton<Motor, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
+			typedef Super::Lock Lock;
 			typedef uint8_t pid_t;
 
 			struct Direction
@@ -30,16 +37,29 @@ namespace hw
 
 			static const pid_t SWITCH = 0x10; // port A pin 4
 
-			static void controlBelt(pid_t, pid_t);
-			static void controlSwitch(pid_t);
-		private:
-			static void doControlBelt(pid_t, pid_t);
-			static void doControlSwitch(pid_t);
+		public:
+			void controlBelt(pid_t, pid_t);
+			void controlSwitch(pid_t);
 
-			static pid_t curDir_;
+		private:
+			void doControlBelt(pid_t, pid_t);
+			void doControlSwitch(pid_t);
+			
+		private:
+			pid_t curDir_;
+			qnx::Connection con_;
+
+		private:
+			Motor( );
+			Motor(const Motor&);
+			~Motor( ) { }
+			Motor& operator=(const Motor&);
 
 			friend class Controller;
+			friend class SingletonInst;
 	};
+
+	typedef Motor::SingletonInst Motors;
 }
 
 #endif

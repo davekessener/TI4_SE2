@@ -3,7 +3,21 @@
 namespace hw
 {
 
-Motor::pid_t Motor::curDir_ = Direction::NONE;
+Motor::Motor(void) : curDir_(Direction::NONE), con_(Actuators::instance().getChannel().connect())
+{
+}
+
+void Motor::controlBelt(pid_t dir, pid_t speed)
+{
+	Lock guard(this);
+}
+
+void Motor::controlSwitch(pid_t state)
+{
+	Lock guard(this);
+}
+
+// # ---------------------------------------------------------------------------
 
 void Motor::doControlBelt(pid_t d, pid_t s)
 {
