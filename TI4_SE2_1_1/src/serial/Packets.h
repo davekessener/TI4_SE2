@@ -28,10 +28,12 @@ namespace hw
 	class DataPacket : public Packet
 	{
 		public:
-			DataPacket(const uint8_t *, uint32_t);
+			template<typename T>
+			explicit DataPacket(const T& v) { init(&v, sizeof(v)); }
+			DataPacket(const void *d, uint32_t s) { init(d, s); }
 			~DataPacket( ) { delete[] data_; }
 
-			void set(uint8_t *, size_t);
+			void set(void *, size_t);
 
 			static Packet_ptr assemble(const uint8_t *d, uint32_t s)
 				{ return Packet_ptr(new DataPacket(d, s)); }
@@ -40,6 +42,9 @@ namespace hw
 			const uint8_t *data( ) const { return data_; }
 			uint8_t id( ) const { return Packet::DATA_ID; }
 			uint32_t hash( ) const { return 0x12345678; }
+
+		private:
+			void init(const void *d, uint32_t s);
 
 		private:
 			uint8_t *data_;

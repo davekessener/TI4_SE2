@@ -2,6 +2,7 @@
 #define HAW_HW_LED_H
 
 #include <Time.h>
+#include <Timer.h>
 #include <Singleton.hpp>
 #include <qnx/Channel.h>
 #include <concurrent/Lock.hpp>
@@ -27,17 +28,22 @@ namespace hw
 			static const led_t RESET  = MXT_PINPORT(PORT_C, 0x01); // port C pin 1
 			static const led_t Q1     = MXT_PINPORT(PORT_C, 0x02); // port C pin 2
 			static const led_t Q2     = MXT_PINPORT(PORT_C, 0x04); // port C pin 3
+			static const int CLED = 7;
 
 		public:
-			void turnOn(led_t);
-			void turnOff(led_t);
+			void turnOn(led_t led) { activate(led, true); }
+			void turnOff(led_t led) { activate(led, false); }
+			void activate(led_t, bool);
 			void blink(led_t, const Time&);
 		private:
-			void doTurnOn(led_t);
-			void doTurnOff(led_t);
+			void doActivate(const void *);
+			void blink_thread(led_t);
+			static int get_led_id(led_t);
 
 		private:
 			qnx::Connection con_;
+			Timer[CLED] blinkers_;
+			bool[CLED] blinkState_;
 
 		private:
 			LED( );

@@ -2,6 +2,7 @@
 #define HAW_LIB_TIME_H
 
 #include <stdint.h>
+#include <time.h>
 
 namespace lib
 {
@@ -20,6 +21,8 @@ namespace lib
 		public:
 			explicit Time(us_t) : t_(us_t) { }
 			void wait( ) const { sleep(t_); }
+			void toTimespec(struct timespec *);
+			us_t raw( ) const { return t_; }
 
 			static Time h(us_t v) { return Time(v * H_TO_US); }
 			static Time min(us_t v) { return Time(v * M_TO_US); }

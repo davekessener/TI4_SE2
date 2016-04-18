@@ -14,6 +14,21 @@ namespace lib
 			T *t_;
 			void (T::*f_)(void);
 	};
+
+	struct BasicFunctor
+	{
+		virtual void operator()( ) = 0;
+	};
+	
+	template<typename F>
+	class BasicFunctorImpl : public BasicFunctor
+	{
+		public:
+			BasicFunctorImpl(const F& f) : f_(f) { }
+			void operator()( ) { f_(); }
+		private:
+			F f_;
+	};
 }
 
 #endif

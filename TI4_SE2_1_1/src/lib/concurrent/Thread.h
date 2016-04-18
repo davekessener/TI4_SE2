@@ -1,11 +1,9 @@
 /***************************************************************************
 *    Embedded Programming HAW Hamburg Department Informatik
-*    HAW:: Thread.h
-*    The HAW::Thread class implements the wrapper facade pattern by              
+*    lib/concurrent/Thread.h
+*    The lib::Thread class implements the wrapper facade pattern by              
 *    D. Schmidt POSA II. In this implementation it wraps the pthread_create call 
 *    used by QNX to create threads.
-*    COPYRIGHT (C) 2016 Stephan Pareigis
-*    This software is licensed under MIT license.                                                                   
 ****************************************************************************/
 
 #ifndef LIB_HAW_THREAD_H
@@ -17,6 +15,7 @@
 #include <pthread.h>
 
 #include <mpl/types.hpp>
+#include <mpl/FtorWrapper.hpp>
 
 /**
 * Thread class.
@@ -29,22 +28,6 @@ namespace lib
 {
 	class Thread
 	{
-		private:
-			struct Functor
-			{
-				virtual void operator()( ) = 0;
-			};
-			
-			template<typename F>
-			class ActualFunctor : public Functor
-			{
-				public:
-					ActualFunctor(const F& f) : f_(f) { }
-					void operator()( ) { f_(); }
-				private:
-					F f_;
-			};
-
 		public:
 			/**
 			 * Default constructor. Initializes inert Thread
@@ -106,13 +89,13 @@ namespace lib
 
 		private:
 			pthread_t tid_;/**< Thread id to be passed to pthread_create*/
-			std::auto_ptr<Functor> f_;
+			std::auto_ptr<BasicFunctor> f_;
 			bool joinable_;
 	};
 
 	template<typename F>
 	Thread::Thread(F f)
-		: f_(new ActualFunctor<typename Decay<F>::Type>(f))
+		: f_(new BasicFunctorImpl<typename Decay<F>::Type>(f))
 		, joinable_(false)
 	{
 		int err = pthread_create(&tid_, NULL, &Thread::entryPoint, this);

@@ -1,6 +1,9 @@
 #ifndef DAV_LIB_AUX_H
 #define DAV_LIB_AUX_H
 
+#include <exception>
+#define MXT_TODO_ERROR std::terminate()
+
 #define MXT_STRINGIFY_IMPL(a) #a
 #define MXT_STRINGIFY(a) MXT_STRINGIFY_IMPL(a)
 
