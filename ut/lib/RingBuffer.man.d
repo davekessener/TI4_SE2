@@ -1,7 +1,8 @@
 CC=g++
-PROJECT_ROOT=$(shell git rev-parse --show-toplevel)/src
+GIT_ROOT=$(shell git rev-parse --show-toplevel)
+PROJECT_ROOT=$(GIT_ROOT)/TI4_SE2_1_1/src
 CPPFLAGS=-std=c++03 -ggdb -Wall -I$(PROJECT_ROOT)/lib
-LDFLAGS=-L$(PROJECT_ROOT)/test
+LDFLAGS=-L$(GIT_ROOT)/test
 OBJ=RingBuffer.man.o Thread.o Mutex.o Semaphore.o
 TARGET=RingBufferTest
 
@@ -10,7 +11,7 @@ TARGET=RingBufferTest
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(MAKE) -C $(PROJECT_ROOT)/test
+	$(MAKE) -C $(GIT_ROOT)/test
 	$(CC) $(LDFLAGS) $(OBJ) -o $(TARGET) -lut_framework -lpthread
 
 RingBuffer.man.o: RingBuffer.man.cc

@@ -12,6 +12,7 @@
 #define LIB_HAW_THREAD_H
 
 #include <stdexcept>
+#include <memory>
 
 #include <pthread.h>
 
