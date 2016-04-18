@@ -24,7 +24,7 @@ LIBS+=cpt_terminal
 CCFLAGS+=-Y _gpp
 
 #===== EXTRA_INCVPATH - a space-separated list of directories to search for include files.
-EXTRA_INCVPATH+=$(PROJECT_ROOT)/src $(PROJECT_ROOT)/src/lib
+EXTRA_INCVPATH+=$(PROJECT_ROOT)/src
 
 #===== EXTRA_SRCVPATH - a space-separated list of directories to search for source files.
 EXTRA_SRCVPATH+= \
@@ -32,7 +32,9 @@ EXTRA_SRCVPATH+= \
 	$(PROJECT_ROOT)/src/lib  \
 	$(PROJECT_ROOT)/src/lib/concurrent  \
 	$(PROJECT_ROOT)/src/lib/mpl  \
-	$(PROJECT_ROOT)/src/lib/test
+	$(PROJECT_ROOT)/src/lib/qnx  \
+	$(PROJECT_ROOT)/src/serial  \
+	$(PROJECT_ROOT)/src/hw
 
 include $(MKFILES_ROOT)/qmacros.mk
 ifndef QNX_INTERNAL

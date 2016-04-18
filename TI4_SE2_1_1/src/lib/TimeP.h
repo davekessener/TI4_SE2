@@ -19,9 +19,9 @@ namespace lib
 		static const uint32_t  H_TO_US = H_TO_M  * M_TO_US;
 
 		public:
-			explicit Time(us_t) : t_(us_t) { }
+			explicit Time(us_t t) : t_(t) { }
 			void wait( ) const { sleep(t_); }
-			void toTimespec(struct timespec *);
+			void toTimespec(timespec *);
 			us_t raw( ) const { return t_; }
 
 			static Time h(us_t v) { return Time(v * H_TO_US); }

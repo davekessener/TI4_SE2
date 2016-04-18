@@ -1,7 +1,7 @@
 #ifndef DAV_MPL_TYPES_H
 #define DAV_MPL_TYPES_H
 
-#include <mpl/cons.hpp>
+#include <lib/mpl/cons.hpp>
 
 namespace lib
 {

@@ -1,8 +1,10 @@
 #ifndef HAW_LIB_SINGLETON_H
 #define HAW_LIB_SINGLETON_H
 
-#include <concurrent/Mutex.h>
-#include <CleanupUtility.h>
+#include <stddef.h>
+
+#include <lib/concurrent/Mutex.h>
+#include <lib/CleanupUtility.h>
 
 namespace lib
 {
@@ -11,31 +13,31 @@ namespace lib
 		template<typename T>
 		struct SingleThreaded
 		{
-			typedef T *Type;
-
-			struct Lock { Lock(T *) { } };
+			struct Lock { Lock(Mutex *) { } };
 		};
 
 		template<typename T>
 		struct MultiThreaded : public LockableClass<T>
 		{
-			typedef volatile T *Type;
-
-			using typename LockableClass<T>::Lock;
+			struct Lock
+			{
+				Lock(Mutex *mtx) : mtx_(mtx) { mtx_->lock(); }
+				~Lock( ) { mtx_->unlock(); }
+				Mutex *mtx_;
+			};
 		};
 	}
 
 	template
 	<
 		typename T,
-		template <typename> class ThreadingModel = SingletonConcurrency::SingleThreaded,
+		template <typename> class TM = SingletonConcurrency::SingleThreaded,
 		size_t P = CleanupUtility::DEFAULT_PRIORITY
 	>
-	class Singleton : public ThreadingModel<Singleton<T, ThreadingModel, P>>
+	class Singleton
 	{
-		typedef ThreadingModel<Singleton<T, ThreadingModel, P>> Super;
-		typedef typename Super::Type Type;
-		typedef typename Super::Lock Lock;
+		typedef TM<T> ThreadingModel;
+		typedef typename ThreadingModel::Lock Lock;
 
 		public:
 			static T& instance( );
@@ -44,24 +46,28 @@ namespace lib
 			static void destroy_singleton( );
 
 		private:
-			static Type instance_;
+			static T *instance_;
+			static Mutex mtx_;
 
 		private:
 			Singleton( );
-			Singleton(const Singleton<T, P>&);
+			Singleton(const Singleton<T, TM, P>&);
 			~Singleton( );
-			Singleton<T, P>& operator=(const Singleton<T, P>&);
+			Singleton<T, TM, P>& operator=(const Singleton<T, TM, P>&);
 	};
 
 	template<typename T, template <typename> class TM, size_t P>
-	typename Singleton<T, TM, P>::Type Singleton<T, TM, P>::instance_ = NULL;
+	T *Singleton<T, TM, P>::instance_ = NULL;
+
+	template<typename T, template <typename> class TM, size_t P>
+	Mutex Singleton<T, TM, P>::mtx_;
 
 	template<typename T, template <typename> class TM, size_t P>
 	T& Singleton<T, TM, P>::instance(void)
 	{
 		if(!instance_)
 		{
-			Lock lock(NULL);
+			Lock lock(&mtx_);
 
 			if(!instance_)
 			{

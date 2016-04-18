@@ -12,11 +12,9 @@ namespace lib
 			~Mutex( );
 			void lock( );
 			void unlock( );
+			pthread_mutex_t& raw( ) { return mtx_; }
 		private:
 			pthread_mutex_t mtx_;
-		private:
-			Mutex(const Mutex&);
-			Mutex& operator=(const Mutex&);
 	};
 }
 

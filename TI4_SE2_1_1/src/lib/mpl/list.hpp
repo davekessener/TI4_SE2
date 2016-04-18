@@ -1,9 +1,9 @@
 #ifndef DAV_MPL_LIST_H
 #define DAV_MPL_LIST_H
 
-#include <mpl/cons.hpp>
-#include <mpl/types.hpp>
-#include <mpl/logic.hpp>
+#include <lib/mpl/cons.hpp>
+#include <lib/mpl/types.hpp>
+#include <lib/mpl/logic.hpp>
 
 namespace lib
 {

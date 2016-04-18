@@ -2,15 +2,16 @@
 #define HAW_HW_HWACCESS_H
 
 #include <stdint.h>
-#include <concurrent/Lock.hpp>
-#include <Singleton.hpp>
+#include <lib/concurrent/Lock.hpp>
+#include <lib/Singleton.hpp>
 
 namespace hw
 {
 	class HWAccessImpl : public lib::LockableClass<HWAccessImpl>
 	{
-		typedef lib::LockableClass<HWAccessImpl> Super;
-		typedef lib::Singleton<HWAccessImpl, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
+		public:
+			typedef lib::LockableClass<HWAccessImpl> Super;
+			typedef lib::Singleton<HWAccessImpl, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
 
 		public:
 			typedef uint16_t port_t;
@@ -26,13 +27,13 @@ namespace hw
 			void resetBits(port_t, pin_t) const;
 
 			struct Lock : public Super::Lock { Lock( ) : Super::Lock(NULL) { } };
-		private:
+
+		public:
 			HWAccessImpl( );
 			~HWAccessImpl( ) { }
+		private:
 			HWAccessImpl(const HWAccessImpl&);
 			HWAccessImpl& operator=(const HWAccessImpl&);
-
-			friend class SingletonInst;
 	};
 
 	typedef HWAccessImpl::SingletonInst HWAccess;

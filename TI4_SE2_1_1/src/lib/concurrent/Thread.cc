@@ -7,7 +7,7 @@
 
 #include <exception>
 
-#include "Thread.h"
+#include "lib/concurrent/Thread.h"
 
 
 namespace lib

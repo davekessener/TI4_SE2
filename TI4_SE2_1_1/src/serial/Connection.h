@@ -4,8 +4,8 @@
 #include <string>
 
 #include <serial/Packets.h>
-#include <concurrent/Thread.h>
-#include <RingBuffer.hpp>
+#include <lib/concurrent/Thread.h>
+#include <lib/RingBuffer.hpp>
 
 #define MXT_PACKETBUFSIZE 256
 

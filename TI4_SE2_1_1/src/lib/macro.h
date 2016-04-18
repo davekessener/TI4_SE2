@@ -1,8 +1,23 @@
 #ifndef DAV_LIB_AUX_H
 #define DAV_LIB_AUX_H
 
+#include <iostream>
+#include <sstream>
 #include <exception>
-#define MXT_TODO_ERROR std::terminate()
+#include <stdexcept>
+#include <errno.h>
+#include <string.h>
+
+template<typename T>
+void terminate(const char *s, int l, int e)
+{
+	std::stringstream ss;
+	ss << "exception in " << (s + 31) << " @" << l << " with " << e << "(" << strerror(e) << ")";
+//	std::cout << ss.str();
+	throw std::runtime_error(ss.str());
+}
+
+#define MXT_TODO_ERROR terminate<void>(__FILE__, __LINE__, errno)
 
 #define MXT_STRINGIFY_IMPL(a) #a
 #define MXT_STRINGIFY(a) MXT_STRINGIFY_IMPL(a)

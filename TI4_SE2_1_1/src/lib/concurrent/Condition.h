@@ -3,8 +3,8 @@
 
 #include <pthread.h>
 
-#include <concurrent/Mutex.h>
-#include <Time.h>
+#include <lib/concurrent/Mutex.h>
+#include <lib/TimeP.h>
 
 namespace lib
 {
@@ -14,7 +14,7 @@ namespace lib
 			Condition( );
 			~Condition( );
 			void wait( );
-			bool wait(struct timespec *);
+			bool wait(timespec *);
 			void broadcast( );
 			void lock( );
 			void unlock( );

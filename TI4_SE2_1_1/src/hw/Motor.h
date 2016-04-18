@@ -1,12 +1,14 @@
 #ifndef HAW_HW_MOTOR_H
 #define HAW_HW_MOTOR_H
 
-#include <Singleton.hpp>
-#include <qnx/Channel.h>
-#include <concurrent/Lock.hpp>
+#include <lib/Singleton.hpp>
+#include <lib/qnx/Channel.h>
+#include <lib/concurrent/Lock.hpp>
 
 namespace hw
 {
+	class Actuator;
+
 	class Motor : public lib::LockableObject<Motor>
 	{
 		public:
@@ -42,21 +44,21 @@ namespace hw
 			void controlSwitch(pid_t);
 
 		private:
-			void doControlBelt(pid_t, pid_t);
-			void doControlSwitch(pid_t);
+			void doControlBelt(const void *);
+			void doControlSwitch(const void *);
 			
 		private:
 			pid_t curDir_;
-			qnx::Connection con_;
+			lib::qnx::Connection con_;
 
-		private:
+		public:
 			Motor( );
-			Motor(const Motor&);
 			~Motor( ) { }
+		private:
+			Motor(const Motor&);
 			Motor& operator=(const Motor&);
 
-			friend class Controller;
-			friend class SingletonInst;
+			friend class Actuator;
 	};
 
 	typedef Motor::SingletonInst Motors;

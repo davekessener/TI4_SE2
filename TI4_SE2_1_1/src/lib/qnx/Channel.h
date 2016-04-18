@@ -9,6 +9,8 @@ namespace lib
 	{
 		class Channel;
 
+		using hw::Packet_ptr;
+
 		class Receiver
 		{
 			public:
@@ -37,11 +39,12 @@ namespace lib
 		class Channel
 		{
 			public:
-				Channel( ) : chid_(-1) { }
-				~Channel( );
+				Channel( ) : chid_(0) { }
+				~Channel( ) { close(); }
 				Receiver open(int = 0);
 				Connection connect(int = 0) const;
 				bool isOpen( ) const { return chid_ > 0; }
+				void close( );
 			private:
 				int chid_;
 

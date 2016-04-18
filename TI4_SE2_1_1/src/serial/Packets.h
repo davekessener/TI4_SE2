@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <memory>
 
-#include <SmartPtr.hpp>
+#include <lib/SmartPtr.hpp>
 
 namespace hw
 {
@@ -20,7 +20,7 @@ namespace hw
 			static const uint8_t DATA_ID = 0;
 			static const uint8_t OK_ID = 1;
 			static const uint8_t ERROR_ID = 2;
-			static const uint8_t ACHNOWLEDGE_ID = 3;
+			static const uint8_t ACKNOWLEDGE_ID = 3;
 	};
 
 	typedef lib::SmartPtr<Packet> Packet_ptr;
@@ -64,6 +64,8 @@ namespace hw
 			uint8_t id( ) const { return Packet::OK_ID; }
 			uint32_t hash( ) const { return 0x12345678; }
 
+			uint32_t status( ) const { return status_; }
+
 		private:
 			const uint32_t status_;
 	};
@@ -71,10 +73,10 @@ namespace hw
 	class ErrorPacket : public Packet
 	{
 		public:
-			ErrorPacket(uint32_t s) : status_(s) { }
+			ErrorPacket( ) : status_(0) { }
 
 			static Packet_ptr assemble(const uint8_t *d, uint32_t s)
-				{ return Packet_ptr(new ErrorPacket(*((uint32_t *) d))); }
+				{ return Packet_ptr(new ErrorPacket); }
 
 			uint32_t size( ) const { return sizeof(status_); }
 			const uint8_t *data( ) const { return (uint8_t *) &status_; }

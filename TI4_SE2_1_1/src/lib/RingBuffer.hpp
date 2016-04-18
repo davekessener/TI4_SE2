@@ -1,9 +1,9 @@
 #ifndef HAW_LIB_RINGBUFFER_H
 #define HAW_LIB_RINGBUFFER_H
 
-#include <Array.hpp>
-#include <concurrent/Mutex.h>
-#include <concurrent/Semaphore.h>
+#include <lib/Array.hpp>
+#include <lib/concurrent/Mutex.h>
+#include <lib/concurrent/Semaphore.h>
 
 namespace lib
 {

@@ -1,6 +1,6 @@
 #include <pthread.h>
 
-#include "Timer.h"
+#include "lib/Timer.h"
 
 namespace lib
 {
@@ -40,7 +40,7 @@ Time Timer::elapsed(void)
 
 bool Timer::active(void) const
 {
-	return static_cast<bool>(thread_);
+	return thread_.get();
 }
 
 void Timer::deactivate(void)
@@ -95,9 +95,7 @@ Timer::ts_t Timer::get(void)
 
 void Timer::thread(Time t, Ftor_ptr f)
 {
-
 	cond_.lock();
-
 
 	struct timespec ts;
 	ts_t o = 0;
@@ -130,7 +128,7 @@ void TimerPoolImpl::deactivateAll(void)
 
 	for(iter_t i1 = timers_.begin(), i2 = timers_.end() ; i1 != i2 ; ++i1)
 	{
-		i1->deactivate();
+		(*i1)->deactivate();
 	}
 }
 

@@ -1,4 +1,4 @@
-#include <CleanupUtility.h>
+#include "lib/CleanupUtility.h"
 
 namespace lib
 {
@@ -28,7 +28,7 @@ void CleanupUtility::scheduleAtExitWithPriority(atexit_fn f, size_t p)
 {
 	Lock guard(this);
 
-	queue_.push(std::make_pair(f, p));
+	queue_.push(std::make_pair(p, f));
 }
 
 CleanupUtility& CleanupUtility::instance(void)

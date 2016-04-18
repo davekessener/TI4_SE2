@@ -1,9 +1,13 @@
 #ifndef HAW_HW_ACTUATOR_H
 #define HAW_HW_ACTUATOR_H
 
-#include <Singleton.hpp>
-#include <concurrent/Thread.h>
-#include <qnx/Channel.h>
+#include <memory>
+
+#include <lib/Singleton.hpp>
+#include <lib/concurrent/Thread.h>
+#include <lib/qnx/Channel.h>
+#include <hw/LED.h>
+#include <hw/Motor.h>
 
 namespace hw
 {
@@ -15,8 +19,8 @@ namespace hw
 			typedef lib::Singleton<Actuator, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
 			typedef Super::Lock Lock;
 
-			using lib::qnx::Channel;
-			using lib::Thread;
+			typedef lib::qnx::Channel Channel;
+			typedef lib::Thread Thread;
 
 			static const uint8_t LED_ACTIVATE = 0x00;
 			static const uint8_t MOTOR_BELT   = 0x01;
@@ -24,26 +28,25 @@ namespace hw
 			static const int CCMD = 3;
 
 		public:
-			Channel getChannel( ) const { return ch_; }
+			const Channel& getChannel( ) const { return ch_; }
 
 		private:
 			Channel ch_;
-			Thread thread_;
 			bool running_;
-			cmd_fn[CCMD] cmds_;
+			cmd_fn cmds_[CCMD];
+			std::auto_ptr<Thread> thread_;
 
 			void thread( );
 			void led_activate(const void *d) { LEDs::instance().doActivate(d); }
-			void motor_belt(const void *d) { Motors::instance().doBelt(d); }
-			void motor_switch(const void *d) { Motors::instance().doSwitch(d); }
+			void motor_belt(const void *d) { Motors::instance().doControlBelt(d); }
+			void motor_switch(const void *d) { Motors::instance().doControlSwitch(d); }
 
-		private:
+		public:
 			Actuator( );
+			~Actuator( ) { running_ = false; ch_.close(); thread_->join(); }
+		private:
 			Actuator(const Actuator&);
-			~Actuator( ) { }
 			Actuator& operator=(const Actuator&);
-
-			friend class SingletonInst;
 	};
 
 	typedef Actuator::SingletonInst Actuators;

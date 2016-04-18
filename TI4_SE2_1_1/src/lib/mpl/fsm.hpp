@@ -1,7 +1,7 @@
 #ifndef DAV_MPL_FSM_H
 #define DAV_MPL_FSM_H
 
-#include <mpl/map.hpp>
+#include <lib/mpl/map.hpp>
 
 namespace lib
 {
@@ -152,6 +152,8 @@ struct TryCall_##f \
 				Super::process(e);
 			}
 		}
+
+		virtual ~TransImpl( ) { }
 	};
 	
 	template<typename E, typename D, typename S, typename T>
@@ -160,6 +162,8 @@ struct TryCall_##f \
 		virtual void process(const E& e)
 		{
 		}
+
+		virtual ~TransImpl( ) { }
 	};
 	
 // ---------------------------------------------------------------------------
@@ -226,6 +230,8 @@ struct TryCall_##f <T, void> \
 				Super::process(e);
 			}
 		}
+
+		virtual ~TransImpl( ) { }
 	};
 	
 	template<typename E, typename S, typename T>
@@ -234,6 +240,8 @@ struct TryCall_##f <T, void> \
 		virtual void process(const E& e)
 		{
 		}
+
+		virtual ~TransImpl( ) { }
 	};
 	
 // ---------------------------------------------------------------------------

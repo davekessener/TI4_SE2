@@ -15,9 +15,16 @@ namespace lib
 			void (T::*f_)(void);
 	};
 
+	template<typename T>
+	FtorWrapper<T> wrapInFtor(T *t, void (T::*f)(void))
+	{
+		return FtorWrapper<T>(t, f);
+	}
+
 	struct BasicFunctor
 	{
 		virtual void operator()( ) = 0;
+		virtual ~BasicFunctor( ) { }
 	};
 	
 	template<typename F>

@@ -1,12 +1,16 @@
-#include "concurrent/Condition.h"
-#include "macro.h"
+#include <errno.h>
+#include <time.h>
+#include <stddef.h>
+
+#include "lib/concurrent/Condition.h"
+#include "lib/macro.h"
 
 namespace lib
 {
 
 Condition::Condition(void) : locked_(false)
 {
-	pthread_cond_init(&cond_);
+	pthread_cond_init(&cond_, NULL);
 }
 
 Condition::~Condition(void)
@@ -19,18 +23,18 @@ void Condition::wait(void)
 	if(!locked_)
 		MXT_TODO_ERROR; //TODO
 	
-	pthread_cond_wait(&cond_, &mtx_);
+	pthread_cond_wait(&cond_, &mtx_.raw());
 }
 
-bool Condition::wait(struct timespec *ts)
+bool Condition::wait(timespec *ts)
 {
 	if(!locked_)
 		MXT_TODO_ERROR; //TODO
 	
-	int r = pthread_cond_timedwait(&cond_, &mtx_, ts);
+	int r = pthread_cond_timedwait(&cond_, &mtx_.raw(), ts);
 	bool success = r == ETIMEDOUT || r == EINVAL;
 
-	if(s && !success)
+	if(r && !success)
 		MXT_TODO_ERROR; //TODO
 	
 	return success;

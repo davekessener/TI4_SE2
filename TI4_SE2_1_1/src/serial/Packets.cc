@@ -16,7 +16,7 @@ namespace hw
 	{
 		delete[] data_;
 
-		data_ = d;
+		data_ = static_cast<uint8_t *>(d);
 		size_ = s;
 	}
 }

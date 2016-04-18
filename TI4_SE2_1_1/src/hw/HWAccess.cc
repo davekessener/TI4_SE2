@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "hw/HWAccess.h"
+#include "lib/macro.h"
 
 #define MXT_IO_CONTROL_ADDR 0x303
 #define MXT_IO_CONTROL_BITMASK 0x8A //10001010
@@ -12,7 +13,7 @@ namespace hw
 
 HWAccessImpl::HWAccessImpl(void)
 {
-    if(ThreadCtl(_NTO_TCTL_IO_PRIV, 0))
+    if(ThreadCtl(_NTO_TCTL_IO_PRIV, 0) < 0)
     	throw std::runtime_error("no access to hw");
 
 	out8(MXT_IO_CONTROL_ADDR, MXT_IO_CONTROL_BITMASK);

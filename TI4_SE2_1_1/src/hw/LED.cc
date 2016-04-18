@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "hw/LED.h"
 #include "hw/Actuator.h"
 
@@ -43,27 +45,29 @@ void LED::activate(led_t led, bool f)
 	con_.send(Packet_ptr(new DataPacket(p)));
 }
 
-void LED::blink(led_t led, const Time& f)
+void LED::blink(led_t led, const lib::Time& f)
 {
 	Lock guard(this);
 
-	Timer *t = &blinkers_[get_led_id(led)];
+	lib::Timer *t = &blinkers_[get_led_id(led)];
 	t->reset();
-	t->executeWhen(Ftor(this, &LED::blink_thread, led), f);
+	t->executeWhen(f, Ftor<LED, led_t>(this, &LED::blink_thread, led));
 }
 
 // # ---------------------------------------------------------------------------
 
 void LED::doActivate(const void *d)
 {
-	const led_activate_packet *p = d;
+	const led_activate_packet *p = static_cast<const led_activate_packet *>(d);
+
+	fprintf(stderr, "activate led %i 0x%08x\n", p->f, p->led);
 
 	(HWAccess::instance().*(p->f ? &HWAccessImpl::setBits : &HWAccessImpl::resetBits))(MXT_PORT(p->led), MXT_PINS(p->led));
 }
 
 void LED::blink_thread(led_t led)
 {
-	int id = get_led_id;
+	int id = get_led_id(led);
 	activate(led, blinkState_[id]);
 	blinkState_[id] = !blinkState_[id];
 	blinkers_[id].reset();

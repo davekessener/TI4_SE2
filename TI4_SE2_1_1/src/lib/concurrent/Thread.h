@@ -14,8 +14,8 @@
 
 #include <pthread.h>
 
-#include <mpl/types.hpp>
-#include <mpl/FtorWrapper.hpp>
+#include <lib/mpl/types.hpp>
+#include <lib/mpl/FtorWrapper.hpp>
 
 /**
 * Thread class.

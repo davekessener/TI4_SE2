@@ -1,6 +1,15 @@
+#include <stddef.h>
+#include <errno.h>
 #include <sys/neutrino.h>
 
-#include "qnx/Channel.h"
+#include "lib/qnx/Channel.h"
+#include "lib/macro.h"
+
+#ifndef SETIOV
+#	define SETIOV(iov, addr, len) \
+              ((iov)->iov_base = (void *)(addr), \
+               (iov)->iov_len = (len))
+#endif
 
 namespace lib { namespace qnx {
 
@@ -12,33 +21,26 @@ namespace
 	};
 }
 
-void Message::replyOK(Packet_ptr p)
-{
-	if(mid_ <= 0)
-		;// TODO ERROR
-
-	mid_ = -1;
-}
-
 Packet_ptr Receiver::receive(void) const
 {
-	Packet_ptr p(new DataPacket(NULL, 0));
+	Packet_ptr p;
 	qnx_msg_header h;
 
 	int mid = MsgReceive(ch_->chid_, &h, sizeof(h), NULL);
 
 	if(mid < 0)
-		;// TODO ERROR
+		return p;
 
 	uint8_t *buf = new uint8_t[h.size];
 
 	if(MsgRead(mid, buf, h.size, sizeof(h)) < 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 
-	static_cast<DataPacket *>(p)->set(buf, h.size);
+	p.set(new hw::DataPacket(NULL, 0));
+	p.to<hw::DataPacket *>()->set(buf, h.size);
 
 	if(MsgReply(mid, EOK, NULL, 0) < 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 
 	return p;
 }
@@ -46,7 +48,7 @@ Packet_ptr Receiver::receive(void) const
 Connection::~Connection(void)
 {
 	if(ConnectDetach(coid_) < 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 }
 
 void Connection::send(Packet_ptr p) const
@@ -60,22 +62,26 @@ void Connection::send(Packet_ptr p) const
 	SETIOV(&iov[1], p->data(), p->size());
 
 	if(MsgSendvs(coid_, iov, 2, NULL, 0) < 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 }
 
-Channel::~Channel(void)
+void Channel::close(void)
 {
-	if(ChannelDestroy(chid_) < 0)
-		;// TODO ERROR
+	if(chid_ > 0)
+	{
+		if(ChannelDestroy(chid_) < 0)
+			MXT_TODO_ERROR; //TODO
+		chid_ = 0;
+	}
 }
 
 Receiver Channel::open(int f)
 {
 	if(chid_ > 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 
 	if((chid_ = ChannelCreate(f)) < 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 
 	return Receiver(this);
 }
@@ -85,7 +91,7 @@ Connection Channel::connect(int f) const
 	int coid = ConnectAttach(0, 0, chid_, _NTO_SIDE_CHANNEL, f);
 
 	if(coid < 0)
-		;// TODO ERROR
+		MXT_TODO_ERROR; //TODO
 	
 	return Connection(coid);
 }

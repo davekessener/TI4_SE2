@@ -1,6 +1,12 @@
+#include <fcntl.h>
+#include <termios.h>
+#include <stdint.h>
+#include <stdexcept>
+
 #include "serial/Connection.h"
 #include "serial/Packets.h"
-#include "mpl/FtorWrapper.hpp"
+#include "lib/mpl/FtorWrapper.hpp"
+#include "lib/TimeP.h"
 
 #define MXT_LOOPDELAY ms(2)
 
@@ -25,8 +31,8 @@ namespace
 
 		while(w < s)
 		{
-			int t = write(f, d + w, s - w);
-			if(t < 0) throw std::runtime_exception("err writing serial connection");
+			int t = write(f, ((const uint8_t *) d) + w, s - w);
+			if(t < 0) throw std::runtime_error("err writing serial connection");
 			w += t;
 		}
 	}
@@ -36,7 +42,7 @@ namespace
 		int t = readcond(f, d, s, s, 0, 0);
 
 		if(t < 0)
-			throw std::runtime_exception("err reading serial connection");
+			throw std::runtime_error("err reading serial connection");
 
 		return t;
 	}
@@ -67,7 +73,7 @@ namespace
 		uint32_t id;
 
 		if(!enforceRead(f, &id, sizeof(id)))
-			return Packet_ptr;
+			return Packet_ptr();
 
 		uint32_t size = read<uint32_t>(f);
 		uint8_t *buf = new uint8_t[size];
@@ -91,7 +97,7 @@ namespace
 
 		if(t->id() != Packet::OK_ID)
 			throw std::runtime_error("no confirmation on serial connection");
-		else if(static_cast<OKPacket *>(t)->status() != p->hash())
+		else if(t.to<OKPacket *>()->status() != p->hash())
 			throw std::runtime_error("data transmission error");
 	}
 
@@ -113,7 +119,7 @@ namespace
 Connection::Connection(const std::string& d, bool a) : device_(d), active_(a)
 {
 	if((f_ = open(device_.c_str(), O_RDWR)) < 0)
-		throw std::runtime_exception("err establishing serial connection");
+		throw std::runtime_error("err establishing serial connection");
 	
 	struct termios ts;
 	tcflush(f_, TCIOFLUSH);
@@ -123,20 +129,20 @@ Connection::Connection(const std::string& d, bool a) : device_(d), active_(a)
 	ts.c_cflag &= ~CSIZE;
 	ts.c_cflag &= ~CSTOPB;
 	ts.c_cflag &= ~PARENB;
-	ts.c_cflag |= CSB;
+	ts.c_cflag |= CS8;
 	ts.c_cflag |= CREAD;
 	ts.c_cflag |= CLOCAL;
 	tcsetattr(f_, TCSANOW, &ts);
 
 	running_ = true;
 	
-	thread_.set(new lib::Thread(FtorWrapper(this, &Connection::thread)));
+	thread_.reset(new lib::Thread(lib::wrapInFtor(this, &Connection::thread)));
 }
 
 Connection::~Connection(void)
 {
 	close();
-	close(f_);
+	::close(f_);
 }
 
 void Connection::write(const void *d, size_t s)
@@ -171,7 +177,7 @@ void Connection::thread(void)
 				checkedWritePacket(f_, wbuf_.dequeue());
 			}
 
-			checkedWritePacket(f_, Packet_ptr(new AcknowledgePacket));
+			checkedWritePacket(f_, Packet_ptr(new AcknowledgePacket(0x7654321)));
 
 			active_ = false;
 		}

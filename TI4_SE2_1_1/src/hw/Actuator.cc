@@ -1,13 +1,20 @@
-#include "hw/Actuator.h"
+#include <iostream>
 
-namespace lib
+#include "hw/Actuator.h"
+#include "lib/TimeP.h"
+
+namespace hw
 {
 	Actuator::Actuator(void)
-	: thread_(lib::FtorWrapper(this, &Actuator::thread)), running_(false)
+	: running_(false)
 	{
 		cmds_[LED_ACTIVATE] = &Actuator::led_activate;
 		cmds_[MOTOR_BELT] = &Actuator::motor_belt;
 		cmds_[MOTOR_SWITCH] = &Actuator::motor_switch;
+
+		thread_.reset(new Thread(lib::wrapInFtor(this, &Actuator::thread)));
+
+		while(!ch_.isOpen()) lib::Time::ms(2).wait();
 	}
 
 	void Actuator::thread(void)
@@ -17,10 +24,15 @@ namespace lib
 
 		while(running_)
 		{
-			lib::Packet_ptr p = recv.receive();
+			Packet_ptr p = recv.receive();
+
+			if(!static_cast<bool>(p)) continue;
+
 			uint8_t cmd = *reinterpret_cast<const uint8_t *>(p->data());
 
-			cmds_[cmd](p->data());
+			std::cerr << "Received command " << (char)(cmd + '0') << "!" << std::endl;
+
+			(this->*cmds_[cmd])(p->data());
 		}
 	}
 }

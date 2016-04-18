@@ -4,7 +4,7 @@
 #include <vector>
 #include <queue>
 
-#include <concurrent/Lock.hpp>
+#include <lib/concurrent/Lock.hpp>
 
 namespace lib
 {

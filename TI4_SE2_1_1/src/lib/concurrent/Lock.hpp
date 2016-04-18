@@ -1,7 +1,7 @@
 #ifndef LIB_HAW_LOCK_H
 #define LIB_HAW_LOCK_H
 
-#include <concurrent/Mutex.h>
+#include <lib/concurrent/Mutex.h>
 
 namespace lib
 {
