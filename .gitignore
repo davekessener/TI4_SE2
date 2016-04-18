@@ -38,6 +38,8 @@
 !*.chip
 !*.poke
 !*.m3u
+!*.png
+!*.jpg
 !makefile
 !Makefile
 !README
