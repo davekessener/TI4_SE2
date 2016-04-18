@@ -11,6 +11,7 @@ namespace hw
 	class Packet
 	{
 		public:
+			virtual ~Packet( ) { }
 			virtual uint32_t size( ) const = 0;
 			virtual const uint8_t *data( ) const = 0;
 			virtual uint8_t id( ) const = 0;
@@ -29,6 +30,8 @@ namespace hw
 		public:
 			DataPacket(const uint8_t *, uint32_t);
 			~DataPacket( ) { delete[] data_; }
+
+			void set(uint8_t *, size_t);
 
 			static Packet_ptr assemble(const uint8_t *d, uint32_t s)
 				{ return Packet_ptr(new DataPacket(d, s)); }

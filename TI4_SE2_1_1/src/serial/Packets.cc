@@ -7,9 +7,17 @@ namespace hw
 	DataPacket::DataPacket(const uint8_t *d, uint32_t s)
 	{
 		size_ = s;
-		data_ = new uint8_t[size_];
+		data_ = s ? new uint8_t[size_] : NULL;
 
-		memcpy(data_, d, s);
+		if(data_) memcpy(data_, d, s);
+	}
+
+	void DataPacket::set(uint8_t *d, size_t s)
+	{
+		delete[] data_;
+
+		data_ = d;
+		size_ = s;
 	}
 }
 
