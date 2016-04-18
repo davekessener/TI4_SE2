@@ -1,9 +1,9 @@
 #!/bin/bash
 
 git_root=`git rev-parse --show-toplevel`
-project_root="$git_root/src"
+project_root="$git_root/TI4_SE2_1_1/src"
 lib_path="$project_root/lib"
-framework_path="$project_root/test"
+framework_path="$git_root/test"
 result=0
 
 usage()
