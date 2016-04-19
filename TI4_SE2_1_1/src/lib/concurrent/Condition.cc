@@ -34,6 +34,8 @@ bool Condition::wait(timespec *ts)
 	int r = pthread_cond_timedwait(&cond_, &mtx_.raw(), ts);
 	bool success = r == ETIMEDOUT || r == EINVAL;
 
+	locked_ = true;
+
 	if(r && !success)
 		MXT_TODO_ERROR; //TODO
 	

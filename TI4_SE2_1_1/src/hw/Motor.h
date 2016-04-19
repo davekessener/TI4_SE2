@@ -20,8 +20,8 @@ namespace hw
 			struct Direction
 			{
 				static const pid_t NONE  = 0x00; // no pin
-				static const pid_t LEFT  = 0x01; // port A pin 0
-				static const pid_t RIGHT = 0x02; // port A pin 1
+				static const pid_t RIGHT = 0x01; // port A pin 0
+				static const pid_t LEFT  = 0x02; // port A pin 1
 			};
 
 			struct Speed

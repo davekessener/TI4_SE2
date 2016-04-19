@@ -18,7 +18,7 @@ namespace lib
 			SmartPtr(const SmartPtr<T>& p) : p_(p.p_), i_(p.i_) { ++*i_; }
 			~SmartPtr( ) { reset(); }
 			SmartPtr<T>& operator=(const SmartPtr<T>& p)
-				{ Lock guard(this); reset(); if((p_ = p.p_)) { i_ = p.i_; ++*i_; } }
+				{ Lock guard(this); reset(); if((p_ = p.p_)) { i_ = p.i_; ++*i_; } return *this; }
 			void reset( ) { Lock guard(this); if(i_ && !*--i_) { delete p_, delete i_; } }
 			void set(T *p) { Lock giard(this); reset(); if((p_ = p)) { i_ = new int; *i_ = 1; } }
 			T *operator->( ) { return p_; }

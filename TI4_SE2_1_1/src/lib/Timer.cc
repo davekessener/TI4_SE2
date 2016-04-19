@@ -45,18 +45,17 @@ bool Timer::active(void) const
 
 void Timer::deactivate(void)
 {
-	cond_.lock();
-
 	if(active())
 	{
+		cond_.lock();
+
 		std::auto_ptr<Thread> p(thread_);
 
 		cond_.broadcast();
+		cond_.unlock();
 
 		p->join();
 	}
-
-	cond_.unlock();
 }
 
 // # ---------------------------------------------------------------------------

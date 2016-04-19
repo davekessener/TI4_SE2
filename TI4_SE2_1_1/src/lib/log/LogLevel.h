@@ -25,11 +25,11 @@ namespace lib
 				bool operator>=(const LogLevel& ll) const { return !(*this < ll); }
 
 			private:
-				LogLevel(const char *s) : label_(s) { }
+				LogLevel(const char *s, int l) : label_(s), level_(l) { }
 
 			private:
-				int level_;
 				const char *label_;
+				int level_;
 		};
 	}
 }

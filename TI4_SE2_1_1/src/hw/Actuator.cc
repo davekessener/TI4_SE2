@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "hw/Actuator.h"
 #include "lib/TimeP.h"
 
@@ -29,8 +27,6 @@ namespace hw
 			if(!static_cast<bool>(p)) continue;
 
 			uint8_t cmd = *reinterpret_cast<const uint8_t *>(p->data());
-
-			std::cerr << "Received command " << (char)(cmd + '0') << "!" << std::endl;
 
 			(this->*cmds_[cmd])(p->data());
 		}

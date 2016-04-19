@@ -30,7 +30,7 @@ namespace hw
 		public:
 			template<typename T>
 			explicit DataPacket(const T& v) { init(&v, sizeof(v)); }
-			DataPacket(const void *d, uint32_t s) { init(d, s); }
+			DataPacket(const void *d, uint32_t s) : data_(NULL), size_(0) { init(d, s); }
 			~DataPacket( ) { delete[] data_; }
 
 			void set(void *, size_t);

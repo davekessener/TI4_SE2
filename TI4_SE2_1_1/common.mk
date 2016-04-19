@@ -34,7 +34,9 @@ EXTRA_SRCVPATH+= \
 	$(PROJECT_ROOT)/src/lib/mpl  \
 	$(PROJECT_ROOT)/src/lib/qnx  \
 	$(PROJECT_ROOT)/src/serial  \
-	$(PROJECT_ROOT)/src/hw
+	$(PROJECT_ROOT)/src/hw  \
+	$(PROJECT_ROOT)/src/lib/log  \
+	$(PROJECT_ROOT)/src/test
 
 include $(MKFILES_ROOT)/qmacros.mk
 ifndef QNX_INTERNAL

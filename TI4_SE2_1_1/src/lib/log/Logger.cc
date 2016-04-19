@@ -1,21 +1,24 @@
+#include <algorithm>
+
+#include "lib/Timer.h"
 #include "lib/log/Logger.h"
 
 namespace lib { namespace log {
 
 // # ---------------------------------------------------------------------------
 
-void Logger::addParent(Logger& p)
+void Logger::addParent(Logger_ptr p)
 {
 	Lock guard(this);
 
-	parents_.push_back(&p);
+	parents_.push_back(p);
 }
 
-void Logger::removeParent(Logger& p)
+void Logger::removeParent(Logger_ptr p)
 {
 	Lock guard(this);
 
-	parents_.erase(std::find(parents_.begin(), parents_.end(), &p));
+	parents_.erase(std::find(parents_.begin(), parents_.end(), p));
 }
 
 void Logger::addHandler(Handler_ptr p)
@@ -57,7 +60,7 @@ void Logger::log(const LogRecord& lr)
 {
 	Lock guard(this);
 
-	for(fiter_t i1 = filters_.begin, i2 = filters_.end() ; i1 != i2 ; ++i1)
+	for(fiter_t i1 = filters_.begin(), i2 = filters_.end() ; i1 != i2 ; ++i1)
 	{
 		if(!(*i1)->accept(lr)) return;
 	}

@@ -36,6 +36,7 @@ namespace hw
 			void activate(led_t, bool);
 			void blink(led_t, const lib::Time&);
 		private:
+			void sendActivate(led_t, bool);
 			void doActivate(const void *);
 			void blink_thread(led_t);
 			static int get_led_id(led_t);
