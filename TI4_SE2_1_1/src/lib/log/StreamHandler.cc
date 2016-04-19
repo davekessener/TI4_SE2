@@ -8,7 +8,10 @@ void StreamHandler::operator()(const std::string& r)
 {
 	Lock guard(this);
 
-	(*os_) << r;
+	std::string s(r);
+	s.append("\n");
+
+	(*os_) << s;
 }
 
 }}

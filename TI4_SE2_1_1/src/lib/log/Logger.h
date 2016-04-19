@@ -5,6 +5,8 @@
 #include <string>
 
 #include "lib/macro.h"
+#include "lib/log/Handler.hpp"
+#include "lib/log/Filter.hpp"
 
 #define MXT_LOG_1(msg) MXT_LOG_2(::lib::log::LogLevel::INFO,msg)
 #define MXT_LOG_2(ll,msg) logger.log(ll, msg, formatFILE(__FILE__), __LINE__)
