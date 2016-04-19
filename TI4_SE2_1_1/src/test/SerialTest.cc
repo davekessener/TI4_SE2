@@ -1,7 +1,6 @@
 #include "test/SerialTest.h"
 #include "serial/Connection.h"
-
-#define MXT_DEVICENAME "/dev/ser1"
+#include "lib/TimeP.h"
 
 namespace test
 {
@@ -10,7 +9,8 @@ namespace test
 
 	void serialA(void)
 	{
-		Connection c(MXT_DEVICENAME, true);
+		lib::Time::ms(100).wait();
+		Connection c("/dev/ser1", true);
 		std::string s("Hello, World!");
 
 		c.write(s.c_str(), s.length());
@@ -20,7 +20,7 @@ namespace test
 
 	void serialB(void)
 	{
-		Connection c(MXT_DEVICENAME, false);
+		Connection c("/dev/ser2", false);
 
 		Packet_ptr p = c.read();
 

@@ -2,13 +2,14 @@
 #include <termios.h>
 #include <stdint.h>
 #include <stdexcept>
+#include <iostream>
 
 #include "serial/Connection.h"
 #include "serial/Packets.h"
 #include "lib/mpl/FtorWrapper.hpp"
 #include "lib/TimeP.h"
 
-#define MXT_LOOPDELAY ms(2)
+#define MXT_LOOPDELAY ms(100)
 
 namespace hw
 {
@@ -39,10 +40,21 @@ namespace
 
 	int enforceRead(int f, void *d, size_t s)
 	{
-		int t = readcond(f, d, s, s, 0, 0);
+		int t = readcond(f, d, s, 0, 0, 0);
 
 		if(t < 0)
 			throw std::runtime_error("err reading serial connection");
+
+		if(t > 0)
+		{
+			while(t < (int)s)
+			{
+				int tt = readcond(f, ((char *) d) + t, s - t, 0, 0, 0);
+				if(tt < 0)
+					throw std::runtime_error("err reading serial connection");
+				t += tt;
+			}
+		}
 
 		return t;
 	}
@@ -66,11 +78,13 @@ namespace
 		write(f, p->id());
 		write(f, p->size());
 		enforceWrite(f, p->data(), p->size());
+
+		std::cout << f << " wrote packet " << (int)p->id() << std::endl;
 	}
 
 	Packet_ptr readPacket(int f)
 	{
-		uint32_t id;
+		uint8_t id;
 
 		if(!enforceRead(f, &id, sizeof(id)))
 			return Packet_ptr();
@@ -84,6 +98,8 @@ namespace
 
 		delete[] buf;
 
+		std::cout << f << " read packet " << (int) p->id() << std::endl;
+
 		return p;
 	}
 
@@ -93,7 +109,12 @@ namespace
 
 		writePacket(f_, p);
 		
-		while(!static_cast<bool>(t = readPacket(f_)));
+		while(!static_cast<bool>(t))
+		{
+			t = readPacket(f_);
+		}
+
+		std::cout << f_ << " received packet " << (int)p->id() << std::endl;
 
 		if(t->id() != Packet::OK_ID)
 			throw std::runtime_error("no confirmation on serial connection");
@@ -198,6 +219,7 @@ void Connection::thread(void)
 				else
 				{
 					writePacket(f_, Packet_ptr(new ErrorPacket));
+					throw std::runtime_error("got invalid packet");
 				}
 			}
 			else
