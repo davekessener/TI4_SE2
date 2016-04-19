@@ -1,12 +1,21 @@
 #ifndef DAV_LIB_AUX_H
 #define DAV_LIB_AUX_H
 
+// # ===========================================================================
+// GARBAGE:
+// # ===========================================================================
+
 #include <iostream>
 #include <sstream>
 #include <exception>
 #include <stdexcept>
 #include <errno.h>
 #include <string.h>
+
+const char *formatFILE(const char *s)
+{
+	return s + 31; // "Z:/git/.../src/" is cut off
+}
 
 template<typename T>
 void terminate(const char *s, int l, int e)
@@ -18,6 +27,8 @@ void terminate(const char *s, int l, int e)
 }
 
 #define MXT_TODO_ERROR terminate<void>(__FILE__, __LINE__, errno)
+
+// # ===========================================================================
 
 #define MXT_STRINGIFY_IMPL(a) #a
 #define MXT_STRINGIFY(a) MXT_STRINGIFY_IMPL(a)

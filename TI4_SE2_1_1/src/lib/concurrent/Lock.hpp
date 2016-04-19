@@ -18,6 +18,7 @@ namespace lib
 
 		public:
 			Lock(Mutex& mtx) : mtx_(&mtx) { (mtx_->*E)(); }
+			Lock(Mutex *mtx) : mtx_(mtx)  { (mtx_->*E)(); }
 			~Lock( ) { (mtx_->*R)(); }
 		private:
 			Mutex *mtx_;
