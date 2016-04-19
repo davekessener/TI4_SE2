@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include <serial/Packets.h>
-#include <lib/concurrent/Thread.h>
-#include <lib/RingBuffer.hpp>
+#include "serial/Packets.h"
+#include "lib/concurrent/Thread.h"
+#include "lib/RingBuffer.hpp"
 
 #define MXT_PACKETBUFSIZE 256
 

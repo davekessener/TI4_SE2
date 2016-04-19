@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 
 #include "hw/LED.h"
 #include "hw/Actuator.h"
@@ -34,42 +34,49 @@ LED::LED(void) : con_(Actuators::instance().getChannel().connect())
 void LED::activate(led_t led, bool f)
 {
 	Lock guard(this);
-	led_activate_packet p;
-
-	p.cmd = Actuator::LED_ACTIVATE;
-	p.led = led;
-	p.f = f;
 
 	blinkers_[get_led_id(led)].deactivate();
 
-	con_.send(Packet_ptr(new DataPacket(p)));
+	sendActivate(led, f);
 }
 
 void LED::blink(led_t led, const lib::Time& f)
 {
 	Lock guard(this);
 
-	lib::Timer *t = &blinkers_[get_led_id(led)];
-	t->reset();
-	t->executeWhen(f, Ftor<LED, led_t>(this, &LED::blink_thread, led));
+	blink_thread(led);
+	blinkers_[get_led_id(led)].executeWhen(lib::Time::us(f.raw() / 2), Ftor<LED, led_t>(this, &LED::blink_thread, led));
 }
 
 // # ---------------------------------------------------------------------------
 
+void LED::sendActivate(led_t led, bool f)
+{
+	Lock guard(this);
+
+	led_activate_packet p;
+
+	p.cmd = Actuator::LED_ACTIVATE;
+	p.led = led;
+	p.f = f;
+
+	con_.send(Packet_ptr(new DataPacket(p)));
+}
+
 void LED::doActivate(const void *d)
 {
 	const led_activate_packet *p = static_cast<const led_activate_packet *>(d);
-
-	fprintf(stderr, "activate led %i 0x%08x\n", p->f, p->led);
 
 	(HWAccess::instance().*(p->f ? &HWAccessImpl::setBits : &HWAccessImpl::resetBits))(MXT_PORT(p->led), MXT_PINS(p->led));
 }
 
 void LED::blink_thread(led_t led)
 {
+	Lock guard(this);
+
 	int id = get_led_id(led);
-	activate(led, blinkState_[id]);
 	blinkState_[id] = !blinkState_[id];
+	sendActivate(led, blinkState_[id]);
 	blinkers_[id].reset();
 }
 

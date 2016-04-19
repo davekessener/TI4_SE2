@@ -2,6 +2,7 @@
 #define HAW_LIB_LOG_LOGRECORD_H
 
 #include <string>
+#include <stdint.h>
 
 #include "lib/log/LogLevel.h"
 

@@ -36,7 +36,7 @@ void HWAccessImpl::setBits(port_t addr, pin_t mask) const
 
 void HWAccessImpl::resetBits(port_t addr, pin_t mask) const
 {
-	out(addr, MXT_RESETBITS(in(addr), ~mask));
+	out(addr, MXT_RESETBITS(in(addr), mask));
 }
 
 }

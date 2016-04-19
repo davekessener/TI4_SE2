@@ -1,7 +1,10 @@
 #include "test/TimerTest.h"
 #include "lib/log/Logger.h"
+#include "lib/log/LogManager.h"
 #include "lib/log/StreamHandler.h"
 #include "lib/log/DefaultFormat.h"
+#include "lib/TimeP.h"
+#include "lib/Timer.h"
 
 namespace test
 {
@@ -10,18 +13,16 @@ using namespace lib::log;
 using lib::Timer;
 using lib::Time;
 
-Logger *log = NULL;
 Timer *timer = NULL;
 
-Logger *init_logger(Logger *l)
+void init_logger(Logger_ptr l)
 {
 	l->addHandler(toHandler(StreamHandler(&std::cout), toFormatter(DefaultFormatter())));
-	return l;
 }
 
 void testfn(void)
 {
-	Logger &logger(*log);
+	Logger &logger(*LogManager::instance().rootLog());
 
 	MXT_LOG(LogLevel::INFO, "in testfn");
 
@@ -30,7 +31,7 @@ void testfn(void)
 
 void timers(void)
 {
-	log = init_logger(new Logger);
+	init_logger(LogManager::instance().rootLog());
 	timer = new Timer;
 
 	std::cout << "starting timer test" << std::endl;
@@ -44,7 +45,8 @@ void timers(void)
 	std::cout << "leaving now" << std::endl;
 
 	delete timer; timer = NULL;
-	delete log; log = NULL;
+
+	Time::s(1).wait();
 }
 
 }

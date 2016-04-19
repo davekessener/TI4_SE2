@@ -12,16 +12,17 @@
 #include <errno.h>
 #include <string.h>
 
-const char *formatFILE(const char *s)
-{
-	return s + 31; // "Z:/git/.../src/" is cut off
-}
+#define formatFILE(s) (s+31)
+//static const char *formatFILE(const char *s)
+//{
+//	return s + 31; // "Z:/git/.../src/" is cut off
+//}
 
 template<typename T>
 void terminate(const char *s, int l, int e)
 {
 	std::stringstream ss;
-	ss << "exception in " << (s + 31) << " @" << l << " with " << e << "(" << strerror(e) << ")";
+	ss << "exception in " << (s + 31) << ":" << l << " with errno " << e << " (\"" << strerror(e) << "\")";
 //	std::cout << ss.str();
 	throw std::runtime_error(ss.str());
 }

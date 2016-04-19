@@ -18,9 +18,13 @@ namespace lib
 	{
 		class Logger : public LockableObject<Logger>
 		{
+			public:
+			typedef SmartPtr<Logger> Logger_ptr;
+
+			private:
 			typedef LockableObject<Logger> Super;
 			typedef Super::Lock Lock;
-			typedef std::vector<Logger *> parents_t;
+			typedef std::vector<Logger_ptr> parents_t;
 			typedef	std::vector<Handler_ptr> handlers_t;
 			typedef	std::vector<Filter_ptr> filters_t;
 			typedef parents_t::iterator piter_t;
@@ -28,8 +32,8 @@ namespace lib
 			typedef filters_t::iterator fiter_t;
 
 			public:
-				void addParent(Logger&);
-				void removeParent(Logger&);
+				void addParent(Logger_ptr);
+				void removeParent(Logger_ptr);
 				void addHandler(Handler_ptr);
 				void removeHandler(Handler_ptr);
 				void addFilter(Filter_ptr);
@@ -41,7 +45,18 @@ namespace lib
 				parents_t parents_;
 				handlers_t handlers_;
 				filters_t filters_;
+
+			private:
+				Logger( ) { }
+				~Logger( ) { }
+				Logger(const Logger&);
+				Logger& operator=(const Logger&);
+
+				friend class LogManagerImpl;
+				friend class SmartPtr<Logger>;
 		};
+
+		typedef Logger::Logger_ptr Logger_ptr;
 	}
 }
 

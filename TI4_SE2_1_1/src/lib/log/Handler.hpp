@@ -14,21 +14,21 @@ namespace lib
 		struct BaseHandler
 		{
 			public:
-				BaseHandler(Format_ptr f) : f_(f) { }
+				BaseHandler(Formatter_ptr f) : f_(f) { }
 				virtual ~BaseHandler( ) { }
 				void handle(const LogRecord& lr) { handle(f_->format(lr)); }
 
 			private:
 				virtual void handle(const std::string&) = 0;
 				
-				Format_ptr f_;
+				Formatter_ptr f_;
 		};
 
 		template<typename F>
 		class Handler : public BaseHandler
 		{
 			public:
-				Handler(F f, Format_ptr p) : BaseHandler(p), f_(f) { }
+				Handler(F f, Formatter_ptr p) : BaseHandler(p), f_(f) { }
 
 			private:
 				void handle(const std::string& s) { f_(s); }
@@ -36,10 +36,10 @@ namespace lib
 				F f_;
 		};
 
-		typedef SmartPtr<Handler> Handler_ptr;
+		typedef SmartPtr<BaseHandler> Handler_ptr;
 
 		template<typename F>
-		Handler_ptr toHandler(F f, Format_ptr p)
+		Handler_ptr toHandler(F f, Formatter_ptr p)
 		{
 			return Handler_ptr(new Handler<typename Decay<F>::Type>(f, p));
 		}
