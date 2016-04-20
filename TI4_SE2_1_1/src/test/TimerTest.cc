@@ -15,23 +15,17 @@ using lib::Time;
 
 Timer *timer = NULL;
 
-void init_logger(Logger_ptr l)
-{
-	l->addHandler(toHandler(StreamHandler(&std::cout), toFormatter(DefaultFormatter())));
-}
-
 void testfn(void)
 {
 	Logger &logger(*LogManager::instance().rootLog());
 
-	MXT_LOG(LogLevel::INFO, "in testfn");
+	logger.MXT_LOGL(LogLevel::INFO, "in %s", "testfn");
 
 	timer->reset();
 }
 
 void timers(void)
 {
-	init_logger(LogManager::instance().rootLog());
 	timer = new Timer;
 
 	std::cout << "starting timer test" << std::endl;

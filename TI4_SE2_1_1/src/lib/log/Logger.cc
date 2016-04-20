@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <stdarg.h>
+#include <stdio.h>
 
 #include "lib/Timer.h"
 #include "lib/log/Logger.h"

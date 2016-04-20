@@ -1,4 +1,4 @@
-#include "lib/concurrent/ThreadManagerImpl.h"
+#include "lib/concurrent/ThreadManager.h"
 
 namespace lib
 {

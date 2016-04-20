@@ -2,12 +2,12 @@
 #include <termios.h>
 #include <stdint.h>
 #include <stdexcept>
-#include <iostream>
 
 #include "serial/Connection.h"
 #include "serial/Packets.h"
 #include "lib/mpl/FtorWrapper.hpp"
 #include "lib/TimeP.h"
+#include "lib/log/LogManager.h"
 
 #define MXT_LOOPDELAY ms(100)
 
@@ -78,8 +78,6 @@ namespace
 		write(f, p->id());
 		write(f, p->size());
 		enforceWrite(f, p->data(), p->size());
-
-		std::cout << f << " wrote packet " << (int)p->id() << std::endl;
 	}
 
 	Packet_ptr readPacket(int f)
@@ -98,8 +96,6 @@ namespace
 
 		delete[] buf;
 
-		std::cout << f << " read packet " << (int) p->id() << std::endl;
-
 		return p;
 	}
 
@@ -113,8 +109,6 @@ namespace
 		{
 			t = readPacket(f_);
 		}
-
-		std::cout << f_ << " received packet " << (int)p->id() << std::endl;
 
 		if(t->id() != Packet::OK_ID)
 			throw std::runtime_error("no confirmation on serial connection");
@@ -188,6 +182,39 @@ void Connection::close(void)
 void Connection::thread(void)
 {
 	lib::Time delay = lib::Time::MXT_LOOPDELAY;
+	uint8_t hs = 0xce;
+	uint8_t rhs = 0;
+
+	lib::log::Logger_ptr log = lib::log::LogManager::instance().rootLog();
+
+	log->MXT_LOG("starting handshake");
+
+	if(active_)
+	{
+		while(rhs != hs)
+		{
+			::write(f_, &hs, sizeof(hs));
+
+			::readcond(f_, &rhs, sizeof(rhs), 0, 0, 0);
+		}
+
+		active_ = false;
+	}
+	else
+	{
+		while(rhs != hs)
+		{
+			::readcond(f_, &rhs, sizeof(rhs), 0, 0, 0);
+		}
+
+		while(::readcond(f_, &rhs, sizeof(rhs), 0, 0, 0) > 0);
+
+		::write(f_, &hs, sizeof(hs));
+
+		active_ = true;
+	}
+
+	log->MXT_LOG("stopped handshake. i am %s", (active_ ? "ACTIVE" : "PASSIVE"));
 
 	while(running_)
 	{

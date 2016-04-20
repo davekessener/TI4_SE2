@@ -8,9 +8,8 @@
 #include "lib/log/Handler.hpp"
 #include "lib/log/Filter.hpp"
 
-#define MXT_LOG_1(msg) MXT_LOG_2(::lib::log::LogLevel::INFO,msg)
-#define MXT_LOG_2(ll,msg) logger.log(ll, msg, formatFILE(__FILE__), __LINE__)
-#define MXT_LOG(...) MXT_OVERLOAD(MXT_LOG_, __VA_ARGS__)
+#define MXT_LOGL(ll,msg,...) log(ll,msg,formatFILE(__FILE__),__LINE__,##__VA_ARGS__)
+#define MXT_LOG(msg,...) MXT_LOGL(::lib::log::LogLevel::INFO,msg,##__VA_ARGS__)
 
 namespace lib
 {
