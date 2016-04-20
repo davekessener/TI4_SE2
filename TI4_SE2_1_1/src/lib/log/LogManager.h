@@ -36,7 +36,7 @@ namespace lib
 		<
 			LogManagerImpl,
 			SingletonConcurrency::MultiThreaded,
-			CleanupUtility::DEFAULT_PRIORITY + 1
+			CleanupUtility::DEFAULT_PRIORITY + 2
 		>
 		LogManager;
 	}

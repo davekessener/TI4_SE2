@@ -50,8 +50,10 @@ void Thread::join(void)
 	if(!joinable())
 		throw std::runtime_error("Thread cannot be joined.");
 	
-	pthread_join(tid_ , NULL);
+	pthread_join(tid_, NULL);
 	joinable_ = false;
+
+	ThreadManager::instance().removeThread(tid_);
 }
 
 void Thread::run(void)

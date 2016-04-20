@@ -38,7 +38,7 @@ namespace lib
 				void removeHandler(Handler_ptr);
 				void addFilter(Filter_ptr);
 				void removeFilter(Filter_ptr);
-				void log(const LogLevel&, const std::string&, const char * = NULL, int = -1);
+				void log(const LogLevel&, const std::string&, const char *, int, ...);
 				void log(const LogRecord&);
 			private:
 				std::string name_;
