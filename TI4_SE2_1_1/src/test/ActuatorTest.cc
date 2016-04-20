@@ -6,6 +6,22 @@
 
 namespace test
 {
+	/**
+	* \class ActuatorTest
+	*
+	* \brief Testet die Aktoren
+	*
+	* Führt eine Testreihe der Aktoren durch.
+	* Zunächst wird das Laufband mit allen Operationen gestartet.
+	* Danach wird die Weiche geöffnet und geschlossen.
+	*
+	* \author Malte Schuler
+	*
+	* \version $Revision: 1.0 $
+	*
+	* \date $Date: 2016/04/20 13:01:00 $
+	*
+	*/
 	void actuators(void)
 	{
 		lib::Time delay = lib::Time::s(1);
@@ -17,11 +33,19 @@ namespace test
 
 		lib::Time::s(3).wait();
 
+		hw::Motors::instance().controlBelt(hw::Motor::Direction::LEFT, hw::Motor::Speed::FAST);
+
+		lib::Time::s(3).wait();
+
 		hw::Motors::instance().controlBelt(hw::Motor::Direction::LEFT, hw::Motor::Speed::SLOW);
 
-		std::cout << "stop motor" << std::endl;
+		lib::Time::s(4).wait();
 
-		lib::Time::s(6).wait();
+		hw::Motors::instance().controlBelt(hw::Motor::Direction::RIGHT, hw::Motor::Speed::SLOW);
+
+		lib::Time::s(4).wait();
+
+		std::cout << "stop motor" << std::endl;
 
 		std::cout << "open gate" << std::endl;
 
@@ -42,7 +66,6 @@ namespace test
 		hw::Motors::instance().controlSwitch(hw::Motor::State::CLOSE);
 
 		std::cout << "close gate" << std::endl;
-
 
 		delay.wait();
 
