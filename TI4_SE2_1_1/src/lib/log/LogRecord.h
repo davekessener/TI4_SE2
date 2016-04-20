@@ -13,10 +13,11 @@ namespace lib
 		class LogRecord
 		{
 			public:
-				LogRecord(LogLevel ll, uint64_t ts, const std::string& msg, const char *f = NULL, int l = -1)
-					: ll_(ll), ts_(ts), msg_(msg), f_(f), l_(l) { }
+				LogRecord(LogLevel ll, uint64_t ts, uint16_t tid, const std::string& msg, const char *f = NULL, int l = -1)
+					: ll_(ll), ts_(ts), tid_(tid), msg_(msg), f_(f), l_(l) { }
 				const LogLevel& logLevel( ) const { return ll_; }
 				uint64_t timestamp( ) const { return ts_; }
+				uint16_t threadID( ) const { return tid_; }
 				const std::string& message( ) const { return msg_; }
 				const char *file( ) const { return f_; }
 				int line( ) const { return l_; }
@@ -24,6 +25,7 @@ namespace lib
 			private:
 				LogLevel ll_;
 				uint64_t ts_;
+				uint16_t tid_;
 				std::string msg_;
 				const char *f_;
 				int l_;

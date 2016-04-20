@@ -1,6 +1,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <time.h>
 
 #include "lib/macro.h"
@@ -8,13 +9,28 @@
 
 namespace lib { namespace log {
 
+namespace
+{
+	std::string printTID(uint16_t tid)
+	{
+		static const int bufsize = 2 * sizeof(uint16_t) + 1;
+		char buf[bufsize];
+
+		snprintf(buf, bufsize, "%04x", tid);
+
+		buf[bufsize-1] = '\0';
+
+		return std::string(buf);
+	}
+}
+
 std::string DefaultFormatter::operator()(const LogRecord& lr)
 {
 	Lock guard(this);
 
 	std::stringstream ss;
 
-	ss << "[" << lr.logLevel().label() << "] " << toDate(lr.timestamp()) << " ";
+	ss << printTID(lr.threadID()) << " [" << lr.logLevel().label() << "] " << toDate(lr.timestamp()) << " ";
 
 	if(lr.hasFile())
 	{

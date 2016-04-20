@@ -3,6 +3,8 @@
 #include "lib/Timer.h"
 #include "lib/log/Logger.h"
 
+#define MXT_BUFSIZE 4096
+
 namespace lib { namespace log {
 
 // # ---------------------------------------------------------------------------
@@ -51,9 +53,17 @@ void Logger::removeFilter(Filter_ptr p)
 
 // # ---------------------------------------------------------------------------
 
-void Logger::log(const LogLevel& ll, const std::string& msg, const char *s, int l)
+void Logger::log(const LogLevel& ll, const std::string& format, const char *s, int l, ...)
 {
-	log(LogRecord(ll, Timer::timestamp(), msg, s, l));
+	char buf[MXT_BUFSIZE];
+	va_list vl;
+
+	va_start(vl, l);
+	vsnprintf(buf, MXT_BUFSIZE, format.c_str(), vl);
+	va_end(vl);
+	buf[MXT_BUFSIZE-1] = '\0';
+
+	log(LogRecord(ll, Timer::timestamp(), ThreadManager::instance().getCurrent(), std::string(buf), s, l));
 }
 
 void Logger::log(const LogRecord& lr)

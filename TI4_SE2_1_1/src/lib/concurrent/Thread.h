@@ -14,8 +14,9 @@
 
 #include <pthread.h>
 
-#include <lib/mpl/types.hpp>
-#include <lib/mpl/FtorWrapper.hpp>
+#include "lib/mpl/types.hpp"
+#include "lib/mpl/FtorWrapper.hpp"
+#include "lib/concurrent/ThreadManager.h"
 
 /**
 * Thread class.
@@ -102,6 +103,8 @@ namespace lib
 
 		if(err)
 			throw std::runtime_error("Thread could not be started.");
+
+		ThreadManager::instance().addThread(tid_);
 
 		joinable_ = true;
 	}
