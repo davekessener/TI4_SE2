@@ -21,9 +21,9 @@ namespace
 	};
 }
 
-Packet_ptr Receiver::receive(void) const
+Data_ptr Receiver::receive(void) const
 {
-	Packet_ptr p;
+	Data_ptr p;
 	qnx_msg_header h;
 
 	int mid = MsgReceive(ch_->chid_, &h, sizeof(h), NULL);
@@ -36,8 +36,7 @@ Packet_ptr Receiver::receive(void) const
 	if(MsgRead(mid, buf, h.size, sizeof(h)) < 0)
 		MXT_TODO_ERROR; //TODO
 
-	p.set(new hw::DataPacket(NULL, 0));
-	p.to<hw::DataPacket *>()->set(buf, h.size);
+	p = Data::move(buf, h.size);
 
 	if(MsgReply(mid, EOK, NULL, 0) < 0)
 		MXT_TODO_ERROR; //TODO
@@ -51,7 +50,7 @@ Connection::~Connection(void)
 		MXT_TODO_ERROR; //TODO
 }
 
-void Connection::send(Packet_ptr p) const
+void Connection::send(Data_ptr p) const
 {
 	qnx_msg_header h;
 	iov_t iov[2];

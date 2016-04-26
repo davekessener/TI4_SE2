@@ -35,7 +35,7 @@ void Motor::controlBelt(pid_t dir, pid_t speed)
 	p.dir = dir;
 	p.speed = speed;
 
-	con_.send(Packet_ptr(new DataPacket(p)));
+	con_.send(Data::get(p));
 }
 
 void Motor::controlSwitch(pid_t state)
@@ -47,7 +47,7 @@ void Motor::controlSwitch(pid_t state)
 	p.cmd = Actuator::MOTOR_SWITCH;
 	p.state = state;
 
-	con_.send(Packet_ptr(new DataPacket(p)));
+	con_.send(Data::get(p));
 }
 
 // # ---------------------------------------------------------------------------

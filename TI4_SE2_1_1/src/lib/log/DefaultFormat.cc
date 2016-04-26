@@ -56,7 +56,7 @@ std::string DefaultFormatter::toDate(uint64_t timestamp)
 	if(!localtime_r(&ts.tv_sec, &t))
 		MXT_TODO_ERROR;// TODO
 	
-	snprintf(buf, bufsize, "%04i-%02i-%02i %02i:%02i:%02i.%09i", 1900 + t.tm_year, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec, ts.tv_nsec);
+	snprintf(buf, bufsize, "%04i-%02i-%02i %02i:%02i:%02i.%09i", 1900 + t.tm_year, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec, (int) ts.tv_nsec);
 	buf[bufsize - 1] = '\0';
 
 	return std::string(buf);

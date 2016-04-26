@@ -22,7 +22,7 @@ namespace hw
 
 		while(running_)
 		{
-			Packet_ptr p = recv.receive();
+			Data_ptr p = recv.receive();
 
 			if(!static_cast<bool>(p)) continue;
 

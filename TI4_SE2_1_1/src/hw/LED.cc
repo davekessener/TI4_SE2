@@ -60,7 +60,7 @@ void LED::sendActivate(led_t led, bool f)
 	p.led = led;
 	p.f = f;
 
-	con_.send(Packet_ptr(new DataPacket(p)));
+	con_.send(Data::get(p));
 }
 
 void LED::doActivate(const void *d)

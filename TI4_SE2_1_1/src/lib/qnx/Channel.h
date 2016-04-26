@@ -1,7 +1,7 @@
 #ifndef HAW_LIB_QNX_CHANNEL_H
 #define HAW_LIB_QNX_CHANNEL_H
 
-#include <serial/Packets.h>
+#include "lib/Data.h"
 
 namespace lib
 {
@@ -9,12 +9,10 @@ namespace lib
 	{
 		class Channel;
 
-		using hw::Packet_ptr;
-
 		class Receiver
 		{
 			public:
-				Packet_ptr receive( ) const;
+				Data_ptr receive( ) const;
 			private:
 				Receiver(Channel *c) : ch_(c) { }
 			private:
@@ -27,7 +25,7 @@ namespace lib
 		{
 			public:
 				~Connection( );
-				void send(Packet_ptr) const;
+				void send(Data_ptr) const;
 			private:
 				Connection(int c) : coid_(c) { }
 			private:

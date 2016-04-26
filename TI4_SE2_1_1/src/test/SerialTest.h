@@ -3,14 +3,7 @@
 
 namespace test
 {
-	void serialA( );
-	void serialB( );
-
-	void basicSerial(bool);
-	void basicSerialA( );
-	void basicSerialB( );
-
-	void serial( );
+	void connections( );
 }
 
 #endif

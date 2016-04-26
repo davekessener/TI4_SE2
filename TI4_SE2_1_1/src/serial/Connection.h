@@ -3,34 +3,30 @@
 
 #include <string>
 
-#include "serial/Packets.h"
-#include "lib/concurrent/Thread.h"
-#include "lib/RingBuffer.hpp"
-
-#define MXT_PACKETBUFSIZE 256
+#include "lib/Data.h"
+#include "lib/concurrent/Lock.hpp"
 
 namespace hw
 {
-	class Connection
+	class Connection : public lib::LockableObject<Connection>
 	{
-		typedef lib::RingBuffer<Packet_ptr, MXT_PACKETBUFSIZE, lib::RingBufferConcurrency::MultiThreaded> buf_t;
+		typedef lib::LockableObject<Connection> Super;
+		typedef Super::Lock Lock;
 
 		public:
-			Connection(const std::string&, bool);
+			Connection(const std::string& d, bool a);
 			~Connection( );
-			void write(const void *d, size_t);
-			Packet_ptr read( );
 			void close( );
-
+			bool connected( ) const;
+			bool running( ) const;
+			bool doneWriting( ) const;
+			void sendData(lib::Data_ptr);
+			lib::Data_ptr receiveData( );
+			bool hasData( ) const;
+	
 		private:
-			void thread( );
-		private:
-			const std::string device_;
-			int f_;
-			bool active_;
-			bool running_;
-			std::auto_ptr<lib::Thread> thread_;
-			buf_t wbuf_, rbuf_;
+			class Impl;
+			Impl *impl_;
 	};
 }
 

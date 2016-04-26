@@ -12,7 +12,14 @@
 #include <errno.h>
 #include <string.h>
 
-#define formatFILE(s) (s+31)
+//#define formatFILE(s) (s+31)
+inline const char *formatFILE(const char *s)
+{
+	static const size_t l = 16; // == strlen("TI4_SE2_1_1/src/")
+	const char *t = s;
+	while(s && *s && memcmp(s, "TI4_SE2_1_1/src/", l)) ++s;
+	return (s && *s) ? s + l : t;
+}
 //static const char *formatFILE(const char *s)
 //{
 //	return s + 31; // "Z:/git/.../src/" is cut off

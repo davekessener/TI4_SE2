@@ -1,262 +1,473 @@
+#include <memory>
+
+#include <errno.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <stdint.h>
-#include <stdexcept>
+#include <unistd.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/types.h>
 
 #include "serial/Connection.h"
-#include "serial/Packets.h"
-#include "lib/mpl/FtorWrapper.hpp"
 #include "lib/TimeP.h"
+#include "lib/concurrent/Thread.h"
+#include "lib/RingBuffer.hpp"
+#include "lib/mpl/FtorWrapper.hpp"
 #include "lib/log/LogManager.h"
 
-#define MXT_LOOPDELAY ms(100)
+#define MXT_PACKETBUFSIZE 256
+#define MXT_IOSPEED B19200
 
-namespace hw
+#define TOK_A   0x8de29457
+#define TOK_OK  0x226442b8
+#define TOK_HSA 0x88e7d7c9
+#define TOK_HSB 0x2624d967
+#define TOK_DAT 0x36773fe0
+
+namespace hw {
+
+using lib::Time;
+using lib::Thread;
+using lib::Data_ptr;
+using lib::Data;
+
+using lib::log::LogManager;
+using lib::log::Logger_ptr;
+
+class Connection::Impl
 {
+	friend class Connection;
+
+	typedef lib::RingBuffer<Data_ptr, MXT_PACKETBUFSIZE, lib::RingBufferConcurrency::MultiThreaded> buf_t;
+	
+	struct DoneRunning { };
+
+	struct Packet
+	{
+		explicit Packet(uint32_t t) : tag(t) { }
+		Packet(uint32_t t, Data_ptr p) : tag(t), data(p) { }
+
+		uint32_t tag;
+		Data_ptr data;
+	};
+
+	void run( );
+		void send(const void *pp, size_t n);
+		bool try_recv(void *pp, size_t n);
+		void recv(void *pp, size_t n);
+		template<typename T>
+			void send(const T& t);
+		template<typename T>
+			T recv(void);
+		void checkRunning(void);
+		void sendPacket(const Packet& p);
+		Packet receivePacket(void);
+		void checkedSend(const Packet& p);
+		Packet checkedRecv(void);
+		void flush(void);
+		void giveHandshake(void);
+		void receiveHandshake(void);
+		void sendData(void);
+		void recvData(void);
+
+	bool active_, running_, connected_;
+	int f_;
+	std::auto_ptr<Thread> thread_;
+	buf_t rBuf_, wBuf_;
+	Logger_ptr log_;
+};
+
+// # ===========================================================================
 
 namespace
 {
-	typedef Packet_ptr (*packet_fn)(const uint8_t *, uint32_t);
-	
-	packet_fn packet_handler[] =
+	Logger_ptr getLog()
 	{
-		&DataPacket::assemble,
-		&OKPacket::assemble,
-		&ErrorPacket::assemble,
-		&AcknowledgePacket::assemble
-	};
-
-	void enforceWrite(int f, const void *d, size_t s)
-	{
-		size_t w = 0;
-
-		while(w < s)
-		{
-			int t = write(f, ((const uint8_t *) d) + w, s - w);
-			if(t < 0) throw std::runtime_error("err writing serial connection");
-			w += t;
-		}
+		static Logger_ptr l = LogManager::instance().rootLog();
+		return l;
 	}
 
-	int enforceRead(int f, void *d, size_t s)
+	int nb_read(int f, void *pp, size_t n)
 	{
-		int t = readcond(f, d, s, 0, 0, 0);
+		fd_set rfds;
+		struct timeval tv;
 
-		if(t < 0)
-			throw std::runtime_error("err reading serial connection");
+		FD_ZERO(&rfds);
+		FD_SET(f, &rfds);
 
-		if(t > 0)
+		tv.tv_sec = 0;
+		tv.tv_usec = 0;
+
+		int r = select(f + 1, &rfds, NULL, NULL, &tv);
+
+		if(r < 0)
+			throw std::string("failed to check for readability");
+
+		if(r > 0)
 		{
-			while(t < (int)s)
+			r = read(f, pp, n);
+
+			if(r == -1)
 			{
-				int tt = readcond(f, ((char *) d) + t, s - t, 0, 0, 0);
-				if(tt < 0)
-					throw std::runtime_error("err reading serial connection");
-				t += tt;
+				if(errno != EAGAIN && errno != EWOULDBLOCK)
+					throw std::string("failed read");
+				else
+					r = 0;
 			}
 		}
 
-		return t;
+		return r;
 	}
 
-	template<typename T>
-	void write(int f, const T& e)
+	int nb_write(int f, const void *pp, size_t n)
 	{
-		enforceWrite(f, &e, sizeof(T));
-	}
+		int r = write(f, pp, n);
 
-	template<typename T>
-	T read(int f)
-	{
-		T e;
-		while(!enforceRead(f, &e, sizeof(T)));
-		return e;
-	}
-
-	void writePacket(int f, Packet_ptr p)
-	{
-		write(f, p->id());
-		write(f, p->size());
-		enforceWrite(f, p->data(), p->size());
-	}
-
-	Packet_ptr readPacket(int f)
-	{
-		uint8_t id;
-
-		if(!enforceRead(f, &id, sizeof(id)))
-			return Packet_ptr();
-
-		uint32_t size = read<uint32_t>(f);
-		uint8_t *buf = new uint8_t[size];
-		
-		while(!enforceRead(f, buf, size));
-
-		Packet_ptr p = packet_handler[id](buf, size);
-
-		delete[] buf;
-
-		return p;
-	}
-
-	void checkedWritePacket(int f_, Packet_ptr p)
-	{
-		Packet_ptr t;
-
-		writePacket(f_, p);
-		
-		while(!static_cast<bool>(t))
+		if(r == -1)
 		{
-			t = readPacket(f_);
+			if(errno != EAGAIN && errno != EWOULDBLOCK)
+				throw std::string("failed write");
+			else
+				r = 0;
 		}
 
-		if(t->id() != Packet::OK_ID)
-			throw std::runtime_error("no confirmation on serial connection");
-		else if(t.to<OKPacket *>()->status() != p->hash())
-			throw std::runtime_error("data transmission error");
-	}
-
-	Packet_ptr checkedReadPacket(int f)
-	{
-		Packet_ptr p = readPacket(f);
-
-		if(static_cast<bool>(p))
-		{
-			writePacket(f, Packet_ptr(new OKPacket(p->hash())));
-		}
-
-		return p;
+		return r;
 	}
 }
 
 // # ===========================================================================
 
-Connection::Connection(const std::string& d, bool a) : device_(d), active_(a)
+void Connection::Impl::send(const void *pp, size_t n)
 {
-	if((f_ = open(device_.c_str(), O_RDWR)) < 0)
-		throw std::runtime_error("err establishing serial connection");
-	
+	size_t t = 0;
+	int r = 0;
+	const uint8_t *p = (const uint8_t *) pp;
+
+	log_->MXT_LOG("trying to write %u bytes", n);
+
+	while(t < n)
+	{
+		r = nb_write(f_, p + t, n - t);
+
+		log_->MXT_LOG("total %i bytes written", r);
+
+		for(int i = 0 ; i < r ; ++i)
+		{
+			log_->MXT_LOG("wrote 0x%02x", (unsigned) p[t+i]);
+		}
+
+		checkRunning();
+
+		t += r;
+	}
+
+	log_->MXT_LOG("done writing");
+}
+
+// # ---------------------------------------------------------------------------
+
+bool Connection::Impl::try_recv(void *pp, size_t n)
+{
+	size_t t = 0;
+	int r = 0;
+	uint8_t *p = (uint8_t *) pp;
+
+	log_->MXT_LOG("trying to read %u bytes", n);
+
+	while(t < n)
+	{
+		r = nb_read(f_, p + t, n - t);
+
+		log_->MXT_LOG("total %i bytes read", r);
+
+		for(int i = 0 ; i < r ; ++i)
+		{
+			log_->MXT_LOG("read 0x%02x", p[t+i]);
+		}
+
+		checkRunning();
+
+		if(!r && !t) return false;
+
+		t += r;
+	}
+
+	log_->MXT_LOG("done reading");
+
+	return true;
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::recv(void *pp, size_t n)
+{
+	while(!try_recv(pp, n)) checkRunning();
+}
+
+// # ---------------------------------------------------------------------------
+
+template<typename T>
+void Connection::Impl::send(const T& t)
+{
+	send(&t, sizeof(t));
+}
+
+template<typename T>
+T Connection::Impl::recv(void)
+{
+	T t;
+	recv(&t, sizeof(t));
+	return t;
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::checkRunning(void)
+{
+	if(!running_)
+		throw DoneRunning();
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::sendPacket(const Packet& p)
+{
+	send<uint32_t>(p.tag);
+	if(static_cast<bool>(p.data) && p.data->size() > 0)
+	{
+		send<uint32_t>(p.data->size());
+		send(p.data->data(), p.data->size());
+	}
+	else
+	{
+		send<uint32_t>(0);
+	}
+}
+
+Connection::Impl::Packet Connection::Impl::receivePacket(void)
+{
+	Packet p(recv<uint32_t>());
+	uint32_t size = recv<uint32_t>();
+
+	if(size > 0)
+	{
+		p.data = Data::empty(size);
+		recv(p.data->data(), size);
+	}
+
+	return p;
+}
+
+void Connection::Impl::checkedSend(const Packet& p)
+{
+	sendPacket(p);
+	Packet a = receivePacket();
+	if(a.tag != TOK_OK) throw std::string("invalid answer!");
+}
+
+Connection::Impl::Packet Connection::Impl::checkedRecv(void)
+{
+	Packet p = receivePacket();
+	sendPacket(Packet(TOK_OK));
+	return p;
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::flush(void)
+{
+	if(tcflush(f_, TCIOFLUSH) == -1)
+		throw std::string("failed flush");
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::giveHandshake(void)
+{
+	uint32_t r = 0;
+
+	while(true)
+	{
+		send<uint32_t>(TOK_HSA);
+
+		Time::ms(100).wait();
+		
+		if(try_recv(&r, sizeof(r)))
+		{
+			if(r == TOK_HSB)
+				break;
+			else
+				throw std::string("failed hand shake");
+		}
+	}
+}
+
+void Connection::Impl::receiveHandshake(void)
+{
+	uint32_t r = recv<uint32_t>();
+
+	if(r != TOK_HSA)
+		throw std::string("failed hand shake");
+
+	send<uint32_t>(TOK_HSB);
+
+	flush();
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::sendData(void)
+{
+	while(!wBuf_.empty())
+	{
+		checkedSend(Packet(TOK_DAT, wBuf_.dequeue()));
+	}
+
+	checkedSend(Packet(TOK_A));
+}
+
+void Connection::Impl::recvData(void)
+{
+	while(true)
+	{
+		Packet a = checkedRecv();
+
+		if(a.tag == TOK_A)
+			break;
+
+		rBuf_.enqueue(a.data);
+	}
+}
+
+// # ---------------------------------------------------------------------------
+
+void Connection::Impl::run(void)
+{
+	running_ = true;
+
+	try
+	{
+		if(active_)
+			giveHandshake();
+		else
+			receiveHandshake();
+
+		connected_ = true;
+
+		while(true)
+		{
+			if(active_)
+			{
+				sendData();
+				active_ = false;
+			}
+			else
+			{
+				recvData();
+				active_ = true;
+			}
+
+			checkRunning();
+
+			Time::ms(100).wait();
+		}
+	}
+	catch(const DoneRunning& e)
+	{
+		getLog()->MXT_LOG("shutting down connection");
+	}
+	catch(const std::string& e)
+	{
+		getLog()->MXT_LOG("caught exception: \"%s\" [errno %i (%s)]", e.c_str(), errno, strerror(errno));
+		throw;
+	}
+
+	connected_ = false;
+}
+
+// # ---------------------------------------------------------------------------
+
+Connection::Connection(const std::string& d, bool a)
+: impl_(new Impl)
+{
+	impl_->active_ = a;
+	impl_->running_ = false;
+	impl_->connected_ = false;
+
+	if((impl_->f_ = open(d.c_str(), O_RDWR | O_NOCTTY)) < 0)
+		throw std::string("couldn't open device '" + d + "'!");
+
+	if(fcntl(impl_->f_, F_SETFL, 0) < 0) throw std::string("fcntl");
+
 	struct termios ts;
-	tcflush(f_, TCIOFLUSH);
-	tcgetattr(f_, &ts);
-	cfsetispeed(&ts, B19200);
-	cfsetospeed(&ts, B19200);
+	if(tcflush(impl_->f_, TCIOFLUSH) < 0) throw std::string("tcflush");
+	if(tcgetattr(impl_->f_, &ts) < 0) throw std::string("tcgetattr");
+	if(cfsetispeed(&ts, MXT_IOSPEED) < 0) throw std::string("cfsetispeed");
+	if(cfsetospeed(&ts, MXT_IOSPEED) < 0) throw std::string("cfsetospeed");
 	ts.c_cflag &= ~CSIZE;
 	ts.c_cflag &= ~CSTOPB;
 	ts.c_cflag &= ~PARENB;
 	ts.c_cflag |= CS8;
 	ts.c_cflag |= CREAD;
 	ts.c_cflag |= CLOCAL;
-	tcsetattr(f_, TCSANOW, &ts);
 
-	running_ = true;
-	
-	thread_.reset(new lib::Thread(lib::wrapInFtor(this, &Connection::thread)));
+	ts.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+	ts.c_iflag &= ~(IXON | IXOFF | IXANY);
+	ts.c_cflag &= ~CRTSCTS;
+	ts.c_oflag &= ~OPOST;
+
+	ts.c_oflag &= ~(ONLCR | OCRNL);
+	ts.c_iflag &= ~(INLCR | ICRNL);
+
+	if(tcsetattr(impl_->f_, TCSANOW, &ts) < 0) throw std::string("tcsetattr");
+
+	impl_->log_ = LogManager::instance().getLog("serial");
+//	impl_->log_->addParent(getLog());
+
+	impl_->thread_.reset(new Thread(lib::wrapInFtor(impl_, &Connection::Impl::run)));
 }
 
-Connection::~Connection(void)
+// # ---------------------------------------------------------------------------
+
+Connection::~Connection( )
 {
 	close();
-	::close(f_);
-}
 
-void Connection::write(const void *d, size_t s)
-{
-	wbuf_.enqueue(Packet_ptr(new DataPacket(d, s)));
-}
-
-Packet_ptr Connection::read(void)
-{
-	return rbuf_.dequeue();
+	delete impl_;
 }
 
 void Connection::close(void)
 {
-	if(running_)
+	Lock guard(this);
+
+	if(impl_->f_)
 	{
-		running_ = false;
-		thread_->join();
+		impl_->running_ = false;
+		impl_->thread_->join();
+		impl_->thread_.reset();
+		::close(impl_->f_);
+		impl_->f_ = 0;
 	}
 }
 
-void Connection::thread(void)
+bool Connection::connected(void) const { return impl_->connected_; }
+bool Connection::running(void) const { return impl_->running_; }
+bool Connection::doneWriting(void) const { return impl_->wBuf_.empty(); }
+
+void Connection::sendData(Data_ptr p)
 {
-	lib::Time delay = lib::Time::MXT_LOOPDELAY;
-	uint8_t hs = 0xce;
-	uint8_t rhs = 0;
+	impl_->wBuf_.enqueue(p);
+}
 
-	lib::log::Logger_ptr log = lib::log::LogManager::instance().rootLog();
+Data_ptr Connection::receiveData(void)
+{
+	return impl_->rBuf_.dequeue();
+}
 
-	log->MXT_LOG("starting handshake");
-
-	if(active_)
-	{
-		while(rhs != hs)
-		{
-			::write(f_, &hs, sizeof(hs));
-
-			::readcond(f_, &rhs, sizeof(rhs), 0, 0, 0);
-		}
-
-		active_ = false;
-	}
-	else
-	{
-		while(rhs != hs)
-		{
-			::readcond(f_, &rhs, sizeof(rhs), 0, 0, 0);
-		}
-
-		while(::readcond(f_, &rhs, sizeof(rhs), 0, 0, 0) > 0);
-
-		::write(f_, &hs, sizeof(hs));
-
-		active_ = true;
-	}
-
-	log->MXT_LOG("stopped handshake. i am %s", (active_ ? "ACTIVE" : "PASSIVE"));
-
-	while(running_)
-	{
-		if(active_)
-		{
-			while(!wbuf_.empty())
-			{
-				checkedWritePacket(f_, wbuf_.dequeue());
-			}
-
-			checkedWritePacket(f_, Packet_ptr(new AcknowledgePacket(0x7654321)));
-
-			active_ = false;
-		}
-		else
-		{
-			Packet_ptr p = checkedReadPacket(f_);
-
-			if(static_cast<bool>(p))
-			{
-				if(p->id() == Packet::ACKNOWLEDGE_ID)
-				{
-					active_ = true;
-				}
-				else if(p->id() == Packet::DATA_ID)
-				{
-					rbuf_.enqueue(p);
-				}
-				else
-				{
-					writePacket(f_, Packet_ptr(new ErrorPacket));
-					throw std::runtime_error("got invalid packet");
-				}
-			}
-			else
-			{
-				delay.wait();
-			}
-		}
-
-		if(running_ && active_) delay.wait();
-	}
+bool Connection::hasData(void) const
+{
+	return !impl_->rBuf_.empty();
 }
 
 }
