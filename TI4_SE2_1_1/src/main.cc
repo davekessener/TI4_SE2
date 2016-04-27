@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-//	test::actuators();
+	test::actuators();
 	test::connections();
 
 	return 0;

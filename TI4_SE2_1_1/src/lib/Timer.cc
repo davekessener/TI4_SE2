@@ -109,10 +109,9 @@ Timer::ts_t Timer::timestamp(void)
 
 Timer::ts_t Timer::lapse(void)
 {
-	cond_.lock();
 	ts_t t = t_;
 	t = (t_ = timestamp()) - t;
-	cond_.unlock();
+
 	return t;
 }
 

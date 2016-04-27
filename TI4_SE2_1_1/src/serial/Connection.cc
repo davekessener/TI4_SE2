@@ -399,7 +399,7 @@ void Connection::Impl::run(void)
 	}
 	catch(const std::string& e)
 	{
-		getLog()->MXT_LOG("caught exception: \"%s\" [errno %i (%s)]", e.c_str(), errno, strerror(errno));
+		getLog()->MXT_LOGL(LogLevel::ERROR, "caught exception: \"%s\" [errno %i (%s)]", e.c_str(), errno, strerror(errno));
 		throw;
 	}
 
