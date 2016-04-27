@@ -13,6 +13,12 @@ namespace lib
 	{
 		class LogRecord;
 
+		/**
+		 * Default formatter that lists all information of the passed LogRecord.
+		 *
+		 * It generates string as follows:
+		 * <tt>"<b>thread-ID</b> [<b>LogLevel</b>] @<b>filename</b>:<b>line</b> '<b>message</b>'"</tt>
+		 */
 		class DefaultFormatter : public LockableObject<DefaultFormatter>
 		{
 			typedef LockableObject<DefaultFormatter> Super;

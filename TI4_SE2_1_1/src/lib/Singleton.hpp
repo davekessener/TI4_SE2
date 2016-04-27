@@ -8,6 +8,8 @@
 
 namespace lib
 {
+/** Contains threading models of the Singleton template
+ */
 	namespace SingletonConcurrency
 	{
 		template<typename T>
@@ -28,6 +30,14 @@ namespace lib
 		};
 	}
 
+/**
+ * Template for convenient Singleton creation.
+ * Parameters are:
+ * - <b><tt>T</tt></b>: Singleton class
+ * - <b><tt>TM</tt></b>: Threading model that will be applied to the singletons creation
+ * - <b><tt>P</tt></b>: Priority of the singletons lifetime.
+ * This template uses the lib::CleanupUtility to manage its life time.
+ */
 	template
 	<
 		typename T,
@@ -62,6 +72,10 @@ namespace lib
 	template<typename T, template <typename> class TM, size_t P>
 	Mutex Singleton<T, TM, P>::mtx_;
 
+/** Access singleton class implementation.
+ * Uses the <i>double checked locking</i> pattern for
+ * creation synchronization.
+ */
 	template<typename T, template <typename> class TM, size_t P>
 	T& Singleton<T, TM, P>::instance(void)
 	{

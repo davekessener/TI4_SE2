@@ -10,6 +10,11 @@ namespace lib
 {
 	namespace log
 	{
+		/**
+		 * Handler compatible functor that writes its LogRecord to an std::stream instance.
+		 *
+		 * Used in conjuntion with std::cout to write LogRecords to standard output.
+		 */
 		class StreamHandler : public LockableObject<StreamHandler>
 		{
 			typedef LockableObject<StreamHandler> Super;

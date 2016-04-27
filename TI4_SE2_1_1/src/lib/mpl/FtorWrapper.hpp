@@ -3,6 +3,9 @@
 
 namespace lib
 {
+	/**
+	 * A functor that calls an object's member function.
+	 */
 	template<typename T>
 	class FtorWrapper
 	{
@@ -21,12 +24,17 @@ namespace lib
 		return FtorWrapper<T>(t, f);
 	}
 
+// # ---------------------------------------------------------------------------
+
 	struct BasicFunctor
 	{
 		virtual void operator()( ) = 0;
 		virtual ~BasicFunctor( ) { }
 	};
 	
+	/**
+	 * Basic functor encapsulating anything callable that takes no arguments.
+	 */
 	template<typename F>
 	class BasicFunctorImpl : public BasicFunctor
 	{

@@ -9,6 +9,9 @@ namespace hw
 {
 	class Actuator;
 
+/**
+ * Client interface for controlling the conveyor belt and electromagnetic switch.
+ */
 	class Motor : public lib::LockableObject<Motor>
 	{
 		public:
@@ -40,8 +43,18 @@ namespace hw
 			static const pid_t SWITCH = 0x10; // port A pin 4
 
 		public:
-			void controlBelt(pid_t, pid_t);
-			void controlSwitch(pid_t);
+			/** Controls conveyor belt.
+			 * @param dir <tt>Direction</tt> the conveyor belt is supposed to move in.
+			 * @param speed <tt>Speed</tt> of the conveyor belt.
+			 *
+			 * If <tt>dir == Direction::NONE</tt> <i>or</i> <tt>speed == Speed::STOP</tt>
+			 * the conveyor belt is turned of, but never suppressed.
+			 */
+			void controlBelt(pid_t dir, pid_t speed);
+			/** Controls electromagnetic switch.
+			 * @param state <tt>State</tt> the switch is supposed to be in.
+			 */
+			void controlSwitch(pid_t state);
 
 		private:
 			void doControlBelt(const void *);

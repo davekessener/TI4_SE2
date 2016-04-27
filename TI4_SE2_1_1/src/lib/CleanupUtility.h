@@ -8,6 +8,12 @@
 
 namespace lib
 {
+/**
+ * Utility for controlling the lifetime of static objects, i.e. \ Singletons.
+ * This utility class offers a more fine-grained, priority based version of
+ * clib's lifo based ::atexit(void (*)(void)) function.
+ * Functors are executed highest (numerically smallest) priority first.
+ */
 	class CleanupUtility : public LockableObject<CleanupUtility>
 	{
 		typedef LockableObject<CleanupUtility> Super;

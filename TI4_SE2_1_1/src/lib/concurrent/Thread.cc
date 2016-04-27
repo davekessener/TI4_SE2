@@ -1,8 +1,6 @@
 /***************************************************************************
 *    Embedded Programming HAW Hamburg Department Informatik
-*    HAW:: Thread.cpp
-*    COPYRIGHT (C) 2016 Stephan Pareigis
-*    This software is licensed under MIT license.                                                                   
+*    lib/concurrent/Thread.cc
 ****************************************************************************/
 
 #include <exception>

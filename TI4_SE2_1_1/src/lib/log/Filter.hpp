@@ -15,6 +15,13 @@ namespace lib
 			virtual bool accept(const LogRecord&) = 0;
 		};
 
+		/**
+		 * Filter template that accepts functors.
+		 *
+		 * Any logged LogRecord is passed through all filters
+		 * of the give Logger instance. If any reject it, it
+		 * will be discarded.
+		 */
 		template<typename F>
 		struct Filter : public BaseFilter
 		{

@@ -6,6 +6,11 @@
 
 namespace lib
 {
+/** Smart pointer class for automatic life time management.
+ * Supports full object semantics and automatically cleans
+ * up when the last SmartPtr instance pointing to its held
+ * object is destroyed.
+ */
 	template<typename T>
 	class SmartPtr : public LockableObject<SmartPtr<T> >
 	{

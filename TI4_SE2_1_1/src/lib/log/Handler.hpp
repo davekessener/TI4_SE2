@@ -24,6 +24,14 @@ namespace lib
 				Formatter_ptr f_;
 		};
 
+		/**
+		 * Handler template that holds a functor.
+		 *
+		 * All accepted LogRecords of a Logger instance
+		 * are passed to the Logger's handlers.
+		 * There they are run through a formatter; and
+		 * the formatters output is passed to the functor.
+		 */
 		template<typename F>
 		class Handler : public BaseHandler
 		{
