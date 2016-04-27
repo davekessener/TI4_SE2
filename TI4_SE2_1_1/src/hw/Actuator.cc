@@ -1,8 +1,12 @@
 #include "hw/Actuator.h"
 #include "lib/TimeP.h"
+#include "lib/Data.h"
 
 namespace hw
 {
+	using lib::Data;
+	using lib::Data_ptr;
+
 	Actuator::Actuator(void)
 	: running_(false)
 	{

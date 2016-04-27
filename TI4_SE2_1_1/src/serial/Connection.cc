@@ -11,6 +11,7 @@
 
 #include "serial/Connection.h"
 #include "lib/TimeP.h"
+#include "lib/Timer.h"
 #include "lib/concurrent/Thread.h"
 #include "lib/RingBuffer.hpp"
 #include "lib/mpl/FtorWrapper.hpp"
@@ -18,6 +19,7 @@
 
 #define MXT_PACKETBUFSIZE 256
 #define MXT_IOSPEED B19200
+#define MXT_TIMEOUT ms(100)
 
 #define TOK_A   0x8de29457
 #define TOK_OK  0x226442b8
@@ -28,11 +30,13 @@
 namespace hw {
 
 using lib::Time;
+using lib::Timer;
 using lib::Thread;
 using lib::Data_ptr;
 using lib::Data;
 
 using lib::log::LogManager;
+using lib::log::LogLevel;
 using lib::log::Logger_ptr;
 
 class Connection::Impl
@@ -59,23 +63,26 @@ class Connection::Impl
 		template<typename T>
 			void send(const T& t);
 		template<typename T>
-			T recv(void);
-		void checkRunning(void);
+			T recv( );
+		void checkRunning( );
 		void sendPacket(const Packet& p);
-		Packet receivePacket(void);
+		Packet receivePacket( );
 		void checkedSend(const Packet& p);
-		Packet checkedRecv(void);
-		void flush(void);
-		void giveHandshake(void);
-		void receiveHandshake(void);
-		void sendData(void);
-		void recvData(void);
+		Packet checkedRecv( );
+		void flush( );
+		void giveHandshake( );
+		void receiveHandshake( );
+		void sendData( );
+		void recvData( );
+		void resetTimer( );
+		void onTimeout( );
 
-	bool active_, running_, connected_;
+	bool active_, running_, connected_, connectionLost_;
 	int f_;
 	std::auto_ptr<Thread> thread_;
 	buf_t rBuf_, wBuf_;
 	Logger_ptr log_;
+	Timer timeout_;
 };
 
 // # ===========================================================================
@@ -88,8 +95,11 @@ namespace
 		return l;
 	}
 
+#define MXT_USEQNX
+
 	int nb_read(int f, void *pp, size_t n)
 	{
+#ifndef MXT_USEQNX
 		fd_set rfds;
 		struct timeval tv;
 
@@ -118,6 +128,14 @@ namespace
 		}
 
 		return r;
+#else
+		int r = readcond(f, pp, n, 0, 0, 0);
+
+		if(r < 0)
+			throw std::string("failed read");
+
+		return r;
+#endif
 	}
 
 	int nb_write(int f, const void *pp, size_t n)
@@ -144,25 +162,14 @@ void Connection::Impl::send(const void *pp, size_t n)
 	int r = 0;
 	const uint8_t *p = (const uint8_t *) pp;
 
-	log_->MXT_LOG("trying to write %u bytes", n);
-
 	while(t < n)
 	{
 		r = nb_write(f_, p + t, n - t);
-
-		log_->MXT_LOG("total %i bytes written", r);
-
-		for(int i = 0 ; i < r ; ++i)
-		{
-			log_->MXT_LOG("wrote 0x%02x", (unsigned) p[t+i]);
-		}
 
 		checkRunning();
 
 		t += r;
 	}
-
-	log_->MXT_LOG("done writing");
 }
 
 // # ---------------------------------------------------------------------------
@@ -173,18 +180,9 @@ bool Connection::Impl::try_recv(void *pp, size_t n)
 	int r = 0;
 	uint8_t *p = (uint8_t *) pp;
 
-	log_->MXT_LOG("trying to read %u bytes", n);
-
 	while(t < n)
 	{
 		r = nb_read(f_, p + t, n - t);
-
-		log_->MXT_LOG("total %i bytes read", r);
-
-		for(int i = 0 ; i < r ; ++i)
-		{
-			log_->MXT_LOG("read 0x%02x", p[t+i]);
-		}
 
 		checkRunning();
 
@@ -192,8 +190,6 @@ bool Connection::Impl::try_recv(void *pp, size_t n)
 
 		t += r;
 	}
-
-	log_->MXT_LOG("done reading");
 
 	return true;
 }
@@ -227,6 +223,8 @@ void Connection::Impl::checkRunning(void)
 {
 	if(!running_)
 		throw DoneRunning();
+	if(connectionLost_)
+		throw std::string("timout occured!");
 }
 
 // # ---------------------------------------------------------------------------
@@ -261,16 +259,34 @@ Connection::Impl::Packet Connection::Impl::receivePacket(void)
 
 void Connection::Impl::checkedSend(const Packet& p)
 {
+	resetTimer();
 	sendPacket(p);
+
+	resetTimer();
 	Packet a = receivePacket();
+
 	if(a.tag != TOK_OK) throw std::string("invalid answer!");
 }
 
 Connection::Impl::Packet Connection::Impl::checkedRecv(void)
 {
+	resetTimer();
 	Packet p = receivePacket();
+
+	resetTimer();
 	sendPacket(Packet(TOK_OK));
+
 	return p;
+}
+
+void Connection::Impl::resetTimer(void)
+{
+	timeout_.reset();
+}
+
+void Connection::Impl::onTimeout(void)
+{
+	connectionLost_ = true;
 }
 
 // # ---------------------------------------------------------------------------
@@ -291,7 +307,7 @@ void Connection::Impl::giveHandshake(void)
 	{
 		send<uint32_t>(TOK_HSA);
 
-		Time::ms(100).wait();
+		Time::ms(20).wait();
 		
 		if(try_recv(&r, sizeof(r)))
 		{
@@ -345,6 +361,7 @@ void Connection::Impl::recvData(void)
 void Connection::Impl::run(void)
 {
 	running_ = true;
+	connectionLost_ = false;
 
 	try
 	{
@@ -354,6 +371,9 @@ void Connection::Impl::run(void)
 			receiveHandshake();
 
 		connected_ = true;
+
+		resetTimer();
+		timeout_.executeWhen(Time::MXT_TIMEOUT, lib::wrapInFtor(this, &Connection::Impl::onTimeout));
 
 		while(true)
 		{
@@ -370,7 +390,7 @@ void Connection::Impl::run(void)
 
 			checkRunning();
 
-			Time::ms(100).wait();
+			Time::ms(10).wait();
 		}
 	}
 	catch(const DoneRunning& e)
@@ -383,6 +403,7 @@ void Connection::Impl::run(void)
 		throw;
 	}
 
+	timeout_.deactivate();
 	connected_ = false;
 }
 
@@ -414,7 +435,7 @@ Connection::Connection(const std::string& d, bool a)
 
 	ts.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
 	ts.c_iflag &= ~(IXON | IXOFF | IXANY);
-	ts.c_cflag &= ~CRTSCTS;
+//	ts.c_cflag &= ~CRTSCTS;
 	ts.c_oflag &= ~OPOST;
 
 	ts.c_oflag &= ~(ONLCR | OCRNL);

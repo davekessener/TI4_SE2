@@ -10,6 +10,8 @@
 #include "test/SerialTest.h"
 
 // # ===========================================================================
+namespace test
+{
 
 using lib::log::Logger_ptr;
 using lib::log::LogManager;
@@ -53,6 +55,8 @@ void connection(const std::string& device, const bool active)
 
 		while(!c.doneWriting()) Time::ms(100).wait();
 
+		if(!active) Time::s(1).wait();
+
 		c.close();
 	}
 	catch(const std::string& e)
@@ -72,3 +76,4 @@ void connections(void)
 	t2.join();
 }
 
+}

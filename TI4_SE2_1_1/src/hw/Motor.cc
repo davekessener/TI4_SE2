@@ -1,9 +1,12 @@
 #include "hw/Motor.h"
 #include "hw/Actuator.h"
 #include "hw/HWAccess.h"
+#include "lib/Data.h"
 
 namespace hw
 {
+
+using lib::Data;
 
 namespace
 {
