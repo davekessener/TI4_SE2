@@ -11,6 +11,16 @@
 
 namespace hw
 {
+/**
+ * Singular access point to actuators.
+ * The Actuator class encapsulates access to
+ * all actuators of the attached hw unit,
+ * including LEDs, the conveyor belt and the
+ * electromagnetic switch.
+ * The dispatcher runs in its own thread and
+ * communicates via lib::qnx::Channel.
+ * It is a singleton via lib::Singleton template.
+*/
 	class Actuator : public lib::LockableObject<Actuator>
 	{
 		typedef void (Actuator::*cmd_fn)(const void *);

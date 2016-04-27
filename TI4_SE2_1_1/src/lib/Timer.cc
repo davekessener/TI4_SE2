@@ -5,6 +5,33 @@
 namespace lib
 {
 
+class TimerPoolImpl
+{
+	public:
+		typedef Singleton<TimerPoolImpl> SingletonInst;
+
+	private:
+		void addTimer(Timer *t) { timers_.push_back(t); }
+		void removeTimer(Timer *t) { timers_.erase(std::find(timers_.begin(), timers_.end(), t)); }
+		void deactivateAll( );
+
+	private:
+		std::vector<Timer *> timers_;
+
+	public:
+		TimerPoolImpl( ) { }
+		~TimerPoolImpl( ) { deactivateAll(); }
+	private:
+		TimerPoolImpl(const TimerPoolImpl&);
+		TimerPoolImpl& operator=(const TimerPoolImpl&);
+
+		friend class Timer;
+};
+
+typedef TimerPoolImpl::SingletonInst TimerPool;
+
+// # ===========================================================================
+
 bool Timer::gactive = true;
 
 Timer::Timer(void) : t_(timestamp())

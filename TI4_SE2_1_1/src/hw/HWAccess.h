@@ -7,6 +7,11 @@
 
 namespace hw
 {
+/**
+ * Interface for direct hardware access.
+ * The HWAccess singleton offers read/write operations
+ * to the three ports of the hw unit.
+*/
 	class HWAccessImpl : public lib::LockableClass<HWAccessImpl>
 	{
 		public:

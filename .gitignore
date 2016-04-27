@@ -3,6 +3,7 @@
 !*/
 */.*
 !*.c
+!*.config
 !*.man.d
 !*.cc
 !*.cpp

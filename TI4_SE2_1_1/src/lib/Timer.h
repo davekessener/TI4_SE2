@@ -13,6 +13,14 @@
 
 namespace lib
 {
+/**
+ * Timer that allows scheduling of functors.
+ * The functors will be executed after a specific amount of time in their own thread.
+ * By resetting the Timer from within the supplied functor a periodic execution
+ * can be achieved.
+ * 
+ * Also allows for synchronisation to a specific time frame.
+ */
 	class Timer
 	{
 		typedef SmartPtr<BasicFunctor> Ftor_ptr;
@@ -35,16 +43,29 @@ namespace lib
 		public:
 			Timer( );
 			~Timer( );
-			void sync(Time);
+			/** Synchronizes execution.
+			 * By suspending the current thread until <tt>t</tt> amount of
+			 * time has part since the Timer has been started/reset this
+			 * function (if called within a loop) synchronizes the active
+			 * threads execution to a specific frequency (\$f\frac{1}{t}\$f)
+			 */
+			void sync(Time t);
 			void reset( );
+			/** Amount of time elapsed since last reset. Resets timer. */
 			Time delta( );
+			/** Amount of time elapsed since last reset. Doesn't reset timer. */
 			Time elapsed( );
 			template<typename F>
 			void executeWhen(Time, F);
+			/** Is timer currently waiting for ftor execution. */
 			bool active( ) const;
 			void deactivate( );
 
+			/** Deactivate all timers. Prevents timing issues during the applications
+			 * termination (i.e. waiting during <tt>join</tt> for a timer).
+			 */
 			static void deactivateAll( );
+			/** Returns current system time in nanoseconds since Jan. 1st 1970. */
 			static ts_t timestamp( );
 
 		private:
@@ -59,31 +80,6 @@ namespace lib
 
 			static bool gactive;
 	};
-
-	class TimerPoolImpl
-	{
-		public:
-			typedef Singleton<TimerPoolImpl> SingletonInst;
-
-		private:
-			void addTimer(Timer *t) { timers_.push_back(t); }
-			void removeTimer(Timer *t) { timers_.erase(std::find(timers_.begin(), timers_.end(), t)); }
-			void deactivateAll( );
-
-		private:
-			std::vector<Timer *> timers_;
-
-		public:
-			TimerPoolImpl( ) { }
-			~TimerPoolImpl( ) { deactivateAll(); }
-		private:
-			TimerPoolImpl(const TimerPoolImpl&);
-			TimerPoolImpl& operator=(const TimerPoolImpl&);
-
-			friend class Timer;
-	};
-
-	typedef TimerPoolImpl::SingletonInst TimerPool;
 
 	template<typename F>
 	void Timer::executeWhen(Time t, F f)

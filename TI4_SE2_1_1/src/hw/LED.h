@@ -13,6 +13,11 @@ namespace hw
 {
 	class Actuator;
 
+/**
+ * Allows access to LEDs.
+ * Offers an interface for accessing LEDs on the hw unit.
+ * Implements blinking functionality via lib::Timer.
+ */
 	class LED : public lib::LockableObject<LED>
 	{
 		public:

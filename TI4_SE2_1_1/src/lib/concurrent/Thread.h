@@ -18,15 +18,11 @@
 #include "lib/mpl/FtorWrapper.hpp"
 #include "lib/concurrent/ThreadManager.h"
 
-/**
-* Thread class.
-* Encapsulates the most important features of a thread.
-* This serves as a basis for further development.
-* For example, priorities could be passed as constructor 
-* argument.
-*/
 namespace lib
 {
+/**
+* Encapsulates the most important features of a thread.
+*/
 	class Thread
 	{
 		public:

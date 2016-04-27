@@ -11,6 +11,13 @@ namespace lib
 {
 	namespace log
 	{
+		/**
+		 * LogManager Singleton, grants access to Logger instances.
+		 * 
+		 * Creates and exposes Logger instances by alphanumerical id.
+		 *
+		 * Offers a "root log" for convenience.
+		 */
 		class LogManagerImpl : public LockableObject<LogManagerImpl>
 		{
 			typedef LockableObject<LogManagerImpl> Super;

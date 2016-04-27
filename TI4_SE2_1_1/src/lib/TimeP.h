@@ -6,6 +6,12 @@
 
 namespace lib
 {
+/** Data class representing a timeframe with microsecond accuracy.
+ * Allows suspension of current thread via <tt>sleep</tt>.
+ * Convenient for intentional delays:
+ * <tt>Time::ms(500).wait()</tt> suspends the currently active
+ * thread for 500ms.
+ */
 	class Time
 	{
 		public:
@@ -34,12 +40,19 @@ namespace lib
 			us_t t_;
 	};
 
+/** Convenience class that allows calculation of a signal's period length through its frequency.
+ */
 	class Frequency
 	{
 		public:
 			static Time Hz(double v) { return Time::us(static_cast<Time::us_t>(1000000.0 / v)); }
 			static Time kHz(double v) { return Time::us(static_cast<Time::us_t>(1000.0 / v)); }
 			static Time MHz(double v) { return Time::us(static_cast<Time::us_t>(1.0 / v)); }
+		private:
+			Frequency( );
+			~Frequency( );
+			Frequency(const Frequency&);
+			Frequency& operator=(const Frequency&);
 	};
 }
 

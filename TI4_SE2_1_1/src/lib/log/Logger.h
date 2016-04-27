@@ -15,6 +15,18 @@ namespace lib
 {
 	namespace log
 	{
+		/**
+		 * Logger class.
+		 * 
+		 * Compiles a LogLevel, the file name & line of caller and
+		 * a custom message into a LogRecord. This LogRecord is
+		 * run through all added filters; if any filter rejects it
+		 * the LogRecord is discarded. Otherwise it is passed to
+		 * all added handlers and send to all added parent logs
+		 *
+		 * Cannot be instantiated directly; the LogManager utility
+		 * grants access to Logger instances.
+		 */
 		class Logger : public LockableObject<Logger>
 		{
 			public:
