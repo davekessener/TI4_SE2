@@ -7,7 +7,7 @@ var searchData=
   ['reverseimpl',['ReverseImpl',['../structlib_1_1ReverseImpl.html',1,'lib']]],
   ['reverseimpl_3c_20done_2c_20nil_20_3e',['ReverseImpl< Done, Nil >',['../structlib_1_1ReverseImpl_3_01Done_00_01Nil_01_4.html',1,'lib']]],
   ['ringbuffer',['RingBuffer',['../classlib_1_1RingBuffer.html',1,'lib']]],
-  ['ringbuffer_3c_20packet_5fptr_2c_20mxt_5fpacketbufsize_2c_20lib_3a_3aringbufferconcurrency_3a_3amultithreaded_20_3e',['RingBuffer< Packet_ptr, MXT_PACKETBUFSIZE, lib::RingBufferConcurrency::MultiThreaded >',['../classlib_1_1RingBuffer.html',1,'lib']]],
+  ['ringbuffer_3c_20data_5fptr_2c_20mxt_5fpacketbufsize_2c_20lib_3a_3aringbufferconcurrency_3a_3amultithreaded_20_3e',['RingBuffer< Data_ptr, MXT_PACKETBUFSIZE, lib::RingBufferConcurrency::MultiThreaded >',['../classlib_1_1RingBuffer.html',1,'lib']]],
   ['rule',['Rule',['../structlib_1_1Rule.html',1,'lib']]],
   ['run',['run',['../classlib_1_1Thread.html#a4a27508e6fdf3ce368313ef34d7f501d',1,'lib::Thread']]]
 ];

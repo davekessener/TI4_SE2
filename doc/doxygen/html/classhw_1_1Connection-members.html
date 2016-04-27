@@ -90,9 +90,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 This is the complete list of members for <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>, including all inherited members.<table>
   <tr bgcolor="#f0f0f0"><td><b>close</b>() (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>Connection</b>(const std::string &amp;, bool) (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>read</b>() (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>write</b>(const void *d, size_t) (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>connected</b>() const  (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>Connection</b>(const std::string &amp;d, bool a) (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>doneWriting</b>() const  (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>hasData</b>() const  (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>Mutex</b> typedef (defined in <a class="el" href="classlib_1_1LockableObject.html">lib::LockableObject&lt; Connection &gt;</a>)</td><td><a class="el" href="classlib_1_1LockableObject.html">lib::LockableObject&lt; Connection &gt;</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>receiveData</b>() (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>running</b>() const  (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>sendData</b>(lib::Data_ptr) (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>~Connection</b>() (defined in <a class="el" href="classhw_1_1Connection.html">hw::Connection</a>)</td><td><a class="el" href="classhw_1_1Connection.html">hw::Connection</a></td><td></td></tr>
 </table></div><!-- contents -->
 <!-- window showing the filter options -->
@@ -112,7 +117,7 @@ This is the complete list of members for <a class="el" href="classhw_1_1Connecti
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:35:23 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 27 2016 09:41:11 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

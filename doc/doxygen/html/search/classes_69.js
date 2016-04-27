@@ -3,6 +3,7 @@ var searchData=
   ['identity',['Identity',['../structlib_1_1Identity.html',1,'lib']]],
   ['if_3c_20false_2c_20t1_2c_20t2_20_3e',['If< false, T1, T2 >',['../structlib_1_1If_3_01false_00_01T1_00_01T2_01_4.html',1,'lib']]],
   ['if_3c_20true_2c_20t1_2c_20t2_20_3e',['If< true, T1, T2 >',['../structlib_1_1If_3_01true_00_01T1_00_01T2_01_4.html',1,'lib']]],
+  ['impl',['Impl',['../classhw_1_1Connection_1_1Impl.html',1,'hw::Connection']]],
   ['inheritlineage',['InheritLineage',['../structlib_1_1InheritLineage.html',1,'lib']]],
   ['inheritlineage_3c_20nil_20_3e',['InheritLineage< Nil >',['../structlib_1_1InheritLineage_3_01Nil_01_4.html',1,'lib']]],
   ['int',['Int',['../structlib_1_1Int.html',1,'lib']]],

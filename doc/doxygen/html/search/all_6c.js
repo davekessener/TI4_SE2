@@ -18,6 +18,7 @@ var searchData=
   ['lockableobject',['LockableObject',['../classlib_1_1LockableObject.html',1,'lib']]],
   ['lockableobject_3c_20actuator_20_3e',['LockableObject< Actuator >',['../classlib_1_1LockableObject.html',1,'lib']]],
   ['lockableobject_3c_20cleanuputility_20_3e',['LockableObject< CleanupUtility >',['../classlib_1_1LockableObject.html',1,'lib']]],
+  ['lockableobject_3c_20connection_20_3e',['LockableObject< Connection >',['../classlib_1_1LockableObject.html',1,'lib']]],
   ['lockableobject_3c_20defaultformatter_20_3e',['LockableObject< DefaultFormatter >',['../classlib_1_1LockableObject.html',1,'lib']]],
   ['lockableobject_3c_20led_20_3e',['LockableObject< LED >',['../classlib_1_1LockableObject.html',1,'lib']]],
   ['lockableobject_3c_20logger_20_3e',['LockableObject< Logger >',['../classlib_1_1LockableObject.html',1,'lib']]],

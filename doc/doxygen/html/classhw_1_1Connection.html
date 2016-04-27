@@ -99,24 +99,45 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">hw::Connection Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<!-- doxytag: class="hw::Connection" -->
+<!-- doxytag: class="hw::Connection" --><!-- doxytag: inherits="LockableObject&lt; Connection &gt;" --><div class="dynheader">
+Inheritance diagram for hw::Connection:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classhw_1_1Connection.png" usemap="#hw::Connection_map" alt=""/>
+  <map id="hw::Connection_map" name="hw::Connection_map">
+<area href="classlib_1_1LockableObject.html" alt="lib::LockableObject&lt; Connection &gt;" shape="rect" coords="0,0,207,24"/>
+</map>
+ </div></div>
+
 <p><a href="classhw_1_1Connection-members.html">List of all members.</a></p>
 <table class="memberdecls">
+<tr><td colspan="2"><h2><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhw_1_1Connection_1_1Impl.html">Impl</a></td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61ec9a9c80c9f9a74cdbf011fd179db6"></a><!-- doxytag: member="hw::Connection::Connection" ref="a61ec9a9c80c9f9a74cdbf011fd179db6" args="(const std::string &amp;, bool)" -->
-&#160;</td><td class="memItemRight" valign="bottom"><b>Connection</b> (const std::string &amp;, bool)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab477c831ad943051093e6fde0ad4ffb7"></a><!-- doxytag: member="hw::Connection::write" ref="ab477c831ad943051093e6fde0ad4ffb7" args="(const void *d, size_t)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const void *d, size_t)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e24030b5716cb809127e1b07d3bff54"></a><!-- doxytag: member="hw::Connection::read" ref="a2e24030b5716cb809127e1b07d3bff54" args="()" -->
-<a class="el" href="classlib_1_1SmartPtr.html">Packet_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8292c399f2eb03d349021e7c119c98dc"></a><!-- doxytag: member="hw::Connection::Connection" ref="a8292c399f2eb03d349021e7c119c98dc" args="(const std::string &amp;d, bool a)" -->
+&#160;</td><td class="memItemRight" valign="bottom"><b>Connection</b> (const std::string &amp;d, bool a)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a001f1e38e28f4e85a4daa6894fdc8198"></a><!-- doxytag: member="hw::Connection::close" ref="a001f1e38e28f4e85a4daa6894fdc8198" args="()" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28a5615d327b982391bb0d79f543c32e"></a><!-- doxytag: member="hw::Connection::connected" ref="a28a5615d327b982391bb0d79f543c32e" args="() const " -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>connected</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8356a6b874322dc706b6563c2ad6028c"></a><!-- doxytag: member="hw::Connection::running" ref="a8356a6b874322dc706b6563c2ad6028c" args="() const " -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>running</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a624fb3688e1016336c51fd4697701fe8"></a><!-- doxytag: member="hw::Connection::doneWriting" ref="a624fb3688e1016336c51fd4697701fe8" args="() const " -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>doneWriting</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac20c7f77e68bef3b08340b18bd669005"></a><!-- doxytag: member="hw::Connection::sendData" ref="ac20c7f77e68bef3b08340b18bd669005" args="(lib::Data_ptr)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>sendData</b> (<a class="el" href="classlib_1_1SmartPtr.html">lib::Data_ptr</a>)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afadf1afddde9668e4745c681ca6813c9"></a><!-- doxytag: member="hw::Connection::receiveData" ref="afadf1afddde9668e4745c681ca6813c9" args="()" -->
+<a class="el" href="classlib_1_1SmartPtr.html">lib::Data_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>receiveData</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1fc1e3bde9236bc881cea9ce6661d241"></a><!-- doxytag: member="hw::Connection::hasData" ref="a1fc1e3bde9236bc881cea9ce6661d241" args="() const " -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>hasData</b> () const </td></tr>
 </table>
 </div><!-- contents -->
 <!-- window showing the filter options -->
@@ -136,7 +157,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:35:23 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 27 2016 09:41:11 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

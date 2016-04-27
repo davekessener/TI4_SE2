@@ -96,11 +96,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00020"></a>00020         <span class="keyword">public</span>:
 <a name="l00021"></a>00021             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr</a>( ) : p_(NULL), i_(NULL) { }
 <a name="l00022"></a>00022             <span class="keyword">explicit</span> <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr</a>(T *p) : p_(p), i_(<span class="keyword">new</span> <span class="keywordtype">int</span>) { *i_ = 1; }
-<a name="l00023"></a>00023             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr</a>(<span class="keyword">const</span> <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;T&gt;</a>&amp; p) : p_(p.p_), i_(p.i_) { ++*i_; }
+<a name="l00023"></a>00023             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr</a>(<span class="keyword">const</span> <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;T&gt;</a>&amp; p) : p_(p.p_), i_(p.i_) { <span class="keywordflow">if</span>(i_) ++*i_; }
 <a name="l00024"></a>00024             ~<a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr</a>( ) { reset(); }
 <a name="l00025"></a>00025             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;T&gt;</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;T&gt;</a>&amp; p)
 <a name="l00026"></a>00026                 { Lock guard(<span class="keyword">this</span>); reset(); <span class="keywordflow">if</span>((p_ = p.p_)) { i_ = p.i_; ++*i_; } <span class="keywordflow">return</span> *<span class="keyword">this</span>; }
-<a name="l00027"></a>00027             <span class="keywordtype">void</span> reset( ) { Lock guard(<span class="keyword">this</span>); <span class="keywordflow">if</span>(i_ &amp;&amp; !*--i_) { <span class="keyword">delete</span> p_, <span class="keyword">delete</span> i_; } }
+<a name="l00027"></a>00027             <span class="keywordtype">void</span> reset( ) { Lock guard(<span class="keyword">this</span>); <span class="keywordflow">if</span>(i_ &amp;&amp; !--*i_) { <span class="keyword">delete</span> p_, <span class="keyword">delete</span> i_; p_ = NULL; i_ = NULL; } }
 <a name="l00028"></a>00028             <span class="keywordtype">void</span> <span class="keyword">set</span>(T *p) { Lock giard(<span class="keyword">this</span>); reset(); <span class="keywordflow">if</span>((p_ = p)) { i_ = <span class="keyword">new</span> int; *i_ = 1; } }
 <a name="l00029"></a>00029             T *operator-&gt;( ) { <span class="keywordflow">return</span> p_; }
 <a name="l00030"></a>00030             <span class="keyword">const</span> T *operator-&gt;( )<span class="keyword"> const </span>{ <span class="keywordflow">return</span> p_; }
@@ -253,7 +253,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:35:22 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 27 2016 09:41:08 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
