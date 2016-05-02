@@ -16,31 +16,10 @@ Thread::Thread(void)
 {
 }
 
-Thread::Thread(Thread& t)
-	: joinable_(false)
-{
-	*this = t;
-}
-
 Thread::~Thread(void)
 {
 	if(joinable())
 		std::terminate();
-}
-
-Thread& Thread::operator=(Thread& t)
-{
-	if(joinable())
-		std::terminate();
-	
-	if(t.joinable())
-	{
-		tid_ = t.tid_;
-		joinable_ = true;
-		t.joinable_ = false;
-	}
-
-	return *this;
 }
 
 void Thread::join(void)

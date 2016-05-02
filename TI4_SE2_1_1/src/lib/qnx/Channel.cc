@@ -26,20 +26,23 @@ Data_ptr Receiver::receive(void) const
 	Data_ptr p;
 	qnx_msg_header h;
 
-	int mid = MsgReceive(ch_->chid_, &h, sizeof(h), NULL);
-
-	if(mid < 0)
-		return p;
-
-	uint8_t *buf = new uint8_t[h.size];
-
-	if(MsgRead(mid, buf, h.size, sizeof(h)) < 0)
-		MXT_TODO_ERROR; //TODO
-
-	p = Data::move(buf, h.size);
-
-	if(MsgReply(mid, EOK, NULL, 0) < 0)
-		MXT_TODO_ERROR; //TODO
+	while(!static_cast<bool>(p))
+	{
+		int mid = MsgReceive(ch_->chid_, &h, sizeof(h), NULL);
+	
+		if(mid < 0)
+			return p;
+	
+		uint8_t *buf = new uint8_t[h.size];
+	
+		if(MsgRead(mid, buf, h.size, sizeof(h)) < 0)
+			MXT_TODO_ERROR; //TODO
+	
+		p = Data::move(buf, h.size);
+	
+		if(MsgReply(mid, EOK, NULL, 0) < 0)
+			MXT_TODO_ERROR; //TODO
+	}
 
 	return p;
 }

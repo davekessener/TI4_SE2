@@ -39,23 +39,10 @@ namespace lib
 				Thread(F);
 
 			/**
-			 * Copy constructor;
-			 * Moves content to this Thread object.
-			 */
-			Thread(Thread&);
-
-			/**
 			 * Destructor.
 			 * @warning terminates if this Thread is still joinable
 			 */
 			~Thread( );
-
-			/**
-			 * Assignment operator.
-			 * Moves content to this Thread object.
-			 * @warning terminates if this Thread is already joinable
-			 */
-			Thread& operator=(Thread&);
 
 			/**
 			 * Calls join on the Thread.

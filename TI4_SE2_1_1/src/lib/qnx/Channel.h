@@ -2,6 +2,7 @@
 #define HAW_LIB_QNX_CHANNEL_H
 
 #include "lib/Data.h"
+#include "lib/mpl/FtorWrapper.hpp"
 
 namespace lib
 {
@@ -11,12 +12,16 @@ namespace lib
 
 		class Receiver
 		{
+			typedef OneParamFtor<void, uint32_t> callback_fn;
+
 			public:
-				Data_ptr receive( ) const;
+				Data_ptr receive( );
 			private:
 				Receiver(Channel *c) : ch_(c) { }
+				void setPulseHandler(callback_fn f) { ph_ = f; }
 			private:
 				Channel *ch_;
+				callback_fn ph_;
 
 				friend class Channel;
 		};
@@ -26,6 +31,7 @@ namespace lib
 			public:
 				~Connection( );
 				void send(Data_ptr) const;
+				void pulse(uint32_t) const;
 			private:
 				Connection(int c) : coid_(c) { }
 			private:
