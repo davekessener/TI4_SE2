@@ -57,14 +57,14 @@ namespace lib
 	};
 
 	template<typename T>
-	struct OPFImplBase
+	struct OPFImplBase<void, T>
 	{
 		virtual ~OPFImplBase( ) { }
-		virtual void operator(T) = 0;
+		virtual void operator()(T) = 0;
 	};
 
 	template<typename R>
-	struct OPFImplBase
+	struct OPFImplBase<R, void>
 	{
 		virtual ~OPFImplBase( ) { }
 		virtual R operator()( ) = 0;
@@ -151,7 +151,7 @@ namespace lib
 			R operator()(T t) { return (*f_)(t); }
 			operator bool( ) const { return static_cast<bool>(f_); }
 		private:
-			std::auto_ptr<OPFImplBase<R, T>> f_;
+			SmartPtr<OPFImplBase<R, T> > f_;
 	};
 
 	template<typename T>
@@ -166,7 +166,7 @@ namespace lib
 			void operator()(T t) { (*f_)(t); }
 			operator bool( ) const { return static_cast<bool>(f_); }
 		private:
-			std::auto_ptr<OPFImplBase<void, T>> f_;
+			SmartPtr<OPFImplBase<void, T> > f_;
 	};
 
 	template<typename R>
@@ -181,7 +181,7 @@ namespace lib
 			R operator()( ) { return (*f_)(); }
 			operator bool( ) const { return static_cast<bool>(f_); }
 		private:
-			lib::SmartPtr<OPFImplBase<R, T>> f_;
+			SmartPtr<OPFImplBase<R, void> > f_;
 	};
 
 	template<typename R, typename T>
@@ -193,7 +193,7 @@ namespace lib
 	template<typename TT, typename R, typename T>
 	OneParamFtor<R, T> toFtor(TT *t, R (TT::*f)(T))
 	{
-		return ONeParamFtor<R, T>(t, f);
+		return OneParamFtor<R, T>(t, f);
 	}
 }
 

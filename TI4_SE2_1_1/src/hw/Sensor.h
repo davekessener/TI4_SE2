@@ -1,21 +1,25 @@
 #ifndef HAW_HW_SENSOR_H
 #define HAW_HW_SENSOR_H
 
+#include <memory>
+
+#include "lib/concurrent/Thread.h"
 #include "lib/qnx/Channel.h"
+#include "lib/Singleton.hpp"
 
 namespace hw
 {
 	class Sensor
 	{
 		public:
-			bool entering( ) { cEntering_ = false; return entering_ };
-			bool enteringChanged( ) const { return cEntering_; };
-			bool inHM( ) { cInHm_ = false; return inHM_; }
+			bool entering( ) { cEntering_ = false; return entering_; }
+			bool enteringChanged( ) const { return cEntering_; }
+			bool inHM( ) { cInHM_ = false; return inHM_; }
 			bool inHMChanged( ) const { return cInHM_; }
 			bool hmValid( ) { cHmValid_ = false; return hmValid_; }
 			bool hmValieChanged( ) const { return cHmValid_; }
 			bool inSwitch( ) { cInSwitch_ = false; return inSwitch_; }
-			bool inSwitchChanged( ) const { return cInSwitch_;
+			bool inSwitchChanged( ) const { return cInSwitch_; }
 			bool isMetal( ) { cIsMetal_ = false; return isMetal_; }
 			bool isMetalChanged( ) const { return cIsMetal_; }
 			bool switchOpen( ) { cSwitchOpen_ = false; return switchOpen_; }

@@ -21,7 +21,7 @@ namespace
 	};
 }
 
-Data_ptr Receiver::receive(void) const
+Data_ptr Receiver::receive(void)
 {
 	Data_ptr p;
 	qnx_msg_header h;
