@@ -11,32 +11,46 @@ namespace hw
 {
 	class Sensor
 	{
+		static const int ENTERING = 0;
+		static const int INHM = 1;
+		static const int HWVALID = 2;
+		static const int INSWITCH = 3;
+		static const int ISMETAL = 4;
+		static const int SWITCHOPEN = 5;
+		static const int RAMPFULL = 6;
+		static const int LEAVING = 7;
+
 		public:
-			bool entering( ) { cEntering_ = false; return entering_; }
-			bool enteringChanged( ) const { return cEntering_; }
-			bool inHM( ) { cInHM_ = false; return inHM_; }
-			bool inHMChanged( ) const { return cInHM_; }
-			bool hmValid( ) { cHmValid_ = false; return hmValid_; }
-			bool hmValieChanged( ) const { return cHmValid_; }
-			bool inSwitch( ) { cInSwitch_ = false; return inSwitch_; }
-			bool inSwitchChanged( ) const { return cInSwitch_; }
-			bool isMetal( ) { cIsMetal_ = false; return isMetal_; }
-			bool isMetalChanged( ) const { return cIsMetal_; }
-			bool switchOpen( ) { cSwitchOpen_ = false; return switchOpen_; }
-			bool switchOpenChanged( ) const { return cSwitchOpen_; }
-			bool rampFull( ) { cRampFull_ = false; return rampFull_; }
-			bool rampFullChanged( ) const { return cRampFull_; }
-			bool leaving( ) { cLeaving_ = false; return leaving_; }
-			bool leavingChanged( ) const { return cLeaving_; }
+			bool entering( ) { return get(ENTERING); }
+			bool enteringChanged( ) const { return flags_[ENTERING]; }
+			bool inHM( ) { return get(INHM); }
+			bool inHMChanged( ) const { return flags_[INHM]; }
+			bool hmValid( ) { return get(HWVALID); }
+			bool hmValieChanged( ) const { return flags_[HMVALID]; }
+			bool inSwitch( ) { return get(INSWITCH); }
+			bool inSwitchChanged( ) const { return flags_[INSWITCH]; }
+			bool isMetal( ) { return get(ISMETAL); }
+			bool isMetalChanged( ) const { return flags_[ISMETAL]; }
+			bool switchOpen( ) { return get(SWITCHOPEN); }
+			bool switchOpenChanged( ) const { return flags_[SWITCHOPEN]; }
+			bool rampFull( ) { return get(RAMPFULL); }
+			bool rampFullChanged( ) const { return flags_[RAMPFULL]; }
+			bool leaving( ) { return get(LEAVING); }
+			bool leavingChanged( ) const { return flags_[LEAVING]; }
 
 		private:
 			void thread( );
+			void handlePulse(uint32_t);
+			void initISR( );
+			void cleanupISR( );
+			bool get(int i) { flags_[i] = false; return vals_[i]; }
 
 		private:
-			bool entering_, inHM_, hmValid_, inSwitch_, isMetal_, switchOpen_, rampFull_, leaving_;
-			bool cEntering_, cInHM_, cHmValid_, cInSwitch_, cIsMetal_, cSwitchOpen_, cRampFull_, cLeaving_;
+			static const int VAR_COUNT = 8;
+			bool vals_[VAR_COUNT], flags_[VAR_COUNT];
 			bool running_;
 			lib::qnx::Channel ch_;
+			lib::qnx::Connection con_;
 			std::auto_ptr<lib::Thread> thread_;
 
 		public:
