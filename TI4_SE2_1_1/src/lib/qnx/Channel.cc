@@ -1,8 +1,11 @@
 #include <stddef.h>
 #include <errno.h>
 #include <sys/neutrino.h>
+#include <iostream>
 
 #include "lib/qnx/Channel.h"
+#include "lib/log/LogManager.h"
+#include "hw/HWAccess.h"
 #include "lib/macro.h"
 
 #ifndef SETIOV
@@ -11,10 +14,12 @@
                (iov)->iov_len = (len))
 #endif
 
+int gcoid;
+
 namespace lib { namespace qnx {
 
-namespace
-{
+//namespace
+//{
 	struct qnx_msg_header
 	{
 		size_t size;
@@ -32,7 +37,7 @@ namespace
 
     	return event;
 	}
-}
+//}
 
 Connection::irs_lookup_t Connection::lookup_;
 
@@ -66,8 +71,10 @@ uint32_t Receiver::getPulse(void)
 {
     struct _pulse pulse;
 
+    lib::log::LogManager::instance().rootLog()->MXT_LOG("started MsgReceivePulse");
 	if(MsgReceivePulse(ch_->chid_, &pulse, sizeof(pulse), NULL) < 0)
 		MXT_TODO_ERROR; //TODO
+    lib::log::LogManager::instance().rootLog()->MXT_LOG("done MsgReceivePulse");
 
 	return pulse.value.sival_int;
 }
@@ -123,9 +130,12 @@ void Connection::registerISR(int irq, isr_fn isr)
 		MXT_TODO_ERROR; //TODO
 	
 	struct sigevent *event = new sigevent;
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("SIGEV_PULSE_INIT coid:%i", coid_);
     SIGEV_PULSE_INIT(event, coid_, SIGEV_PULSE_PRIO_INHERIT, 0, 0);
 
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("InterruptAttach");
 	int id = InterruptAttach(irq, handle_irs, event, sizeof(*event), 0);
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("registered irs with %i", id);
 
 	if(id < 0)
 		MXT_TODO_ERROR; //TODO
@@ -167,6 +177,8 @@ Receiver Channel::open(int f)
 	if((chid_ = ChannelCreate(f)) < 0)
 		MXT_TODO_ERROR; //TODO
 
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("created channel");
+
 	return Receiver(this);
 }
 
@@ -177,6 +189,10 @@ Connection Channel::connect(int f) const
 	if(coid < 0)
 		MXT_TODO_ERROR; //TODO
 	
+	gcoid = coid;
+
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("created connection %i", coid);
+
 	return Connection(coid);
 }
 

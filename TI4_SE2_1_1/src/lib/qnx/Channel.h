@@ -1,6 +1,9 @@
 #ifndef HAW_LIB_QNX_CHANNEL_H
 #define HAW_LIB_QNX_CHANNEL_H
 
+#include <utility>
+#include <map>
+
 #include "lib/Data.h"
 #include "lib/mpl/FtorWrapper.hpp"
 
@@ -25,7 +28,7 @@ namespace lib
 
 		class Connection
 		{
-			typedef std::map<int, std::pair<Connection *, int>> irs_lookup_t;
+			typedef std::map<int, std::pair<Connection *, int> > irs_lookup_t;
 
 			public:
 				typedef OneParamFtor<uint32_t, void> isr_fn;

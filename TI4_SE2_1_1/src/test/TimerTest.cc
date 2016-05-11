@@ -30,6 +30,13 @@ void timers(void)
 
 	std::cout << "starting timer test" << std::endl;
 
+	timer->reset();
+	for(int i = 0 ; i < 5 ; ++i)
+	{
+		std::cout << "once per second" << std::endl;
+		timer->sync(Time::s(1));
+	}
+
 	timer->executeWhen(Time::s(1), testfn);
 
 	Time::ms(3500).wait();

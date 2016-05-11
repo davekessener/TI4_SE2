@@ -1,6 +1,8 @@
 #include "hw/Sensor.h"
 
 #include "lib/TimeP.h"
+#include "hw/HWAccess.h"
+#include "lib/log/LogManager.h"
 
 namespace hw
 {
@@ -9,9 +11,9 @@ namespace
 {
 	uint32_t dio_isr(void)
 	{
-		using HWAccessImpl::DIO_IRQ_RESET;
+		HWAccess::instance().out(HWAccessImpl::DIO_IRQ_RESET, 0);
 
-		HWAccess::instance().out(DIO_IRQ_RESET, 0);
+		return 0;
 	}
 }
 
@@ -35,17 +37,23 @@ Sensor::~Sensor(void)
 
 void Sensor::thread(void)
 {
+	hw::HWAccess::instance();
+	lib::log::Logger_ptr log = lib::log::LogManager::instance().rootLog();
 	lib::qnx::Receiver recv = ch_.open();
 	con_ = ch_.connect();
 	running_ = true;
 
 	initISR();
 
+	log->MXT_LOG("done initializing isr");
+
 	try
 	{
 		while(running_)
 		{
+			log->MXT_LOG("waiting for pulse");
 			handlePulse(recv.getPulse());
+			log->MXT_LOG("handled pulse");
 		}
 	}
 	catch(...)
@@ -53,16 +61,17 @@ void Sensor::thread(void)
 		running_ = false;
 	}
 
+	log->MXT_LOG("cleaning up isr");
+
 	cleanupISR();
 }
 
-void Sensor::handleISR(uint32_t pulse)
+void Sensor::handlePulse(uint32_t pulse)
 {
-	using HWAccessImpl::PORT_B;
-	using HWAccessImpl::PORT_C;
-
 	HWAccessImpl &hal = HWAccess::instance();
-	uint32_t v = ((hal.in(PORT_C) & 0xf0) << 4) | hal.in(PORT_B);
+	uint32_t v = ((hal.in(HWAccessImpl::PORT_C) & 0xf0) << 4) | hal.in(HWAccessImpl::PORT_B);
+
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("received pulse");
 
 	for(int i = 0 ; i < VAR_COUNT ; ++i)
 	{
@@ -78,26 +87,20 @@ void Sensor::handleISR(uint32_t pulse)
 
 void Sensor::initISR(void)
 {
-	using HWAccessImpl::DIO_IRQ_MASK;
-	using HWAccessImpl::DIO_IRQ_RESET;
-	using HWAccessImpl::DIO_IRQ;
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("wrote 0 to 0x30f");
+	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_RESET, 0);
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("wrote 0b1111 1001 to 0x30b");
+	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_MASK, 0b11111001);
 
-	HWAccess::instance().out(DIO_IRQ_RESET, 0);
-	HWAccess::instance().out(DIO_IRQ_MASK, 0b11111001);
-
-	con_.registerISR(DIO_IRQ, dio_isr);
+	con_.registerISR(HWAccessImpl::DIO_IRQ, dio_isr);
 }
 
 void Sensor::cleanupISR(void)
 {
-	using HWAccessImpl::DIO_IRQ_MASK;
-	using HWAccessImpl::DIO_IRQ_RESET;
-	using HWAccessImpl::DIO_IRQ;
-
 	con_.close();
 
-	HWAccess::instance().out(DIO_IRQ_MASK, 0b1111111);
-	HWAccess::instance().out(DIO_IRQ_RESET, 0);
+	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_MASK, 0b1111111);
+	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_RESET, 0);
 }
 
 }

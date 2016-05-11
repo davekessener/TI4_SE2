@@ -1,3 +1,53 @@
+#include "hw/Sensor.h"
+#include "lib/Timer.h"
+#include "lib/TimeP.h"
+#include "lib/log/LogManager.h"
+#include "hw/HWAccess.h"
+
+#include "test/ISR.h"
+
+#define isr_old isr
+
+namespace test {
+
+void isr_new(void)
+{
+	using hw::Sensors;
+	using hw::Sensor;
+	using lib::Timer;
+	using lib::Time;
+	using lib::log::LogManager;
+	using lib::log::Logger_ptr;
+
+	Sensor &sensors = Sensors::instance();
+	Logger_ptr log = LogManager::instance().rootLog();
+	Timer fps;
+	Time delay = Time::ms(1);
+
+	log->MXT_LOG("Starting sensors loop");
+
+	while(true)
+	{
+		if(sensors.leavingChanged())
+		{
+			log->MXT_LOG("LEAVING is %s", (sensors.leaving() ? "on" : "off"));
+		}
+
+		if(sensors.enteringChanged())
+		{
+			log->MXT_LOG("ENTERING caused quit");
+			break;
+		}
+
+		fps.sync(delay);
+	}
+}
+
+}
+
+//#define DO_LOG(...) lib::log::LogManager::instance().rootLog()->MXT_LOG(__VA_ARGS__)
+#define DO_LOG(...)
+
 #include <iostream>
 #include <cstdlib>
 #include <sys/neutrino.h>
@@ -18,18 +68,18 @@
 namespace test
 {
 
-int isrId = 0;
-int isrChannel = 0;
-int isrConnection = 0;
-struct sigevent isrEvent;
+int isr_id = 0;
+int chid = 0;
+int coid = 0;
+struct sigevent event;
 
 // ISR (c-Function)
-const struct sigevent* ISR_DIO(void* arg, int id) {
+const struct sigevent* handle_isr(void* arg, int id) {
     struct sigevent* event = (struct sigevent*) arg;
     int v = in8(0x318);
 
     event->sigev_notify = SIGEV_PULSE ;
-    event->__sigev_un1.__sigev_coid = isrConnection;
+    event->__sigev_un1.__sigev_coid = coid;
     event->__sigev_un2.__st.__sigev_code = 0;
     event->sigev_value.sival_int = (v << 16) | in8(v == 2 ? 0x301 : 0x302);
     return event;
@@ -37,19 +87,23 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 
 
 void registerISR(void){
+	DO_LOG("write 0 to 0x30f");
     out8(0x30F, 0);
+    DO_LOG("write 0b1111 1001 to 0x30b");
     out8(0x30B, 0b11111001);
 
-    SIGEV_PULSE_INIT(&isrEvent, isrConnection, SIGEV_PULSE_PRIO_INHERIT, 0, 0);
-    isrId = InterruptAttach(11, ISR_DIO, &isrEvent, sizeof(isrEvent), 0);
-    if (isrId == -1) {
+    DO_LOG("SIGEV_PULSE_INIT");
+    SIGEV_PULSE_INIT(&event, coid, SIGEV_PULSE_PRIO_INHERIT, 0, 0);
+    DO_LOG("InterruptAttach");
+    isr_id = InterruptAttach(11, handle_isr, &event, sizeof(event), 0);
+    if (isr_id == -1) {
         exit(EXIT_FAILURE);
     }
 }
 
 
 void unregisterISR(void){
-    if( InterruptDetach(isrId) == -1 ){
+    if( InterruptDetach(isr_id) == -1 ){
         exit(EXIT_FAILURE);
     }
     out8(0x30B, 0b11111111);
@@ -65,18 +119,19 @@ void printb(int v)
 	}
 }
 
-
-void isr() {
-    // Init and Register ISR
+void isr_old() {
+	DO_LOG("calling thread ctrl");
     if (ThreadCtl(_NTO_TCTL_IO_PRIV, 0) == -1){
         exit(EXIT_FAILURE);
     }
 
-    if (( isrChannel = ChannelCreate(0)) == -1){
+	DO_LOG("create channel");
+    if (( chid = ChannelCreate(0)) == -1){
         exit(EXIT_FAILURE);
     }
 
-    if ((isrConnection = ConnectAttach(0, 0, isrChannel, 0, 0)) == -1){
+	DO_LOG("create connection");
+    if ((coid = ConnectAttach(0, 0, chid, 0, 0)) == -1){
         exit(EXIT_FAILURE);
     }
 
@@ -88,7 +143,9 @@ void isr() {
 
     // Wait for Pulse Message
     do{
-        MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
+    	DO_LOG("started MsgReceivePulse");
+        MsgReceivePulse(chid,&pulse,sizeof(pulse),NULL);
+    	DO_LOG("receiveded MsgReceivePulse");
 
         // Print received Pulse message Value
         printf("int %04i: 0x%08x ", i++, pulse.value.sival_int);
@@ -99,11 +156,11 @@ void isr() {
 
     // Cleanup
     unregisterISR();
-    if( ConnectDetach(isrConnection) == -1){
+    if( ConnectDetach(coid) == -1){
         exit(EXIT_FAILURE);
     }
 
-    if( ChannelDestroy(isrChannel) == -1 ){
+    if( ChannelDestroy(chid) == -1 ){
         exit(EXIT_FAILURE);
     }
 }

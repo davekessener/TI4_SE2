@@ -47,7 +47,9 @@ Timer::~Timer(void)
 
 void Timer::sync(Time t)
 {
-	
+	uint32_t us = get() / 1000;
+	if(us < t.raw()) Time::us(t.raw() - us).wait();
+	reset();
 }
 
 void Timer::reset(void)

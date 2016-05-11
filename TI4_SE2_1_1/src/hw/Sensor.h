@@ -13,7 +13,7 @@ namespace hw
 	{
 		static const int ENTERING = 0;
 		static const int INHM = 1;
-		static const int HWVALID = 2;
+		static const int HMVALID = 2;
 		static const int INSWITCH = 3;
 		static const int ISMETAL = 4;
 		static const int SWITCHOPEN = 5;
@@ -25,7 +25,7 @@ namespace hw
 			bool enteringChanged( ) const { return flags_[ENTERING]; }
 			bool inHM( ) { return get(INHM); }
 			bool inHMChanged( ) const { return flags_[INHM]; }
-			bool hmValid( ) { return get(HWVALID); }
+			bool hmValid( ) { return get(HMVALID); }
 			bool hmValieChanged( ) const { return flags_[HMVALID]; }
 			bool inSwitch( ) { return get(INSWITCH); }
 			bool inSwitchChanged( ) const { return flags_[INSWITCH]; }

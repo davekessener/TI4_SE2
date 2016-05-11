@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "hw/HWAccess.h"
+#include "lib/log/LogManager.h"
 #include "lib/macro.h"
 
 #define MXT_IO_CONTROL_ADDR 0x303
@@ -13,6 +14,7 @@ namespace hw
 
 HWAccessImpl::HWAccessImpl(void)
 {
+	lib::log::LogManager::instance().rootLog()->MXT_LOG("thread ctrl");
     if(ThreadCtl(_NTO_TCTL_IO_PRIV, 0) < 0)
     	throw std::runtime_error("no access to hw");
 
