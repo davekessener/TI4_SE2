@@ -9,7 +9,6 @@
 
 #include "test/SerialTest.h"
 
-// # ===========================================================================
 namespace test
 {
 
@@ -20,6 +19,7 @@ using lib::Time;
 using lib::Data_ptr;
 using lib::Data;
 using lib::Thread;
+using hw::Connection;
 
 Logger_ptr getLog()
 {
@@ -27,12 +27,6 @@ Logger_ptr getLog()
 
 	return log;
 }
-
-// # ===========================================================================
-
-using hw::Connection;
-
-// # ===========================================================================
 
 void connection(const std::string& device, const bool active)
 {
@@ -45,17 +39,25 @@ void connection(const std::string& device, const bool active)
 		Connection c(device, active);
 		std::string msg("Hello, World!");
 
+
 		while(!c.connected()) Time::ms(100).wait();
 
+
 		if(active) c.sendData(Data::get(msg.c_str(), msg.length() + 1));
+
 		Data_ptr p = c.receiveData();
+
 		if(!active) c.sendData(p);
+
 
 		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
 
+
 		while(!c.doneWriting()) Time::ms(100).wait();
 
+
 		if(!active) Time::s(1).wait();
+
 
 		c.close();
 	}

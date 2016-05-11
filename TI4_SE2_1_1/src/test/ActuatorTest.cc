@@ -4,45 +4,114 @@
 #include "hw/LED.h"
 #include "hw/Motor.h"
 #include "hw/Actuator.h"
+#include "lib/log/LogManager.h"
 
 namespace test
 {
 	void actuators(void)
 	{
-		lib::Time delay = lib::Time::s(1);
+		using lib::Time;
+		using lib::log::Logger_ptr;
+		using lib::log::LogManager;
+		using hw::LEDs;
+		using hw::LED;
+		using hw::Motor;
+		using hw::Motors;
 
-		hw::LEDs::instance().turnOn(hw::LED::RED);
-		hw::LEDs::instance().blink(hw::LED::YELLOW, lib::Frequency::Hz(2.0));
-		hw::LEDs::instance().turnOn(hw::LED::GREEN);
-		hw::LEDs::instance().turnOn(hw::LED::START);
-		hw::LEDs::instance().turnOn(hw::LED::RESET);
-		hw::LEDs::instance().turnOn(hw::LED::Q1);
-		hw::LEDs::instance().turnOn(hw::LED::Q2);
+		Time delay = Time::s(3);
+		Logger_ptr log = LogManager::instance().rootLog();
+
+		log->MXT_LOG("turn on GREEN");
+        LEDs::instance().turnOn(LED::GREEN);
+        delay.wait();
+
+		log->MXT_LOG("turn off GREEN and turn on YELLOW");
+        LEDs::instance().turnOff(LED::GREEN);
+        LEDs::instance().turnOn(LED::YELLOW);
+        delay.wait();
+
+		log->MXT_LOG("turn off YELLOW and turn on RED");
+        LEDs::instance().turnOff(LED::YELLOW);
+        LEDs::instance().turnOn(LED::RED);
+        delay.wait();
+
+		log->MXT_LOG("turn off RED and blink GREEN @2Hz");
+        LEDs::instance().turnOff(LED::RED);
+        LEDs::instance().blink(LED::GREEN, lib::Frequency::Hz(2.0));
+        delay.wait();
+
+		log->MXT_LOG("blink GREEN @0.5Hz");
+        LEDs::instance().blink(LED::GREEN, lib::Frequency::Hz(0.5));
+        delay.wait();
+
+		log->MXT_LOG("blink YELLO @2Hz");
+        LEDs::instance().blink(LED::YELLOW, lib::Frequency::Hz(2.0));
+        delay.wait();
+
+		log->MXT_LOG("blink YELLOW @0.5Hz");
+        LEDs::instance().blink(LED::YELLOW, lib::Frequency::Hz(0.5));
+        delay.wait();
+
+		log->MXT_LOG("blink RED @2Hz");
+        LEDs::instance().blink(LED::RED, lib::Frequency::Hz(2.0));
+        delay.wait();
+
+		log->MXT_LOG("blink RED @0.5Hz");
+        LEDs::instance().blink(LED::RED, lib::Frequency::Hz(0.5));
+        delay.wait();
+
+		log->MXT_LOG("turn on BELT RIGHT FAST");
+        Motors::instance().controlBelt(Motor::Direction::RIGHT, Motor::Speed::FAST);
+        delay.wait();
+
+		log->MXT_LOG("turn on BELT RIGHT SLOW");
+        Motors::instance().controlBelt(Motor::Direction::RIGHT, Motor::Speed::SLOW);
+        delay.wait();
+
+		log->MXT_LOG("turn on BELT RIGHT FAST");
+        Motors::instance().controlBelt(Motor::Direction::RIGHT, Motor::Speed::FAST);
+        delay.wait();
+
+		log->MXT_LOG("turn on BELT RIGHT SLOW");
+        Motors::instance().controlBelt(Motor::Direction::RIGHT, Motor::Speed::SLOW);
+        delay.wait();
+
+		log->MXT_LOG("turn off BELT");
+        Motors::instance().controlBelt(Motor::Direction::NONE, Motor::Speed::STOP);
+        delay.wait();
+
+		log->MXT_LOG("open SWITCH");
+        Motors::instance().controlSwitch(Motor::State::OPEN);
+        delay.wait();
+
+		log->MXT_LOG("close SWITCH and turn on START");
+        Motors::instance().controlSwitch(Motor::State::CLOSE);
+		LEDs::instance().turnOn(LED::START);
+        delay.wait();
+
+		log->MXT_LOG("turn on RESET");
+		LEDs::instance().turnOn(LED::RESET);
+        delay.wait();
+
+		log->MXT_LOG("turn on Q1");
+		LEDs::instance().turnOn(LED::Q1);
+        delay.wait();
+
+		log->MXT_LOG("turn on Q2");
+		LEDs::instance().turnOn(LED::Q2);
 		delay.wait();
 
-		hw::Motors::instance().controlSwitch(hw::Motor::State::OPEN);
-		hw::LEDs::instance().turnOff(hw::LED::GREEN);
-		delay.wait();
+		log->MXT_LOG("turn ALL off");
+		LEDs::instance().turnOff(LED::RED);
+		LEDs::instance().turnOff(LED::YELLOW);
+		LEDs::instance().turnOff(LED::GREEN);
+		LEDs::instance().turnOff(LED::START);
+		LEDs::instance().turnOff(LED::RESET);
+		LEDs::instance().turnOff(LED::Q1);
+		LEDs::instance().turnOff(LED::Q2);
+		Motors::instance().controlBelt(Motor::Direction::NONE, Motor::Speed::STOP);
+		Motors::instance().controlSwitch(Motor::State::CLOSE);
 
-		hw::Motors::instance().controlSwitch(hw::Motor::State::CLOSE);
-		hw::LEDs::instance().turnOff(hw::LED::RED);
-		hw::Motors::instance().controlBelt(hw::Motor::Direction::RIGHT, hw::Motor::Speed::FAST);
-		lib::Time::s(3).wait();
-
-		hw::Motors::instance().controlBelt(hw::Motor::Direction::LEFT, hw::Motor::Speed::SLOW);
-
-		hw::LEDs::instance().blink(hw::LED::YELLOW, lib::Frequency::Hz(0.5));
-
-		lib::Time::s(6).wait();
-
-		hw::Motors::instance().controlBelt(hw::Motor::Direction::NONE, hw::Motor::Speed::STOP);
-
-		hw::LEDs::instance().turnOff(hw::LED::YELLOW);
-		hw::LEDs::instance().turnOff(hw::LED::START);
-		hw::LEDs::instance().turnOff(hw::LED::RESET);
-		hw::LEDs::instance().turnOff(hw::LED::Q1);
-		hw::LEDs::instance().turnOff(hw::LED::Q2);
-
-		delay.wait();
+		log->MXT_LOG("DONE testing actuators. ---------------------------------");
 	}
 }

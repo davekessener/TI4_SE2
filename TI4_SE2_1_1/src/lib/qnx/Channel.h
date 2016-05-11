@@ -2,6 +2,7 @@
 #define HAW_LIB_QNX_CHANNEL_H
 
 #include "lib/Data.h"
+#include "lib/mpl/FtorWrapper.hpp"
 
 namespace lib
 {
@@ -12,7 +13,8 @@ namespace lib
 		class Receiver
 		{
 			public:
-				Data_ptr receive( ) const;
+				Data_ptr receive( );
+				uint32_t getPulse( );
 			private:
 				Receiver(Channel *c) : ch_(c) { }
 			private:
@@ -23,13 +25,26 @@ namespace lib
 
 		class Connection
 		{
+			typedef std::map<int, std::pair<Connection *, int>> irs_lookup_t;
+
 			public:
+				typedef OneParamFtor<uint32_t, void> isr_fn;
+				struct ISR { int id; isr_fn isr; void *area; };
+
+			public:
+				Connection( ) : coid_(-1) { }
 				~Connection( );
 				void send(Data_ptr) const;
+				void registerISR(int, isr_fn);
+				void close( );
+				bool open( ) const { return coid_ >= 0; }
+				static std::pair<int, uint32_t> handleISR(int);
 			private:
 				Connection(int c) : coid_(c) { }
 			private:
 				int coid_;
+				std::map<int, ISR> isrs_;
+				static irs_lookup_t lookup_;
 
 				friend class Channel;
 		};

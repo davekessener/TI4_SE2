@@ -22,9 +22,14 @@ namespace hw
 			typedef uint16_t port_t;
 			typedef uint8_t pin_t;
 
-			static const port_t PORT_A = 0x300;
-			static const port_t PORT_B = 0x301;
-			static const port_t PORT_C = 0x302;
+			static const port_t DIO_BASE = 0x300;
+			static const port_t PORT_A = DIO_BASE + 0;
+			static const port_t PORT_B = DIO_BASE + 1;
+			static const port_t PORT_C = DIO_BASE + 2;
+			static const port_t DIO_IRQ_CHECK = DIO_BASE + 0x18;
+			static const port_t DIO_IRQ_RESET = DIO_BASE + 0x0f;
+			static const port_t DIO_IRQ_MASK = DIO_BASE + 0x0b;
+			static const port_t DIO_IRQ = 11;
 			
 			uint8_t in(port_t) const;
 			void out(port_t, pin_t) const;
