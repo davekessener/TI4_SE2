@@ -1,3 +1,5 @@
+#include <sys/neutrino.h>
+
 #include "hw/Sensor.h"
 
 #include "lib/TimeP.h"
@@ -9,11 +11,19 @@ namespace hw
 
 namespace
 {
-	uint32_t dio_isr(void)
-	{
-		HWAccess::instance().out(HWAccessImpl::DIO_IRQ_RESET, 0);
+	struct sigevent isrEvent;
 
-		return 0;
+	const struct sigevent* dio_isr(void* arg, int id)
+	{
+	    struct sigevent* event = (struct sigevent*) arg;
+	    int v = in8(0x318);
+	
+	    event->sigev_notify = SIGEV_PULSE ;
+	    event->__sigev_un1.__sigev_coid = coid;
+	    event->__sigev_un2.__st.__sigev_code = 0;
+	    event->sigev_value.sival_int = (v << 16) | in8(v == 2 ? 0x301 : 0x302);
+
+	    return event;
 	}
 }
 
@@ -92,7 +102,7 @@ void Sensor::initISR(void)
 	lib::log::LogManager::instance().rootLog()->MXT_LOG("wrote 0b1111 1001 to 0x30b");
 	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_MASK, 0b11111001);
 
-	con_.registerISR(HWAccessImpl::DIO_IRQ, dio_isr);
+	con_.registerISR(HWAccessImpl::DIO_IRQ, dio_isr, &isrEvent);
 }
 
 void Sensor::cleanupISR(void)

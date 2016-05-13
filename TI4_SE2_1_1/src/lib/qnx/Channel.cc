@@ -18,26 +18,13 @@ int gcoid;
 
 namespace lib { namespace qnx {
 
-//namespace
-//{
+namespace
+{
 	struct qnx_msg_header
 	{
 		size_t size;
 	};
-
-	const struct sigevent *handle_irs(void *area, int id)
-	{
-    	struct sigevent* event = (struct sigevent*) area;
-		std::pair<int, uint32_t> r = Connection::handleISR(id);
-
-    	event->sigev_notify = SIGEV_PULSE ;
-    	event->__sigev_un1.__sigev_coid = r.first;
-    	event->__sigev_un2.__st.__sigev_code = 0;
-    	event->sigev_value.sival_int = r.second;
-
-    	return event;
-	}
-//}
+}
 
 Connection::irs_lookup_t Connection::lookup_;
 
@@ -90,12 +77,10 @@ void Connection::close(void)
 	if(coid_ < 0)
 		MXT_TODO_ERROR; // TODO
 
-	for(std::map<int, ISR>::iterator i1 = isrs_.begin(), i2 = isrs_.end() ; i1 != i2 ; ++i1)
+	for(std::map<int, int>::iterator i1 = isrs_.begin(), i2 = isrs_.end() ; i1 != i2 ; ++i1)
 	{
-		if(InterruptDetach(i1->second.id) < 0)
+		if(InterruptDetach(i1->second) < 0)
 			MXT_TODO_ERROR;
-
-		lookup_.erase(lookup_.find(i1->second.id));
 	}
 
 	if(ConnectDetach(coid_) < 0)
@@ -121,7 +106,7 @@ void Connection::send(Data_ptr p) const
 		MXT_TODO_ERROR; //TODO
 }
 
-void Connection::registerISR(int irq, isr_fn isr)
+void Connection::registerISR(int irq, isr_fn isr, sigevent *event)
 {
 	if(coid_ < 0)
 		MXT_TODO_ERROR; //TODO
@@ -129,34 +114,17 @@ void Connection::registerISR(int irq, isr_fn isr)
 	if(isrs_.find(irq) != isrs_.end())
 		MXT_TODO_ERROR; //TODO
 	
-	struct sigevent *event = new sigevent;
 	lib::log::LogManager::instance().rootLog()->MXT_LOG("SIGEV_PULSE_INIT coid:%i", coid_);
     SIGEV_PULSE_INIT(event, coid_, SIGEV_PULSE_PRIO_INHERIT, 0, 0);
 
 	lib::log::LogManager::instance().rootLog()->MXT_LOG("InterruptAttach");
-	int id = InterruptAttach(irq, handle_irs, event, sizeof(*event), 0);
+	int id = InterruptAttach(irq, irs, event, sizeof(*event), 0);
 	lib::log::LogManager::instance().rootLog()->MXT_LOG("registered irs with %i", id);
 
 	if(id < 0)
 		MXT_TODO_ERROR; //TODO
 
-	isrs_[irq].id = id;
-	isrs_[irq].isr = isr;
-	isrs_[irq].area = (void *) event;
-
-	lookup_[id] = std::make_pair(this, irq);
-}
-
-std::pair<int, uint32_t> Connection::handleISR(int id)
-{
-	irs_lookup_t::iterator i = lookup_.find(id);
-
-	if(i == lookup_.end())
-		MXT_TODO_ERROR; //TODO
-
-	std::pair<Connection *, int> &v = i->second;
-
-	return std::pair<int, uint32_t>(v.first->coid_, v.first->isrs_[v.second].isr());
+	isrs_[irq] = id;
 }
 
 void Channel::close(void)

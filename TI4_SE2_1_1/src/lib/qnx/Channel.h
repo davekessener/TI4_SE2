@@ -7,6 +7,8 @@
 #include "lib/Data.h"
 #include "lib/mpl/FtorWrapper.hpp"
 
+struct sigevent;
+
 namespace lib
 {
 	namespace qnx
@@ -31,23 +33,20 @@ namespace lib
 			typedef std::map<int, std::pair<Connection *, int> > irs_lookup_t;
 
 			public:
-				typedef OneParamFtor<uint32_t, void> isr_fn;
-				struct ISR { int id; isr_fn isr; void *area; };
+				typedef const sigevent *(*isr_fn)(void *, int);
 
 			public:
 				Connection( ) : coid_(-1) { }
 				~Connection( );
 				void send(Data_ptr) const;
-				void registerISR(int, isr_fn);
+				void registerISR(int, isr_fn, sigevent *);
 				void close( );
 				bool open( ) const { return coid_ >= 0; }
-				static std::pair<int, uint32_t> handleISR(int);
 			private:
 				Connection(int c) : coid_(c) { }
 			private:
 				int coid_;
-				std::map<int, ISR> isrs_;
-				static irs_lookup_t lookup_;
+				std::map<int, int> isrs_;
 
 				friend class Channel;
 		};
