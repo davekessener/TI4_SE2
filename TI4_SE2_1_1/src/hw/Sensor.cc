@@ -1,87 +1,85 @@
 #include <sys/neutrino.h>
+#include <hw/inout.h>
 
 #include "hw/Sensor.h"
-
-#include "lib/TimeP.h"
 #include "hw/HWAccess.h"
+#include "lib/qnx/ISR.h"
+#include "lib/TimeP.h"
+#include "lib/Timer.h"
 #include "lib/log/LogManager.h"
 
 namespace hw
 {
 
-namespace
-{
-	struct sigevent isrEvent;
-
-	const struct sigevent* dio_isr(void* arg, int id)
-	{
-	    struct sigevent* event = (struct sigevent*) arg;
-	    int v = in8(0x318);
-	
-	    event->sigev_notify = SIGEV_PULSE ;
-	    event->__sigev_un1.__sigev_coid = coid;
-	    event->__sigev_un2.__st.__sigev_code = 0;
-	    event->sigev_value.sival_int = (v << 16) | in8(v == 2 ? 0x301 : 0x302);
-
-	    return event;
-	}
-}
-
-Sensor::Sensor(void)
+Sensor::Sensor(void) : running_(false), height_(0)
 {
 	for(int i = 0 ; i < VAR_COUNT ; ++i)
 	{
 		vals_[i] = flags_[i] = false;
 	}
 
-	thread_.reset(new lib::Thread(lib::wrapInFtor(this, &Sensor::thread)));
-
-	while(!ch_.isOpen()) lib::Time::ms(2).wait();
+	hm_thread_.reset(new lib::Thread(lib::wrapInFtor(this, &Sensor::manageHM)));
+	isr_thread_.reset(new lib::Thread(isr_main));
 }
 
 Sensor::~Sensor(void)
 {
-	if(static_cast<bool>(thread_.get()) && thread_->joinable())
-		thread_->join();
+	shutdown();
 }
 
-void Sensor::thread(void)
+void Sensor::shutdown(void)
 {
-	hw::HWAccess::instance();
-	lib::log::Logger_ptr log = lib::log::LogManager::instance().rootLog();
-	lib::qnx::Receiver recv = ch_.open();
-	con_ = ch_.connect();
-	running_ = true;
-
-	initISR();
-
-	log->MXT_LOG("done initializing isr");
-
-	try
-	{
-		while(running_)
-		{
-			log->MXT_LOG("waiting for pulse");
-			handlePulse(recv.getPulse());
-			log->MXT_LOG("handled pulse");
-		}
-	}
-	catch(...)
+	if(static_cast<bool>(isr_thread_.get()))
 	{
 		running_ = false;
+
+		isr_stop();
+
+		isr_thread_->join();
+		hm_thread_->join();
+
+		isr_thread_.reset();
+		hm_thread_.reset();
 	}
+}
 
-	log->MXT_LOG("cleaning up isr");
+uint16_t get_height(void)
+{
+	HWAccessImpl &hw = HWAccess::instance();
+	uint16_t height;
 
-	cleanupISR();
+	height = hw.in(HWAccessImpl::AIO_LOW);
+	hw.out(HWAccessImpl::AIO_CONVERT, HWAccessImpl::AIO_START_CONVERSION);
+
+	lib::Time::us(10).wait();
+
+	height |= (uint16_t)hw.in(HWAccessImpl::AIO_HIGH) << 8;
+
+	return height & 0xfff;
+}
+
+void Sensor::manageHM(void)
+{
+	lib::Time delay = lib::Time::us(500);
+	lib::Timer fps;
+
+	running_ = true;
+
+	HWAccess::instance().initThread();
+
+	while(running_)
+	{
+		uint16_t h = get_height();
+
+		height_ = h;
+
+		fps.sync(delay);
+	}
 }
 
 void Sensor::handlePulse(uint32_t pulse)
 {
-	HWAccessImpl &hal = HWAccess::instance();
-	uint32_t v = ((hal.in(HWAccessImpl::PORT_C) & 0xf0) << 4) | hal.in(HWAccessImpl::PORT_B);
-
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("received pulse");
+	uint32_t v = pulse ^ 0x0acb; // 0b1010 1100 1011
 
 	for(int i = 0 ; i < VAR_COUNT ; ++i)
 	{
@@ -93,24 +91,6 @@ void Sensor::handlePulse(uint32_t pulse)
 			flags_[i] = true;
 		}
 	}
-}
-
-void Sensor::initISR(void)
-{
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("wrote 0 to 0x30f");
-	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_RESET, 0);
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("wrote 0b1111 1001 to 0x30b");
-	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_MASK, 0b11111001);
-
-	con_.registerISR(HWAccessImpl::DIO_IRQ, dio_isr, &isrEvent);
-}
-
-void Sensor::cleanupISR(void)
-{
-	con_.close();
-
-	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_MASK, 0b1111111);
-	HWAccess::instance().out(HWAccessImpl::DIO_IRQ_RESET, 0);
 }
 
 }

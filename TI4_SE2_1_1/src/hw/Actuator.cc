@@ -22,6 +22,8 @@ namespace hw
 	void Actuator::thread(void)
 	{
 		lib::qnx::Receiver recv = ch_.open();
+		HWAccess::instance().initThread();
+
 		running_ = true;
 
 		while(running_)

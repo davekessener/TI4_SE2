@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "lib/qnx/Channel.h"
-#include "lib/log/LogManager.h"
 #include "hw/HWAccess.h"
 #include "lib/macro.h"
 
@@ -25,8 +24,6 @@ namespace
 		size_t size;
 	};
 }
-
-Connection::irs_lookup_t Connection::lookup_;
 
 Data_ptr Receiver::receive(void)
 {
@@ -54,18 +51,6 @@ Data_ptr Receiver::receive(void)
 	return p;
 }
 
-uint32_t Receiver::getPulse(void)
-{
-    struct _pulse pulse;
-
-    lib::log::LogManager::instance().rootLog()->MXT_LOG("started MsgReceivePulse");
-	if(MsgReceivePulse(ch_->chid_, &pulse, sizeof(pulse), NULL) < 0)
-		MXT_TODO_ERROR; //TODO
-    lib::log::LogManager::instance().rootLog()->MXT_LOG("done MsgReceivePulse");
-
-	return pulse.value.sival_int;
-}
-
 Connection::~Connection(void)
 {
 	if(coid_ >= 0)
@@ -76,12 +61,6 @@ void Connection::close(void)
 {
 	if(coid_ < 0)
 		MXT_TODO_ERROR; // TODO
-
-	for(std::map<int, int>::iterator i1 = isrs_.begin(), i2 = isrs_.end() ; i1 != i2 ; ++i1)
-	{
-		if(InterruptDetach(i1->second) < 0)
-			MXT_TODO_ERROR;
-	}
 
 	if(ConnectDetach(coid_) < 0)
 		MXT_TODO_ERROR; //TODO
@@ -106,27 +85,6 @@ void Connection::send(Data_ptr p) const
 		MXT_TODO_ERROR; //TODO
 }
 
-void Connection::registerISR(int irq, isr_fn isr, sigevent *event)
-{
-	if(coid_ < 0)
-		MXT_TODO_ERROR; //TODO
-
-	if(isrs_.find(irq) != isrs_.end())
-		MXT_TODO_ERROR; //TODO
-	
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("SIGEV_PULSE_INIT coid:%i", coid_);
-    SIGEV_PULSE_INIT(event, coid_, SIGEV_PULSE_PRIO_INHERIT, 0, 0);
-
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("InterruptAttach");
-	int id = InterruptAttach(irq, irs, event, sizeof(*event), 0);
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("registered irs with %i", id);
-
-	if(id < 0)
-		MXT_TODO_ERROR; //TODO
-
-	isrs_[irq] = id;
-}
-
 void Channel::close(void)
 {
 	if(chid_ > 0)
@@ -145,8 +103,6 @@ Receiver Channel::open(int f)
 	if((chid_ = ChannelCreate(f)) < 0)
 		MXT_TODO_ERROR; //TODO
 
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("created channel");
-
 	return Receiver(this);
 }
 
@@ -158,8 +114,6 @@ Connection Channel::connect(int f) const
 		MXT_TODO_ERROR; //TODO
 	
 	gcoid = coid;
-
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("created connection %i", coid);
 
 	return Connection(coid);
 }

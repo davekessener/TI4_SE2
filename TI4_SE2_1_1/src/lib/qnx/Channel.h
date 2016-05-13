@@ -19,7 +19,6 @@ namespace lib
 		{
 			public:
 				Data_ptr receive( );
-				uint32_t getPulse( );
 			private:
 				Receiver(Channel *c) : ch_(c) { }
 			private:
@@ -30,23 +29,17 @@ namespace lib
 
 		class Connection
 		{
-			typedef std::map<int, std::pair<Connection *, int> > irs_lookup_t;
-
-			public:
-				typedef const sigevent *(*isr_fn)(void *, int);
-
 			public:
 				Connection( ) : coid_(-1) { }
 				~Connection( );
 				void send(Data_ptr) const;
-				void registerISR(int, isr_fn, sigevent *);
 				void close( );
 				bool open( ) const { return coid_ >= 0; }
+				int raw( ) const { return coid_; }
 			private:
 				Connection(int c) : coid_(c) { }
 			private:
 				int coid_;
-				std::map<int, int> isrs_;
 
 				friend class Channel;
 		};

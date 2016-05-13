@@ -12,32 +12,41 @@
 namespace hw
 {
 
-HWAccessImpl::HWAccessImpl(void)
+void HWAccessImpl::initThread(void)
 {
-	lib::log::LogManager::instance().rootLog()->MXT_LOG("thread ctrl");
+	Lock guard(this);
+
     if(ThreadCtl(_NTO_TCTL_IO_PRIV, 0) < 0)
     	throw std::runtime_error("no access to hw");
 
 	out8(MXT_IO_CONTROL_ADDR, MXT_IO_CONTROL_BITMASK);
 }
 
-uint8_t HWAccessImpl::in(port_t addr) const
+uint8_t HWAccessImpl::in(port_t addr)
 {
+	Lock guard(this);
+
 	return in8(addr);
 }
 
-void HWAccessImpl::out(port_t addr, pin_t v) const
+void HWAccessImpl::out(port_t addr, pin_t v)
 {
+	Lock guard(this);
+
 	out8(addr, v);
 }
 
-void HWAccessImpl::setBits(port_t addr, pin_t mask) const
+void HWAccessImpl::setBits(port_t addr, pin_t mask)
 {
+	Lock guard(this);
+
 	out(addr, MXT_SETBITS(in(addr), mask));
 }
 
-void HWAccessImpl::resetBits(port_t addr, pin_t mask) const
+void HWAccessImpl::resetBits(port_t addr, pin_t mask)
 {
+	Lock guard(this);
+
 	out(addr, MXT_RESETBITS(in(addr), mask));
 }
 

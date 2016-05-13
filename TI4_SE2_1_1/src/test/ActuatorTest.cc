@@ -4,6 +4,7 @@
 #include "hw/LED.h"
 #include "hw/Motor.h"
 #include "hw/Actuator.h"
+#include "hw/Sensor.h"
 #include "lib/log/LogManager.h"
 
 namespace test
@@ -18,7 +19,9 @@ namespace test
 		using hw::Motor;
 		using hw::Motors;
 
-		Time delay = Time::s(3);
+		hw::Sensors::instance();
+
+		Time delay = Time::ms(500);
 		Logger_ptr log = LogManager::instance().rootLog();
 
 		log->MXT_LOG("turn on GREEN");
@@ -113,5 +116,7 @@ namespace test
 		Motors::instance().controlSwitch(Motor::State::CLOSE);
 
 		log->MXT_LOG("DONE testing actuators. ---------------------------------");
+
+		hw::Sensors::instance().shutdown();
 	}
 }

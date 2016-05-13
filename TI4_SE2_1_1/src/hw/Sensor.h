@@ -19,6 +19,10 @@ namespace hw
 		static const int SWITCHOPEN = 5;
 		static const int RAMPFULL = 6;
 		static const int LEAVING = 7;
+		static const int START = 8;
+		static const int STOP = 9;
+		static const int RESET = 10;
+		static const int ESTOP = 11;
 
 		public:
 			bool entering( ) { return get(ENTERING); }
@@ -26,7 +30,7 @@ namespace hw
 			bool inHM( ) { return get(INHM); }
 			bool inHMChanged( ) const { return flags_[INHM]; }
 			bool hmValid( ) { return get(HMVALID); }
-			bool hmValieChanged( ) const { return flags_[HMVALID]; }
+			bool hmValidChanged( ) const { return flags_[HMVALID]; }
 			bool inSwitch( ) { return get(INSWITCH); }
 			bool inSwitchChanged( ) const { return flags_[INSWITCH]; }
 			bool isMetal( ) { return get(ISMETAL); }
@@ -37,21 +41,29 @@ namespace hw
 			bool rampFullChanged( ) const { return flags_[RAMPFULL]; }
 			bool leaving( ) { return get(LEAVING); }
 			bool leavingChanged( ) const { return flags_[LEAVING]; }
+			bool start( ) { return get(START); }
+			bool startChanged( ) const { return flags_[START]; }
+			bool stop( ) { return get(STOP); }
+			bool stopChanged( ) const { return flags_[STOP]; }
+			bool reset( ) { return get(RESET); }
+			bool resetChanged( ) const { return flags_[RESET]; }
+			bool estop( ) { return get(ESTOP); }
+			bool estopChanged( ) const { return flags_[ESTOP]; }
+			uint16_t getHeight( ) const { return height_; }
 
-		private:
-			void thread( );
 			void handlePulse(uint32_t);
-			void initISR( );
-			void cleanupISR( );
-			bool get(int i) { flags_[i] = false; return vals_[i]; }
+			void shutdown( );
 
 		private:
-			static const int VAR_COUNT = 8;
+			bool get(int i) { flags_[i] = false; return vals_[i]; }
+			void manageHM( );
+
+		private:
+			static const int VAR_COUNT = 12;
 			bool vals_[VAR_COUNT], flags_[VAR_COUNT];
 			bool running_;
-			lib::qnx::Channel ch_;
-			lib::qnx::Connection con_;
-			std::auto_ptr<lib::Thread> thread_;
+			uint16_t height_;
+			std::auto_ptr<lib::Thread> isr_thread_, hm_thread_;
 
 		public:
 			Sensor( );

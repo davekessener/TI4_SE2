@@ -59,24 +59,26 @@ void Motor::doControlBelt(const void *vp)
 {
 	const motor_belt_packet *p = static_cast<const motor_belt_packet *>(vp);
 	pid_t d = p->dir, s = p->speed;
-	uint8_t a, n;
+	uint8_t n;
 
-	n = a = HWAccess::instance().in(HWAccessImpl::PORT_A);
+	n = HWAccess::instance().in(HWAccessImpl::PORT_A);
 
-	if(curDir_ != Direction::NONE && (curDir_ != d || s == Speed::STOP))
+	if(s == Speed::STOP)
 	{
-		n = MXT_RESETBITS(n, curDir_);
-		curDir_ = Direction::NONE;
+		n = MXT_RESETBITS(n, Direction::LEFT | Direction::RIGHT | Speed::SLOW);
+	}
+	else
+	{
+		if(d != Direction::NONE)
+		{
+			n = MXT_RESETBITS(n, Direction::LEFT | Direction::RIGHT);
+			n = MXT_SETBITS(n, d);
+		}
+
+		n = (s == Speed::FAST) ? MXT_RESETBITS(n, Speed::SLOW) : MXT_SETBITS(n, Speed::SLOW);
 	}
 
-	if(d != Direction::NONE && d != curDir_ && s != Speed::STOP)
-	{
-		n = MXT_SETBITS(n, d|s);
-		curDir_ = d;
-	}
-
-	if(n != a)
-		HWAccess::instance().out(HWAccessImpl::PORT_A, n);
+	HWAccess::instance().out(HWAccessImpl::PORT_A, n);
 }
 
 void Motor::doControlSwitch(const void *vp)

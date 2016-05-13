@@ -15,7 +15,7 @@ Logger_ptr LogManagerImpl::getLog(const std::string& s)
 {
 	Lock guard(this);
 
-	Logger_ptr l = logs_[s];
+	Logger_ptr &l = logs_[s];
 
 	if(!static_cast<bool>(l))
 	{
