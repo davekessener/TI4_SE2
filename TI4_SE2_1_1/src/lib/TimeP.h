@@ -54,6 +54,15 @@ namespace lib
 			Frequency(const Frequency&);
 			Frequency& operator=(const Frequency&);
 	};
+
+	class Speed
+	{
+		public:
+			Speed(Time t) : v_(t.raw() ? (1 << 28) / t.raw() : 0) { }
+			uint32_t in(Time t) const { return v_ * t.raw(); }
+		private:
+			uint32_t v_;
+	};
 }
 
 #endif
