@@ -2,6 +2,7 @@
 #define HAW_RUN_INITIALIZATION_H
 
 #include "run/State.h"
+#include "run/Project.h"
 
 namespace haw
 {
@@ -15,15 +16,14 @@ namespace haw
 
 			public:
 				Measurer( ) : { reset(); }
-				void reset( ) { state_ = &Measurer::start; height_ = -1; }
-				void update(const SensorEvent& e) { (this->*state_)(e); }
+				void reset( ) { state_ = &Measurer::start; height_ = 0; }
+				void process(const SensorEvent& e) { (this->*state_)(e); }
 				void tick( );
-				bool done( ) const { return height_ < (uint16_t)-1 && state_ == &Measurer::end; }
-				uint16_t getHeight( ) const { return ((uint16_t) -1) - height_; }
+				bool done( ) const { return height_ && state_ == &Measurer::end; }
+				uint16_t getHeight( ) const { return height_; }
 			private:
 				void start(const SensorEvent&);
 				void toHM(const SensorEvent&);
-				void inHM(const SensorEvent&);
 				void back(const SensorEvent&);
 				void end(const SensorEvent&) { }
 			private:
@@ -32,19 +32,25 @@ namespace haw
 		};
 
 		public:
-			Calibrator( ) : state_(&Calibrator::start), cur_(0) { }
+			Calibrator(Project& p) : project_(p), state_(&Calibrator::start), cur_(0) { }
 			void process(const SensorEvent& e) { (this->*state_)(e); }
 			void tick( ) { meas_.tick(); }
+			bool done( ) const { return state_ == &Calibrator::end; }
 		private:
+			void start(const SensorEvent&);
 			void measureFlat(const SensorEvent&);
 			void measureLarge(const SensorEvent&);
-			void start(const SensorEvent&);
+			void startMain(const SensorEvent&);
 			void toHM(const SensorEvent&);
 			void toSwitch(const SensorEvent&);
 			void toEnd(const SensorEvent&);
+			void end(const SensorEvent&) { }
 		private:
+			Project& project_;
 			Measurer meas_;
-			lib::Time fast_, slow_;
+			uint16_t min_, max_;
+			lib::Time fast_, slow_, toHM_, puk_;
+			lib::Timer timer_;
 			state_fn state_;
 			int cur_;
 	};

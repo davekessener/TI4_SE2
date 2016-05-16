@@ -71,7 +71,7 @@ void Sensor::manageHM(void)
 	{
 		uint16_t h = get_height();
 
-		height_ = h;
+		height_ = ~h;
 
 		fps.sync(delay);
 	}

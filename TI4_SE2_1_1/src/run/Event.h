@@ -1,12 +1,14 @@
 #ifndef HAW_RUN_EVENT_H
 #define HAW_RUN_EVENT_H
 
+#include <stdint.h>
+
 namespace haw
 {
 	class Event
 	{
 		public:
-		typedef event_id_t;
+		typedef uint32_t event_id_t;
 		struct ID
 		{
 			static const event_id_t SENSOR = 1;

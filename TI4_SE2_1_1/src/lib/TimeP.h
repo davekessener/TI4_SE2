@@ -29,6 +29,8 @@ namespace lib
 			void wait( ) const { sleep(t_); }
 			void toTimespec(timespec *);
 			us_t raw( ) const { return t_; }
+			Time& operator+=(const Time& t) { t_ += t.t_; return *this; }
+			Time operator+(const Time& t) const { Time tt(*this); return tt += t; }
 
 			static Time h(us_t v) { return Time(v * H_TO_US); }
 			static Time min(us_t v) { return Time(v * M_TO_US); }
