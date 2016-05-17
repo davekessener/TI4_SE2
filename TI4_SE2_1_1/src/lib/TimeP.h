@@ -25,6 +25,7 @@ namespace lib
 		static const uint32_t  H_TO_US = H_TO_M  * M_TO_US;
 
 		public:
+			Time( ) : t_(0) { }
 			explicit Time(us_t t) : t_(t) { }
 			void wait( ) const { sleep(t_); }
 			void toTimespec(timespec *);
@@ -60,9 +61,10 @@ namespace lib
 	class Speed
 	{
 		public:
-			static const uint32_t reference = 1 << 28;
+			static const uint32_t reference = 1 << 26;
 
 		public:
+			Speed( ) : v_(0) { }
 			Speed(Time t) : v_(t.raw() ? reference / t.raw() : 0) { }
 			uint32_t in(Time t) const { return v_ * t.raw(); }
 		private:

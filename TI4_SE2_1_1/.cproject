@@ -60,7 +60,7 @@
 		<parallel_build_number value="1"/>
 		<active_configurations>
 			<configuration value="_x86_r"/>
-			<configuration default="true" indexing="true" value="_x86_g"/>
+			<configuration indexing="true" value="_x86_g"/>
 		</active_configurations>
 	</storageModule>
 </cproject>

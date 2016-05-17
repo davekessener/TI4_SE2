@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "lib/SmartPrt.hpp"
+#include "lib/SmartPtr.hpp"
 #include "lib/TimeP.h"
 #include "run/Event.h"
 

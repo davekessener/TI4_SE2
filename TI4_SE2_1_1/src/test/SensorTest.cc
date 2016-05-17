@@ -43,8 +43,8 @@ void runHM(Sensor &sensors)
 		return;
 	}
 
-#define LINES 30
-#define COLS 40
+#define LINES 6
+#define COLS 10
 
 	int n = values.size() / LINES, p = 0, s = values.size();
 	uint16_t min = -1, max = 0, avg;
@@ -71,7 +71,7 @@ void runHM(Sensor &sensors)
 
 	for(int i = 0 ; i < LINES ; ++i)
 	{
-		disp[i] = disp[i] > avg ? 0 : COLS;
+		disp[i] = disp[i] <= avg ? 0 : COLS;
 	}
 
 	for(int i = 0 ; i < LINES ; ++i)
@@ -79,7 +79,7 @@ void runHM(Sensor &sensors)
 		printf("%*s\n", disp[i], "#");
 	}
 
-	printf("Max is 0x%04x\n", min);
+	printf("Max is 0x%04x\n", max);
 }
 
 void sensors(void)

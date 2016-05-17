@@ -19,7 +19,7 @@ namespace haw
 			virtual event_id_t id( ) const = 0;
 	};
 
-	class SensorEvent
+	class SensorEvent : public Event
 	{
 		public:
 		struct Sensors
@@ -34,11 +34,12 @@ namespace haw
 			static const uint32_t ESTOP = 7;
 		};
 		typedef uint32_t sensor_t;
+		typedef Event::event_id_t event_id_t;
 
 		public:
 			SensorEvent(sensor_t s, bool v) : s_(s), v_(v) { }
 			virtual event_id_t id( ) const { return Event::ID::SENSOR; }
-			sensor_t sensor( ) const { return s; }
+			sensor_t sensor( ) const { return s_; }
 			bool value( ) const { return v_; }
 		private:
 			sensor_t s_;

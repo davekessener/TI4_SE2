@@ -3,6 +3,7 @@
 
 #include "run/State.h"
 #include "run/Project.h"
+#include "lib/Timer.h"
 
 namespace haw
 {
@@ -15,7 +16,7 @@ namespace haw
 			typedef void(Measurer::*state_fn)(const SensorEvent&);
 
 			public:
-				Measurer( ) : { reset(); }
+				Measurer( ) { reset(); }
 				void reset( ) { state_ = &Measurer::start; height_ = 0; }
 				void process(const SensorEvent& e) { (this->*state_)(e); }
 				void tick( );
@@ -58,7 +59,7 @@ namespace haw
 	class Initialization : public State
 	{
 		public:
-			Initialization( );
+			Initialization(Project& p) : cali_(p) { }
 			virtual void enter( );
 			virtual void exit( );
 //			virtual void update(lib::Time) { }

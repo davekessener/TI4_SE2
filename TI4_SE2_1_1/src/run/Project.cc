@@ -1,13 +1,33 @@
 #include <vector>
+#include <iostream>
 
+#include "run/Initialization.h"
+#include "run/Ready.h"
+#include "run/Running.h"
 #include "run/Project.h"
 #include "run/State.h"
+#include "lib/Timer.h"
+#include "hw/LED.h"
+#include "hw/Motor.h"
 
 namespace haw
 {
 using lib::Time;
 using lib::Timer;
 using lib::Speed;
+using hw::LEDs;
+using hw::LED;
+using hw::Motors;
+using hw::Motor;
+
+Project::~Project(void)
+{
+	LEDs::instance().turnOff(LED::GREEN);
+	LEDs::instance().turnOff(LED::YELLOW);
+	LEDs::instance().turnOff(LED::RED);
+	Motors::instance().controlBelt(Motor::Direction::NONE, Motor::Speed::STOP);
+	Motors::instance().controlSwitch(Motor::State::CLOSE);
+}
 
 void Project::run(void)
 {
@@ -18,6 +38,9 @@ void Project::run(void)
 
 	states.push_back(State_ptr(new Initialization(*this)));
 	states.push_back(State_ptr(new Ready));
+	states.push_back(State_ptr(new Running(*this)));
+
+	states[0]->enter();
 
 	while(true)
 	{
@@ -35,7 +58,7 @@ void Project::run(void)
 			if(next != State::THIS)
 			{
 				s->exit();
-				states[idx += ni]->enter();
+				states[idx += next]->enter();
 			}
 
 			if(hm_.running())
@@ -43,11 +66,21 @@ void Project::run(void)
 
 			delta = fps.sync(delay);
 		}
+		catch(const std::string& s)
+		{
+			std::cout << "caught string " << s << std::endl;
+			return;
+		}
+		catch(const std::runtime_error& e)
+		{
+			std::cout << "caught runtime_error " << e.what() << std::endl;
+			return;
+		}
 		catch(...)
 		{
-			states[idx].exit();
+			states[idx]->exit();
 			MXT_TODO_ERROR; //TODO
-			states[idx].enter();
+			states[idx]->enter();
 
 			fps.reset();
 		}
@@ -107,6 +140,8 @@ void Project::calibrateDistances(Time slow, Time fast, Time toHM, Time puk)
 
 	hmPos_ = speeds_[SPEED_SLOW].in(toHM);
 	pukWidth_ = speeds_[SPEED_SLOW].in(puk);
+
+	std::cout << "puks are " << pukWidth_ << " wide, and HM is at " << hmPos_ << std::endl;
 }
 
 }

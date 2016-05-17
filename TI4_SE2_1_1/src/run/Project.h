@@ -18,6 +18,7 @@ namespace haw
 		static const int CSPEEDS = 3;
 
 		public:
+			~Project( );
 			void run( );
 			void calibrateHM(uint16_t min, uint16_t max) { hm_.calibrate(min, max); }
 			void startHM( ) { hm_.start(); }

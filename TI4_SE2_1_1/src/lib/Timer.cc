@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <sys/neutrino.h>
 
 #include "lib/Timer.h"
 
@@ -97,12 +98,12 @@ void Timer::deactivateAll(void)
 
 Timer::ts_t Timer::timestamp(void)
 {
-	struct timespec ts;
-	ts_t t;
-
-	clock_gettime(CLOCK_REALTIME, &ts);
-
-	t = ts.tv_sec * (ts_t)1000000000L + ts.tv_nsec;
+	ts_t t = ClockCycles();
+//	struct timespec ts;
+//
+//	clock_gettime(CLOCK_REALTIME, &ts);
+//
+//	t = ts.tv_sec * (ts_t)1000000000L + ts.tv_nsec;
 
 	return t;
 }

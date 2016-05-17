@@ -14,6 +14,9 @@ namespace haw
 using hw::LEDs;
 using hw::LED;
 using hw::Sensors;
+using hw::Motors;
+using hw::Motor;
+using lib::Frequency;
 
 // # ===========================================================================
 
@@ -85,8 +88,9 @@ void Calibrator::measureLarge(const SensorEvent& e)
 	if(meas_.done())
 	{
 		max_ = meas_.getHeight();
-		std::cout << "-> please enter a metallic puk right-side up" << std::endl;
+		std::cout << "measured min " << min_ << ", max " << max_ << std::endl;
 		project_.calibrateHM(min_, max_);
+		std::cout << "-> please enter a metallic puk right-side up" << std::endl;
 		state_ = &Calibrator::startMain;
 	}
 }
@@ -118,8 +122,12 @@ void Calibrator::toHM(const SensorEvent& e)
 		{
 			puk_ = timer_.delta();
 			
-			if(project_.stopHM() != Puk::Type::LARGE)
+			int t = project_.stopHM();
+			if(t != Puk::Type::LARGE)
+			{
+				std::cout << "type read: " << t << std::endl;
 				MXT_TODO_ERROR; //TODO
+			}
 			
 			state_ = &Calibrator::toSwitch;
 		}
@@ -168,11 +176,6 @@ void Calibrator::toEnd(const SensorEvent& e)
 
 // # ===========================================================================
 
-Initialization::Initialization(void)
-: next_(State::THIS)
-{
-}
-
 void Initialization::enter(void)
 {
 	hw::HWAccess::instance();
@@ -201,9 +204,10 @@ void Initialization::process(const Event& e)
 
 		switch(se.sensor())
 		{
-			case SensorEvent::Sensors::ESTOP:
+//			case SensorEvent::Sensors::ESTOP:
 			case SensorEvent::Sensors::STOP:
-				MXT_TODO_ERROR; //TODO
+				if(se.value())
+					MXT_TODO_ERROR; //TODO
 				break;
 			case SensorEvent::Sensors::START:
 				if(cali_.done() && se.value())
