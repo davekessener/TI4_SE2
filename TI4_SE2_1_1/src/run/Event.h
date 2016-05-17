@@ -28,12 +28,10 @@ namespace haw
 			static const uint32_t LEAVING = 1;
 			static const uint32_t IN_HM = 2;
 			static const uint32_t IN_SWITCH = 3;
-			static const uint32_t IS_METAL = 4;
-			static const uint32_t RAMP_FULL = 5;
-			static const uint32_t START = 6;
-			static const uint32_t STOP = 7;
-			static const uint32_t RESET = 8;
-			static const uint32_t ESTOP = 9;
+			static const uint32_t START = 4;
+			static const uint32_t STOP = 5;
+			static const uint32_t RESET = 6;
+			static const uint32_t ESTOP = 7;
 		};
 		typedef uint32_t sensor_t;
 

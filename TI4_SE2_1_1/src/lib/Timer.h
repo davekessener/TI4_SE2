@@ -49,7 +49,7 @@ namespace lib
 			 * function (if called within a loop) synchronizes the active
 			 * threads execution to a specific frequency (\$f\frac{1}{t}\$f)
 			 */
-			void sync(Time t);
+			Time sync(Time t);
 			void reset( );
 			/** Amount of time elapsed since last reset. Resets timer. */
 			Time delta( );

@@ -26,7 +26,7 @@ namespace haw
 			virtual void update(lib::Time) { }
 			virtual void process(const Event&) { }
 			virtual void execute( ) { }
-			virtual update_t update( ) { return next_; };
+			virtual update_t getNext( ) { return next_; };
 		protected:
 			void setNext(update_t u) { next_ = u; }
 		private:

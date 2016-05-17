@@ -199,13 +199,22 @@ void Initialization::process(const Event& e)
 
 		cali_.process(se);
 
-		if(cali_.done() && se.sensor() == SensorEvent::Sensors::START && se.value())
+		switch(se.sensor())
 		{
-			LEDs::instance().turnOff(LED::YELLOW);
-			LEDs::instance().blink(LED::GREEN, Frequency::Hz(0.5));
-			std::cout << "Entering READY state" << std::endl;
-			setNext(State::NEXT);
-		}
+			case SensorEvent::Sensors::ESTOP:
+			case SensorEvent::Sensors::STOP:
+				MXT_TODO_ERROR; //TODO
+				break;
+			case SensorEvent::Sensors::START:
+				if(cali_.done() && se.value())
+				{
+					LEDs::instance().turnOff(LED::YELLOW);
+					LEDs::instance().blink(LED::GREEN, Frequency::Hz(0.5));
+					std::cout << "Entering READY state" << std::endl;
+					setNext(State::NEXT);
+				}
+				break;
+		};
 	}
 }
 

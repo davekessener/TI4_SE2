@@ -45,11 +45,11 @@ Timer::~Timer(void)
 	deactivate();
 }
 
-void Timer::sync(Time t)
+Time Timer::sync(Time t)
 {
 	uint32_t us = get() / 1000;
 	if(us < t.raw()) Time::us(t.raw() - us).wait();
-	reset();
+	return delta();
 }
 
 void Timer::reset(void)

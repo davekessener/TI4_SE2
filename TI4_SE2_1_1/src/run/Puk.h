@@ -25,6 +25,10 @@ namespace haw
 			bool upsideDown( ) const { return puk_ & UPSIDE_DOWN; }
 			bool metal( ) const { return puk_ & IS_METAL; }
 			void update(uint32_t p) { pos_ += p; }
+			void setType(uint32_t t) { puk_ = t; }
+			void setUpsideDown( ) { puk_ |= UPSIDE_DOWN; }
+			void setMetal( ) { puk_ |= IS_METAL; }
+			bool isIn(uint32_t p) const { return pos_ >= p - 3 * width_ / 4 && pos_ <= p - width_ / 4;
 		private:
 			uint32_t width_, puk_;
 			int32_t pos_;

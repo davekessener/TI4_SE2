@@ -39,6 +39,12 @@ namespace lib
 			T *p_;
 			int *i_;
 	};
+
+	template<typename T>
+	SmartPtr<T> make_shared(void)
+	{
+		return SmartPtr<T>(new T);
+	}
 }
 
 #endif

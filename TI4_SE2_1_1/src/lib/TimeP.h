@@ -60,7 +60,10 @@ namespace lib
 	class Speed
 	{
 		public:
-			Speed(Time t) : v_(t.raw() ? (1 << 28) / t.raw() : 0) { }
+			static const uint32_t reference = 1 << 28;
+
+		public:
+			Speed(Time t) : v_(t.raw() ? reference / t.raw() : 0) { }
 			uint32_t in(Time t) const { return v_ * t.raw(); }
 		private:
 			uint32_t v_;
