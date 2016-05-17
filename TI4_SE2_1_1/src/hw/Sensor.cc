@@ -79,6 +79,8 @@ void Sensor::manageHM(void)
 
 void Sensor::handlePulse(uint32_t pulse)
 {
+	Lock guard(this);
+
 	uint32_t v = pulse ^ 0x0acb; // 0b1010 1100 1011
 
 	for(int i = 0 ; i < VAR_COUNT ; ++i)

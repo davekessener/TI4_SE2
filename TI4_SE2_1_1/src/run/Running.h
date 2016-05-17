@@ -35,14 +35,14 @@ namespace haw
 			void exitLeaving( );
 			void handleSwitch( );
 			bool keepPuk(Puk&);
-			iter_t anyPukIn(uint32_t);
+			iter_t anyPukIn(uint32_t, int);
 			inline bool switchClosed( ) const { return toSwitchClose_ <= 0; }
 		private:
 			Project &project_;
 			vec_t puks_;
 			Puk_ptr hmPuk_;
 			int32_t speed_, toSwitchClose_, scKeep_, scKick_;
-			uint32_t nextPuk_;
+			uint32_t nextPuk_, pid_;
 			bool stopping_, pausing_;
 	};
 }

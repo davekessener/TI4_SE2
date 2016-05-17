@@ -11,6 +11,7 @@ using hw::LED;
 void Ready::enter(void)
 {
 	LEDs::instance().turnOn(LED::GREEN);
+	setNext(State::THIS);
 }
 
 void Ready::exit(void)

@@ -3,6 +3,7 @@
 
 #include "run/State.h"
 #include "run/Project.h"
+#include "run/Config.h"
 #include "lib/Timer.h"
 
 namespace haw
@@ -59,13 +60,14 @@ namespace haw
 	class Initialization : public State
 	{
 		public:
-			Initialization(Project& p) : cali_(p) { }
+			Initialization(Project& p) : project_(p), cali_(p) { }
 			virtual void enter( );
 			virtual void exit( );
 //			virtual void update(lib::Time) { }
 			virtual void process(const Event&);
 			virtual void execute( ) { cali_.tick(); }
 		private:
+			Project& project_;
 			Calibrator cali_;
 	};
 }

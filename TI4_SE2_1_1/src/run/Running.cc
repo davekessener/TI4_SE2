@@ -11,7 +11,7 @@ namespace haw
 namespace
 {
 	inline int getSpeed(int s) { return s == Project::SPEED_SLOW ? 4 : (s == Project::SPEED_FAST ? 0 : 8); } // "undefined reference" error for some reason
-	inline uint32_t toType(Puk& p) { return p.metal() ? Running::PUK_METAL : (p.type() == 1 ? 0 : 1); }
+	inline uint32_t toType(Puk& p) { return p.metal() ? 2 : (p.type() == 1 ? 0 : 1); }
 //	inline int getSpeed(int s) { return s == Project::SPEED_SLOW ? hw::Motor::Speed::SLOW : (s == Project::SPEED_FAST ? hw::Motor::Speed::FAST : hw::Motor::Speed::STOP); }
 //	inline uint32_t toType(Puk& p) { return p.metal() ? Running::PUK_METAL : (p.type() == Puk::Type::FLAT ? Running::PUK_FLAT : Running::PUK_LARGE); }
 }
@@ -23,21 +23,24 @@ using hw::Motor;
 using hw::Sensors;
 
 Running::Running(Project& p)
-	: project_(p), speed_(Project::SPEED_FAST), toSwitchClose_(0), nextPuk_(PUK_FLAT),
+	: project_(p), speed_(Project::SPEED_FAST), toSwitchClose_(0), nextPuk_(PUK_FLAT), pid_(0),
 	  stopping_(false), pausing_(false)
 {
-	uint32_t w = project_.getPukWidth();
-	scKick_ = w / 2;
-	scKeep_ = 3 * w / 2;
 }
 
 void Running::enter(void)
 {
+	std::cout << "entering running" << std::endl;
+	setNext(State::THIS);
+	uint32_t w = project_.getPukWidth();
+	scKick_ = w / 3;
+	scKeep_ = 3 * w;
 	Motors::instance().controlBelt(Motor::Direction::RIGHT, getSpeed(speed_));
 }
 
 void Running::exit(void)
 {
+	std::cout << "leaving running" << std::endl;
 	Motors::instance().controlBelt(Motor::Direction::NONE, Motor::Speed::STOP);
 }
 
@@ -70,7 +73,7 @@ void Running::process(const Event& event)
 			case SensorEvent::Sensors::ENTERING:
 				if(!e.value())
 				{
-					puks_.push_back(Puk_ptr(new Puk(project_.getPukWidth())));
+					puks_.push_back(Puk_ptr(new Puk(pid_++, project_.getPukWidth())));
 				}
 				else if(stopping_)
 				{
@@ -112,15 +115,12 @@ void Running::process(const Event& event)
 
 void Running::execute(void)
 {
-	iter_t ipuk = anyPukIn(project_.hmPosition());
+	iter_t ipuk = anyPukIn(project_.hmPosition(), 4);
 
 	if(ipuk != puks_.end() && !Sensors::instance().inHM())
-	{
-		std::cout << "puk pos " << puks_[0]->position() << " hm pos " << project_.hmPosition() << std::endl;
 		MXT_TODO_ERROR; //TODO
-	}
 
-	ipuk = anyPukIn(project_.endPosition());
+	ipuk = anyPukIn(project_.endPosition(), 4);
 
 	if(ipuk != puks_.end() && !Sensors::instance().leaving())
 		MXT_TODO_ERROR; //TODO
@@ -135,6 +135,11 @@ void Running::execute(void)
 		{
 			setNext(State::NEXT);
 		}
+
+		if(!Sensors::instance().entering() && puks_.empty())
+		{
+			setNext(State::PREVIOUS);
+		}
 	}
 }
 
@@ -142,11 +147,10 @@ void Running::execute(void)
 
 void Running::enterHM(void)
 {
-	iter_t ipuk = anyPukIn(project_.hmPosition());
+	iter_t ipuk = anyPukIn(project_.hmPosition(), 0);
 
 	if(ipuk == puks_.end())
 	{
-		std::cout << "puk pos " << puks_[0]->position() << " hm pos " << project_.hmPosition() << std::endl;
 		MXT_TODO_ERROR; //TODO
 	}
 	else
@@ -167,17 +171,16 @@ void Running::exitHM(void)
 
 void Running::enterLeaving(void)
 {
-	iter_t ipuk = anyPukIn(project_.endPosition());
+	iter_t ipuk = anyPukIn(project_.endPosition(), 0);
 
 	if(ipuk == puks_.end())
+	{
 		MXT_TODO_ERROR; //TODO
+	}
+
+	std::cout << "puk " << (*ipuk)->id() << " type " << (*ipuk)->type() << " and metal:" << (*ipuk)->metal() << std::endl;
 
 	puks_.erase(ipuk);
-
-	if(puks_.empty())
-	{
-		setNext(State::PREVIOUS);
-	}
 }
 
 void Running::exitLeaving(void)
@@ -188,6 +191,9 @@ void Running::handleSwitch(void)
 {
 	if(!hmPuk_)
 		MXT_TODO_ERROR; //TODO
+
+	if(Sensors::instance().isMetal())
+		hmPuk_->setMetal();
 
 	bool keep = keepPuk(*hmPuk_);
 
@@ -210,6 +216,8 @@ bool Running::keepPuk(Puk& puk)
 
 	bool same = nextPuk_ == toType(puk);
 
+	std::cout << "expected " << nextPuk_ << ", got " << toType(puk) << std::endl;
+
 	if(same)
 	{
 		nextPuk_ = (nextPuk_ + 1) % CPUKS;
@@ -218,11 +226,11 @@ bool Running::keepPuk(Puk& puk)
 	return same || Sensors::instance().rampFull() || puk.metal();
 }
 
-Running::iter_t Running::anyPukIn(uint32_t p)
+Running::iter_t Running::anyPukIn(uint32_t p, int f)
 {
 	for(iter_t i1 = puks_.begin(), i2 = puks_.end() ; i1 != i2 ; ++i1)
 	{
-		if((*i1)->isIn(p))
+		if((*i1)->isIn(p, f))
 			return i1;
 	}
 

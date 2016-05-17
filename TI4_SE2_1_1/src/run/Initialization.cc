@@ -59,7 +59,7 @@ void Calibrator::Measurer::back(const SensorEvent& e)
 
 void Calibrator::start(const SensorEvent& e)
 {
-	if(e.sensor() == SensorEvent::Sensors::START && e.value())
+	if(e.sensor() == SensorEvent::Sensors::RESET && e.value())
 	{
 		LEDs::instance().turnOn(LED::GREEN);
 		std::cout << "-> please enter a flat puk" << std::endl;
@@ -109,6 +109,7 @@ void Calibrator::toHM(const SensorEvent& e)
 	if(e.sensor() == SensorEvent::Sensors::ENTERING && !e.value())
 	{
 		timer_.reset();
+		std::cout << lib::Timer::timestamp() << std::endl;
 	}
 
 	if(e.sensor() == SensorEvent::Sensors::IN_HM)
@@ -116,13 +117,14 @@ void Calibrator::toHM(const SensorEvent& e)
 		if(e.value())
 		{
 			toHM_ = timer_.delta();
+			std::cout << lib::Timer::timestamp() << " should be " << toHM_.raw() << std::endl;
 			project_.startHM();
 		}
 		else
 		{
 			puk_ = timer_.delta();
 			
-			int t = project_.stopHM();
+			uint32_t t = project_.stopHM();
 			if(t != Puk::Type::LARGE)
 			{
 				std::cout << "type read: " << t << std::endl;
@@ -186,7 +188,8 @@ void Initialization::enter(void)
 
 	LEDs::instance().turnOn(LED::YELLOW);
 
-	std::cout << "Please press START to calibrate" << std::endl;
+	std::cout << "Press START to load calibrations and run," << std::endl;
+	std::cout << "Press RESET to recalibrate" << std::endl;
 }
 
 void Initialization::exit(void)
@@ -210,11 +213,16 @@ void Initialization::process(const Event& e)
 					MXT_TODO_ERROR; //TODO
 				break;
 			case SensorEvent::Sensors::START:
+				project_.calibrateFromConfig();
+				setNext(State::NEXT);
+				break;
+			case SensorEvent::Sensors::RESET:
 				if(cali_.done() && se.value())
 				{
 					LEDs::instance().turnOff(LED::YELLOW);
 					LEDs::instance().blink(LED::GREEN, Frequency::Hz(0.5));
 					std::cout << "Entering READY state" << std::endl;
+					project_.saveConfig();
 					setNext(State::NEXT);
 				}
 				break;

@@ -4,13 +4,17 @@
 #include <memory>
 
 #include "lib/concurrent/Thread.h"
+#include "lib/concurrent/Lock.hpp"
 #include "lib/qnx/Channel.h"
 #include "lib/Singleton.hpp"
 
 namespace hw
 {
-	class Sensor
+	class Sensor : public lib::LockableObject<Sensor>
 	{
+		typedef lib::LockableObject<Sensor> Super;
+		typedef Super::Lock Lock;
+
 		static const int ENTERING = 0;
 		static const int INHM = 1;
 		static const int HMVALID = 2;
@@ -55,7 +59,7 @@ namespace hw
 			void shutdown( );
 
 		private:
-			bool get(int i) { flags_[i] = false; return vals_[i]; }
+			bool get(int i) { Lock guard(this); flags_[i] = false; return vals_[i]; }
 			void manageHM( );
 
 		private:

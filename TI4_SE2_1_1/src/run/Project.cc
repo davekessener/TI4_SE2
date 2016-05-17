@@ -20,6 +20,10 @@ using hw::LED;
 using hw::Motors;
 using hw::Motor;
 
+Project::Project(void) : config_("/tmp/config.dat")
+{
+}
+
 Project::~Project(void)
 {
 	LEDs::instance().turnOff(LED::GREEN);
@@ -27,6 +31,23 @@ Project::~Project(void)
 	LEDs::instance().turnOff(LED::RED);
 	Motors::instance().controlBelt(Motor::Direction::NONE, Motor::Speed::STOP);
 	Motors::instance().controlSwitch(Motor::State::CLOSE);
+}
+
+void Project::calibrateFromConfig(void)
+{
+	calibrateHM(config_.getMin(), config_.getMax());
+	calibrateDistances(config_.getSlow(), config_.getFast(), config_.getHM(), config_.getPuk());
+}
+
+void Project::saveConfig(void)
+{
+	config_.save();
+}
+
+void Project::calibrateHM(uint16_t min, uint16_t max)
+{
+	hm_.calibrate(min, max);
+	config_.setHM(min, max);
 }
 
 void Project::run(void)
@@ -138,10 +159,10 @@ void Project::calibrateDistances(Time slow, Time fast, Time toHM, Time puk)
 	speeds_[SPEED_SLOW] = Speed(slow);
 	speeds_[SPEED_FAST] = Speed(fast);
 
-	hmPos_ = speeds_[SPEED_SLOW].in(toHM);
 	pukWidth_ = speeds_[SPEED_SLOW].in(puk);
+	hmPos_ = speeds_[SPEED_SLOW].in(toHM) + pukWidth_ / 4;
 
-	std::cout << "puks are " << pukWidth_ << " wide, and HM is at " << hmPos_ << std::endl;
+	config_.setTimes(slow, fast, toHM, puk);
 }
 
 }
