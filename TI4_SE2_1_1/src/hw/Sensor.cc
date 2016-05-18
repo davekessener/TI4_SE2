@@ -77,10 +77,17 @@ void Sensor::manageHM(void)
 	}
 }
 
+//! Pulse Handler
+/*! \fn handlePulse
+ * Handles pulses that are regularly send to the Sensor class. 
+ * To refresh the state of the sensors and the flags.
+ * @param pulse <tt>Pulse</tt> from the copying of data from the sensor register.
+ */
+
 void Sensor::handlePulse(uint32_t pulse)
 {
 	Lock guard(this);
-
+	//! Holds the current pulse. Sensor signals are bit flipped to 0 when not activated.
 	uint32_t v = pulse ^ 0x0acb; // 0b1010 1100 1011
 
 	for(int i = 0 ; i < VAR_COUNT ; ++i)

@@ -71,10 +71,14 @@ void serialA(void) { connection("/dev/ser1", true); }
 void serialB(void) { connection("/dev/ser2", false); }
 void connections(void)
 {
+	//! Creates a serial Connection on serialA
 	Thread t1(serialA);
+	//! Creates a serial Connection on serialB
 	Thread t2(serialB);
 
+	//! Destroys serial Connection on serialA
 	t1.join();
+	//! Destroys serial Connection on serialB
 	t2.join();
 }
 
