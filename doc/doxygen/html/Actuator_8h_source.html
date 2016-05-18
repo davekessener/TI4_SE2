@@ -92,56 +92,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00011"></a>00011 
 <a name="l00012"></a>00012 <span class="keyword">namespace </span>hw
 <a name="l00013"></a>00013 {
-<a name="l00024"></a><a class="code" href="classhw_1_1Actuator.html">00024</a>     <span class="keyword">class </span><a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a> : <span class="keyword">public</span> lib::LockableObject&lt;Actuator&gt;
-<a name="l00025"></a>00025     {
-<a name="l00026"></a>00026         <span class="keyword">typedef</span> void (<a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>::*cmd_fn)(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
-<a name="l00027"></a>00027         <span class="keyword">public</span>:
-<a name="l00028"></a>00028             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1LockableObject.html">lib::LockableObject&lt;Actuator&gt;</a> <a class="code" href="classlib_1_1LockableObject.html">Super</a>;
-<a name="l00029"></a>00029             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">lib::Singleton&lt;Actuator, lib::SingletonConcurrency::MultiThreaded&gt;</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">SingletonInst</a>;
-<a name="l00030"></a>00030             <span class="keyword">typedef</span> Super::Lock Lock;
-<a name="l00031"></a>00031 
-<a name="l00032"></a>00032             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1qnx_1_1Channel.html">lib::qnx::Channel</a> <a class="code" href="classlib_1_1qnx_1_1Channel.html">Channel</a>;
-<a name="l00033"></a>00033             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Thread.html" title="Encapsulates the most important features of a thread.">lib::Thread</a> <a class="code" href="classlib_1_1Thread.html" title="Encapsulates the most important features of a thread.">Thread</a>;
-<a name="l00034"></a>00034 
-<a name="l00035"></a>00035             <span class="keyword">static</span> <span class="keyword">const</span> uint8_t LED_ACTIVATE = 0x00;
-<a name="l00036"></a>00036             <span class="keyword">static</span> <span class="keyword">const</span> uint8_t MOTOR_BELT   = 0x01;
-<a name="l00037"></a>00037             <span class="keyword">static</span> <span class="keyword">const</span> uint8_t MOTOR_SWITCH = 0x02;
-<a name="l00038"></a>00038             <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> CCMD = 3;
-<a name="l00039"></a>00039 
-<a name="l00040"></a>00040         <span class="keyword">public</span>:
-<a name="l00041"></a>00041             <span class="keyword">const</span> <a class="code" href="classlib_1_1qnx_1_1Channel.html">Channel</a>&amp; getChannel( )<span class="keyword"> const </span>{ <span class="keywordflow">return</span> ch_; }
-<a name="l00042"></a>00042 
-<a name="l00043"></a>00043         <span class="keyword">private</span>:
-<a name="l00044"></a>00044             <a class="code" href="classlib_1_1qnx_1_1Channel.html">Channel</a> ch_;
-<a name="l00045"></a>00045             <span class="keywordtype">bool</span> running_;
-<a name="l00046"></a>00046             cmd_fn cmds_[CCMD];
-<a name="l00047"></a>00047             std::auto_ptr&lt;Thread&gt; thread_;
-<a name="l00048"></a>00048 
-<a name="l00049"></a>00049             <span class="keywordtype">void</span> thread( );
-<a name="l00050"></a>00050             <span class="keywordtype">void</span> led_activate(<span class="keyword">const</span> <span class="keywordtype">void</span> *d) { <a class="code" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6" title="Access singleton class implementation.">LEDs::instance</a>().doActivate(d); }
-<a name="l00051"></a>00051             <span class="keywordtype">void</span> motor_belt(<span class="keyword">const</span> <span class="keywordtype">void</span> *d) { <a class="code" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6" title="Access singleton class implementation.">Motors::instance</a>().doControlBelt(d); }
-<a name="l00052"></a>00052             <span class="keywordtype">void</span> motor_switch(<span class="keyword">const</span> <span class="keywordtype">void</span> *d) { <a class="code" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6" title="Access singleton class implementation.">Motors::instance</a>().doControlSwitch(d); }
-<a name="l00053"></a>00053 
-<a name="l00054"></a>00054         <span class="keyword">public</span>:
-<a name="l00055"></a>00055             <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>( );
-<a name="l00056"></a>00056             ~<a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>( ) { running_ = <span class="keyword">false</span>; ch_.close(); thread_-&gt;join(); }
-<a name="l00057"></a>00057         <span class="keyword">private</span>:
-<a name="l00058"></a>00058             <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>(<span class="keyword">const</span> <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>&amp;);
-<a name="l00059"></a>00059             <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>&amp;);
-<a name="l00060"></a>00060     };
-<a name="l00061"></a>00061 
-<a name="l00062"></a>00062     <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">Actuator::SingletonInst</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">Actuators</a>;
-<a name="l00063"></a>00063 }
-<a name="l00064"></a>00064 
-<a name="l00065"></a>00065 <span class="preprocessor">#endif</span>
-<a name="l00066"></a>00066 <span class="preprocessor"></span>
+<a name="l00025"></a><a class="code" href="classhw_1_1Actuator.html">00025</a>     <span class="keyword">class </span><a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a> : <span class="keyword">public</span> lib::LockableObject&lt;Actuator&gt;
+<a name="l00026"></a>00026     {
+<a name="l00027"></a>00027         <span class="keyword">typedef</span> void (<a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>::*cmd_fn)(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
+<a name="l00028"></a>00028         <span class="keyword">public</span>:
+<a name="l00029"></a>00029             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1LockableObject.html">lib::LockableObject&lt;Actuator&gt;</a> <a class="code" href="classlib_1_1LockableObject.html">Super</a>;
+<a name="l00030"></a>00030             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">lib::Singleton&lt;Actuator, lib::SingletonConcurrency::MultiThreaded&gt;</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">SingletonInst</a>;
+<a name="l00031"></a>00031             <span class="keyword">typedef</span> Super::Lock Lock;
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1qnx_1_1Channel.html">lib::qnx::Channel</a> <a class="code" href="classlib_1_1qnx_1_1Channel.html">Channel</a>;
+<a name="l00034"></a>00034             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Thread.html" title="Encapsulates the most important features of a thread.">lib::Thread</a> <a class="code" href="classlib_1_1Thread.html" title="Encapsulates the most important features of a thread.">Thread</a>;
+<a name="l00035"></a>00035 
+<a name="l00036"></a>00036             <span class="keyword">static</span> <span class="keyword">const</span> uint8_t LED_ACTIVATE = 0x00;
+<a name="l00037"></a>00037             <span class="keyword">static</span> <span class="keyword">const</span> uint8_t MOTOR_BELT   = 0x01;
+<a name="l00038"></a>00038             <span class="keyword">static</span> <span class="keyword">const</span> uint8_t MOTOR_SWITCH = 0x02;
+<a name="l00039"></a>00039             <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> CCMD = 3;
+<a name="l00040"></a>00040 
+<a name="l00041"></a>00041         <span class="keyword">public</span>:
+<a name="l00042"></a>00042             <span class="keyword">const</span> <a class="code" href="classlib_1_1qnx_1_1Channel.html">Channel</a>&amp; getChannel( )<span class="keyword"> const </span>{ <span class="keywordflow">return</span> ch_; }
+<a name="l00043"></a>00043 
+<a name="l00044"></a>00044         <span class="keyword">private</span>:
+<a name="l00045"></a>00045             <a class="code" href="classlib_1_1qnx_1_1Channel.html">Channel</a> ch_;
+<a name="l00046"></a>00046             <span class="keywordtype">bool</span> running_;
+<a name="l00047"></a>00047             cmd_fn cmds_[CCMD];
+<a name="l00048"></a>00048             std::auto_ptr&lt;Thread&gt; thread_;
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050             <span class="keywordtype">void</span> thread( );
+<a name="l00051"></a>00051             <span class="keywordtype">void</span> led_activate(<span class="keyword">const</span> <span class="keywordtype">void</span> *d) { <a class="code" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6" title="Access singleton class implementation.">LEDs::instance</a>().doActivate(d); }
+<a name="l00052"></a>00052             <span class="keywordtype">void</span> motor_belt(<span class="keyword">const</span> <span class="keywordtype">void</span> *d) { <a class="code" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6" title="Access singleton class implementation.">Motors::instance</a>().doControlBelt(d); }
+<a name="l00053"></a>00053             <span class="keywordtype">void</span> motor_switch(<span class="keyword">const</span> <span class="keywordtype">void</span> *d) { <a class="code" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6" title="Access singleton class implementation.">Motors::instance</a>().doControlSwitch(d); }
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055         <span class="keyword">public</span>:
+<a name="l00056"></a>00056             <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>( );
+<a name="l00057"></a>00057             ~<a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>( ) { running_ = <span class="keyword">false</span>; ch_.close(); thread_-&gt;join(); }
+<a name="l00058"></a>00058         <span class="keyword">private</span>:
+<a name="l00059"></a>00059             <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>(<span class="keyword">const</span> <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>&amp;);
+<a name="l00060"></a>00060             <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>&amp;);
+<a name="l00061"></a>00061     };
+<a name="l00062"></a>00062 
+<a name="l00063"></a>00063     <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">Actuator::SingletonInst</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">Actuators</a>;
+<a name="l00064"></a>00064 }
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066 <span class="preprocessor">#endif</span>
+<a name="l00067"></a>00067 <span class="preprocessor"></span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -153,7 +153,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:08 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:32:50 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

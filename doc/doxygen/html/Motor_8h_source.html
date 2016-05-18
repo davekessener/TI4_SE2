@@ -90,70 +90,70 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00009"></a>00009 {
 <a name="l00010"></a>00010     <span class="keyword">class </span>Actuator;
 <a name="l00011"></a>00011 
-<a name="l00015"></a><a class="code" href="classhw_1_1Motor.html">00015</a>     <span class="keyword">class </span><a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a> : <span class="keyword">public</span> lib::LockableObject&lt;Motor&gt;
-<a name="l00016"></a>00016     {
-<a name="l00017"></a>00017         <span class="keyword">public</span>:
-<a name="l00018"></a>00018             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1LockableObject.html">lib::LockableObject&lt;Motor&gt;</a> <a class="code" href="classlib_1_1LockableObject.html">Super</a>;
-<a name="l00019"></a>00019             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">lib::Singleton&lt;Motor, lib::SingletonConcurrency::MultiThreaded&gt;</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">SingletonInst</a>;
-<a name="l00020"></a>00020             <span class="keyword">typedef</span> Super::Lock Lock;
-<a name="l00021"></a>00021             <span class="keyword">typedef</span> uint8_t pid_t;
-<a name="l00022"></a>00022 
-<a name="l00023"></a><a class="code" href="structhw_1_1Motor_1_1Direction.html">00023</a>             <span class="keyword">struct </span><a class="code" href="structhw_1_1Motor_1_1Direction.html">Direction</a>
-<a name="l00024"></a>00024             {
-<a name="l00025"></a>00025                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t NONE  = 0x00; <span class="comment">// no pin</span>
-<a name="l00026"></a>00026                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t RIGHT = 0x01; <span class="comment">// port A pin 0</span>
-<a name="l00027"></a>00027                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t LEFT  = 0x02; <span class="comment">// port A pin 1</span>
-<a name="l00028"></a>00028             };
-<a name="l00029"></a>00029 
-<a name="l00030"></a><a class="code" href="structhw_1_1Motor_1_1Speed.html">00030</a>             <span class="keyword">struct </span><a class="code" href="structhw_1_1Motor_1_1Speed.html">Speed</a>
-<a name="l00031"></a>00031             {
-<a name="l00032"></a>00032                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t FAST = 0x00; <span class="comment">// no pin</span>
-<a name="l00033"></a>00033                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t SLOW = 0x04; <span class="comment">// port A pin 2</span>
-<a name="l00034"></a>00034                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t STOP = 0x08; <span class="comment">// port A pin 3</span>
-<a name="l00035"></a>00035             };
-<a name="l00036"></a>00036 
-<a name="l00037"></a><a class="code" href="structhw_1_1Motor_1_1State.html">00037</a>             <span class="keyword">struct </span><a class="code" href="structhw_1_1Motor_1_1State.html">State</a>
-<a name="l00038"></a>00038             {
-<a name="l00039"></a>00039                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t OPEN  = 0;
-<a name="l00040"></a>00040                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t CLOSE = 1;
-<a name="l00041"></a>00041             };
-<a name="l00042"></a>00042 
-<a name="l00043"></a>00043             <span class="keyword">static</span> <span class="keyword">const</span> pid_t SWITCH = 0x10; <span class="comment">// port A pin 4</span>
+<a name="l00017"></a><a class="code" href="classhw_1_1Motor.html">00017</a>     <span class="keyword">class </span><a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a> : <span class="keyword">public</span> lib::LockableObject&lt;Motor&gt;
+<a name="l00018"></a>00018     {
+<a name="l00019"></a>00019         <span class="keyword">public</span>:
+<a name="l00020"></a>00020             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1LockableObject.html">lib::LockableObject&lt;Motor&gt;</a> <a class="code" href="classlib_1_1LockableObject.html">Super</a>;
+<a name="l00021"></a>00021             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">lib::Singleton&lt;Motor, lib::SingletonConcurrency::MultiThreaded&gt;</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">SingletonInst</a>;
+<a name="l00022"></a>00022             <span class="keyword">typedef</span> Super::Lock Lock;
+<a name="l00023"></a>00023             <span class="keyword">typedef</span> uint8_t pid_t;
+<a name="l00024"></a>00024 
+<a name="l00025"></a><a class="code" href="structhw_1_1Motor_1_1Direction.html">00025</a>             <span class="keyword">struct </span><a class="code" href="structhw_1_1Motor_1_1Direction.html">Direction</a>
+<a name="l00026"></a>00026             {
+<a name="l00027"></a><a class="code" href="structhw_1_1Motor_1_1Direction.html#a876f8450323454dab9f86a46694510b4">00027</a>                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="structhw_1_1Motor_1_1Direction.html#a876f8450323454dab9f86a46694510b4" title="no pin">NONE</a>  = 0x00; 
+<a name="l00028"></a><a class="code" href="structhw_1_1Motor_1_1Direction.html#a1ff05345823f86def088ed312b5cdc61">00028</a>                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="structhw_1_1Motor_1_1Direction.html#a1ff05345823f86def088ed312b5cdc61" title="port A pin 0">RIGHT</a> = 0x01; 
+<a name="l00029"></a><a class="code" href="structhw_1_1Motor_1_1Direction.html#af6dd2c6a6914a29f90a5201dbe3ab6f4">00029</a>                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="structhw_1_1Motor_1_1Direction.html#af6dd2c6a6914a29f90a5201dbe3ab6f4" title="port A pin 1">LEFT</a>  = 0x02; 
+<a name="l00030"></a>00030             };
+<a name="l00031"></a>00031 
+<a name="l00032"></a><a class="code" href="structhw_1_1Motor_1_1Speed.html">00032</a>             <span class="keyword">struct </span><a class="code" href="structhw_1_1Motor_1_1Speed.html">Speed</a>
+<a name="l00033"></a>00033             {
+<a name="l00034"></a><a class="code" href="structhw_1_1Motor_1_1Speed.html#accfa1c6a1cc5129aae0175205ab58945">00034</a>                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="structhw_1_1Motor_1_1Speed.html#accfa1c6a1cc5129aae0175205ab58945" title="no pin">FAST</a> = 0x00; 
+<a name="l00035"></a><a class="code" href="structhw_1_1Motor_1_1Speed.html#a2e61b1ca3049e52234d88a4fb79b449b">00035</a>                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="structhw_1_1Motor_1_1Speed.html#a2e61b1ca3049e52234d88a4fb79b449b" title="port A pin 2">SLOW</a> = 0x04; 
+<a name="l00036"></a><a class="code" href="structhw_1_1Motor_1_1Speed.html#a1ce13403d7c77e711b1ec99d210c9042">00036</a>                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="structhw_1_1Motor_1_1Speed.html#a1ce13403d7c77e711b1ec99d210c9042" title="port A pin 3">STOP</a> = 0x08; 
+<a name="l00037"></a>00037             };
+<a name="l00038"></a>00038 
+<a name="l00039"></a><a class="code" href="structhw_1_1Motor_1_1State.html">00039</a>             <span class="keyword">struct </span><a class="code" href="structhw_1_1Motor_1_1State.html">State</a>
+<a name="l00040"></a>00040             {
+<a name="l00041"></a>00041                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t OPEN  = 0;
+<a name="l00042"></a>00042                 <span class="keyword">static</span> <span class="keyword">const</span> pid_t CLOSE = 1;
+<a name="l00043"></a>00043             };
 <a name="l00044"></a>00044 
-<a name="l00045"></a>00045         <span class="keyword">public</span>:
-<a name="l00053"></a>00053             <span class="keywordtype">void</span> <a class="code" href="classhw_1_1Motor.html#a6f31b69e33d7c293339252eae2e2e997" title="Controls conveyor belt.">controlBelt</a>(pid_t dir, pid_t speed);
-<a name="l00057"></a>00057             <span class="keywordtype">void</span> <a class="code" href="classhw_1_1Motor.html#a4bb974e4948596e78c73770a12f91c27" title="Controls electromagnetic switch.">controlSwitch</a>(pid_t state);
-<a name="l00058"></a>00058 
-<a name="l00059"></a>00059         <span class="keyword">private</span>:
-<a name="l00060"></a>00060             <span class="keywordtype">void</span> doControlBelt(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
-<a name="l00061"></a>00061             <span class="keywordtype">void</span> doControlSwitch(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
-<a name="l00062"></a>00062             
-<a name="l00063"></a>00063         <span class="keyword">private</span>:
-<a name="l00064"></a>00064             pid_t curDir_;
-<a name="l00065"></a>00065             <a class="code" href="classlib_1_1qnx_1_1Connection.html">lib::qnx::Connection</a> con_;
-<a name="l00066"></a>00066 
-<a name="l00067"></a>00067         <span class="keyword">public</span>:
-<a name="l00068"></a>00068             <a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a>( );
-<a name="l00069"></a>00069             ~<a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a>( ) { }
-<a name="l00070"></a>00070         <span class="keyword">private</span>:
-<a name="l00071"></a>00071             <a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a>(<span class="keyword">const</span> <a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a>&amp;);
-<a name="l00072"></a>00072             <a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classhw_1_1Motor.html" title="Client interface for controlling the conveyor belt and electromagnetic switch.">Motor</a>&amp;);
-<a name="l00073"></a>00073 
-<a name="l00074"></a>00074             <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>;
-<a name="l00075"></a>00075     };
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077     <span class="keyword">typedef</span> Motor::SingletonInst Motors;
-<a name="l00078"></a>00078 }
-<a name="l00079"></a>00079 
-<a name="l00080"></a>00080 <span class="preprocessor">#endif</span>
-<a name="l00081"></a>00081 <span class="preprocessor"></span>
+<a name="l00045"></a><a class="code" href="classhw_1_1Motor.html#a619b6538418709df7ad7a279549d81a3">00045</a>             <span class="keyword">static</span> <span class="keyword">const</span> pid_t <a class="code" href="classhw_1_1Motor.html#a619b6538418709df7ad7a279549d81a3" title="port A pin 4">SWITCH</a> = 0x10; 
+<a name="l00046"></a>00046 
+<a name="l00047"></a>00047         <span class="keyword">public</span>:
+<a name="l00055"></a>00055             <span class="keywordtype">void</span> <a class="code" href="classhw_1_1Motor.html#a6f31b69e33d7c293339252eae2e2e997" title="Controls conveyor belt.">controlBelt</a>(pid_t dir, pid_t speed);
+<a name="l00059"></a>00059             <span class="keywordtype">void</span> <a class="code" href="classhw_1_1Motor.html#a4bb974e4948596e78c73770a12f91c27" title="Controls electromagnetic switch.">controlSwitch</a>(pid_t state);
+<a name="l00060"></a>00060 
+<a name="l00061"></a>00061         <span class="keyword">private</span>:
+<a name="l00062"></a>00062             <span class="keywordtype">void</span> doControlBelt(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
+<a name="l00063"></a>00063             <span class="keywordtype">void</span> doControlSwitch(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
+<a name="l00064"></a>00064             
+<a name="l00065"></a>00065         <span class="keyword">private</span>:
+<a name="l00066"></a>00066             pid_t curDir_;
+<a name="l00067"></a>00067             <a class="code" href="classlib_1_1qnx_1_1Connection.html">lib::qnx::Connection</a> con_;
+<a name="l00068"></a>00068 
+<a name="l00069"></a>00069         <span class="keyword">public</span>:
+<a name="l00070"></a>00070             <a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a>( );
+<a name="l00071"></a>00071             ~<a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a>( ) { }
+<a name="l00072"></a>00072         <span class="keyword">private</span>:
+<a name="l00073"></a>00073             <a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a>(<span class="keyword">const</span> <a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a>&amp;);
+<a name="l00074"></a>00074             <a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classhw_1_1Motor.html" title="Interface for controlling the motors. Client interface for controlling the conveyor belt and electrom...">Motor</a>&amp;);
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076             <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>;
+<a name="l00077"></a>00077     };
+<a name="l00078"></a>00078 
+<a name="l00079"></a>00079     <span class="keyword">typedef</span> Motor::SingletonInst Motors;
+<a name="l00080"></a>00080 }
+<a name="l00081"></a>00081 
+<a name="l00082"></a>00082 <span class="preprocessor">#endif</span>
+<a name="l00083"></a>00083 <span class="preprocessor"></span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -165,7 +165,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:08 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:32:50 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

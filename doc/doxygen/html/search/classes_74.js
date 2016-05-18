@@ -14,5 +14,6 @@ var searchData=
   ['transimpl_3c_20e_2c_20void_2c_20nil_2c_20s_2c_20t_20_3e',['TransImpl< E, void, Nil, S, T >',['../structlib_1_1TransImpl_3_01E_00_01void_00_01Nil_00_01S_00_01T_01_4.html',1,'lib']]],
   ['transition',['Transition',['../structlib_1_1Transition.html',1,'lib']]],
   ['trycall_5fapply',['TryCall_apply',['../structlib_1_1TryCall__apply.html',1,'lib']]],
-  ['trycall_5fapply_3c_20t_2c_20e_2c_20void_20_3e',['TryCall_apply< T, E, void >',['../structlib_1_1TryCall__apply_3_01T_00_01E_00_01void_01_4.html',1,'lib']]]
+  ['trycall_5fapply_3c_20t_2c_20e_2c_20void_20_3e',['TryCall_apply< T, E, void >',['../structlib_1_1TryCall__apply_3_01T_00_01E_00_01void_01_4.html',1,'lib']]],
+  ['type',['Type',['../structhaw_1_1Puk_1_1Type.html',1,'haw::Puk']]]
 ];

@@ -82,54 +82,205 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#ifndef HAW_LIB_MPL_FTORWRAPPER_H</span>
 <a name="l00002"></a>00002 <span class="preprocessor"></span><span class="preprocessor">#define HAW_LIB_MPL_FTORWRAPPER_H</span>
 <a name="l00003"></a>00003 <span class="preprocessor"></span>
-<a name="l00004"></a>00004 <span class="keyword">namespace </span>lib
-<a name="l00005"></a>00005 {
-<a name="l00009"></a>00009     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;
-<a name="l00010"></a><a class="code" href="classlib_1_1FtorWrapper.html">00010</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper</a>
-<a name="l00011"></a>00011     {
-<a name="l00012"></a>00012         <span class="keyword">public</span>:
-<a name="l00013"></a>00013             <a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper</a>(T *t, <span class="keywordtype">void</span> (T::*f)(<span class="keywordtype">void</span>))
-<a name="l00014"></a>00014                 : t_(t), f_(f) { }
-<a name="l00015"></a>00015             <span class="keywordtype">void</span> operator()( ) { (t_-&gt;*f_)(); }
-<a name="l00016"></a>00016         <span class="keyword">private</span>:
-<a name="l00017"></a>00017             T *t_;
-<a name="l00018"></a>00018             void (T::*f_)(void);
-<a name="l00019"></a>00019     };
-<a name="l00020"></a>00020 
-<a name="l00021"></a>00021     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;
-<a name="l00022"></a>00022     <a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper&lt;T&gt;</a> wrapInFtor(T *t, <span class="keywordtype">void</span> (T::*f)(<span class="keywordtype">void</span>))
-<a name="l00023"></a>00023     {
-<a name="l00024"></a>00024         <span class="keywordflow">return</span> <a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper&lt;T&gt;</a>(t, f);
-<a name="l00025"></a>00025     }
-<a name="l00026"></a>00026 
-<a name="l00027"></a>00027 <span class="comment">// # ---------------------------------------------------------------------------</span>
+<a name="l00004"></a>00004 <span class="preprocessor">#include &quot;lib/SmartPtr.hpp&quot;</span>
+<a name="l00005"></a>00005 
+<a name="l00006"></a>00006 <span class="keyword">namespace </span>lib
+<a name="l00007"></a>00007 {
+<a name="l00011"></a>00011     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;
+<a name="l00012"></a><a class="code" href="classlib_1_1FtorWrapper.html">00012</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper</a>
+<a name="l00013"></a>00013     {
+<a name="l00014"></a>00014         <span class="keyword">public</span>:
+<a name="l00015"></a>00015             <a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper</a>(T *t, <span class="keywordtype">void</span> (T::*f)(<span class="keywordtype">void</span>))
+<a name="l00016"></a>00016                 : t_(t), f_(f) { }
+<a name="l00017"></a>00017             <span class="keywordtype">void</span> operator()( ) { (t_-&gt;*f_)(); }
+<a name="l00018"></a>00018         <span class="keyword">private</span>:
+<a name="l00019"></a>00019             T *t_;
+<a name="l00020"></a>00020             void (T::*f_)(void);
+<a name="l00021"></a>00021     };
+<a name="l00022"></a>00022 
+<a name="l00023"></a>00023     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;
+<a name="l00024"></a>00024     <a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper&lt;T&gt;</a> wrapInFtor(T *t, <span class="keywordtype">void</span> (T::*f)(<span class="keywordtype">void</span>))
+<a name="l00025"></a>00025     {
+<a name="l00026"></a>00026         <span class="keywordflow">return</span> <a class="code" href="classlib_1_1FtorWrapper.html" title="A functor that calls an object&#39;s member function.">FtorWrapper&lt;T&gt;</a>(t, f);
+<a name="l00027"></a>00027     }
 <a name="l00028"></a>00028 
-<a name="l00029"></a><a class="code" href="structlib_1_1BasicFunctor.html">00029</a>     <span class="keyword">struct </span><a class="code" href="structlib_1_1BasicFunctor.html">BasicFunctor</a>
-<a name="l00030"></a>00030     {
-<a name="l00031"></a>00031         <span class="keyword">virtual</span> <span class="keywordtype">void</span> operator()( ) = 0;
-<a name="l00032"></a>00032         <span class="keyword">virtual</span> ~<a class="code" href="structlib_1_1BasicFunctor.html">BasicFunctor</a>( ) { }
-<a name="l00033"></a>00033     };
-<a name="l00034"></a>00034     
-<a name="l00038"></a>00038     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;
-<a name="l00039"></a><a class="code" href="classlib_1_1BasicFunctorImpl.html">00039</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1BasicFunctorImpl.html" title="Basic functor encapsulating anything callable that takes no arguments.">BasicFunctorImpl</a> : <span class="keyword">public</span> <a class="code" href="structlib_1_1BasicFunctor.html">BasicFunctor</a>
-<a name="l00040"></a>00040     {
-<a name="l00041"></a>00041         <span class="keyword">public</span>:
-<a name="l00042"></a>00042             <a class="code" href="classlib_1_1BasicFunctorImpl.html" title="Basic functor encapsulating anything callable that takes no arguments.">BasicFunctorImpl</a>(<span class="keyword">const</span> F&amp; f) : f_(f) { }
-<a name="l00043"></a>00043             <span class="keywordtype">void</span> operator()( ) { f_(); }
-<a name="l00044"></a>00044         <span class="keyword">private</span>:
-<a name="l00045"></a>00045             F f_;
-<a name="l00046"></a>00046     };
-<a name="l00047"></a>00047 }
-<a name="l00048"></a>00048 
-<a name="l00049"></a>00049 <span class="preprocessor">#endif</span>
-<a name="l00050"></a>00050 <span class="preprocessor"></span>
+<a name="l00029"></a>00029 <span class="comment">// # ---------------------------------------------------------------------------</span>
+<a name="l00030"></a>00030 
+<a name="l00031"></a><a class="code" href="structlib_1_1BasicFunctor.html">00031</a>     <span class="keyword">struct </span><a class="code" href="structlib_1_1BasicFunctor.html">BasicFunctor</a>
+<a name="l00032"></a>00032     {
+<a name="l00033"></a>00033         <span class="keyword">virtual</span> <span class="keywordtype">void</span> operator()( ) = 0;
+<a name="l00034"></a>00034         <span class="keyword">virtual</span> ~<a class="code" href="structlib_1_1BasicFunctor.html">BasicFunctor</a>( ) { }
+<a name="l00035"></a>00035     };
+<a name="l00036"></a>00036     
+<a name="l00040"></a>00040     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;
+<a name="l00041"></a><a class="code" href="classlib_1_1BasicFunctorImpl.html">00041</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1BasicFunctorImpl.html" title="Basic functor encapsulating anything callable that takes no arguments.">BasicFunctorImpl</a> : <span class="keyword">public</span> <a class="code" href="structlib_1_1BasicFunctor.html">BasicFunctor</a>
+<a name="l00042"></a>00042     {
+<a name="l00043"></a>00043         <span class="keyword">public</span>:
+<a name="l00044"></a>00044             <a class="code" href="classlib_1_1BasicFunctorImpl.html" title="Basic functor encapsulating anything callable that takes no arguments.">BasicFunctorImpl</a>(<span class="keyword">const</span> F&amp; f) : f_(f) { }
+<a name="l00045"></a>00045             <span class="keywordtype">void</span> operator()( ) { f_(); }
+<a name="l00046"></a>00046         <span class="keyword">private</span>:
+<a name="l00047"></a>00047             F f_;
+<a name="l00048"></a>00048     };
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050 <span class="comment">// # ---------------------------------------------------------------------------</span>
+<a name="l00051"></a>00051     
+<a name="l00052"></a>00052     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> R, <span class="keyword">typename</span> T&gt;
+<a name="l00053"></a><a class="code" href="structlib_1_1OPFImplBase.html">00053</a>     <span class="keyword">struct </span><a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>
+<a name="l00054"></a>00054     {
+<a name="l00055"></a>00055         <span class="keyword">virtual</span> ~<a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>( ) { }
+<a name="l00056"></a>00056         <span class="keyword">virtual</span> R operator()(T) = 0;
+<a name="l00057"></a>00057     };
+<a name="l00058"></a>00058 
+<a name="l00059"></a>00059     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;
+<a name="l00060"></a><a class="code" href="structlib_1_1OPFImplBase_3_01void_00_01T_01_4.html">00060</a>     <span class="keyword">struct </span><a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;void, T&gt;
+<a name="l00061"></a>00061     {
+<a name="l00062"></a>00062         <span class="keyword">virtual</span> ~<a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>( ) { }
+<a name="l00063"></a>00063         <span class="keyword">virtual</span> <span class="keywordtype">void</span> operator()(T) = 0;
+<a name="l00064"></a>00064     };
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> R&gt;
+<a name="l00067"></a><a class="code" href="structlib_1_1OPFImplBase_3_01R_00_01void_01_4.html">00067</a>     <span class="keyword">struct </span><a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;R, void&gt;
+<a name="l00068"></a>00068     {
+<a name="l00069"></a>00069         <span class="keyword">virtual</span> ~<a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>( ) { }
+<a name="l00070"></a>00070         <span class="keyword">virtual</span> R operator()( ) = 0;
+<a name="l00071"></a>00071     };
+<a name="l00072"></a>00072 
+<a name="l00073"></a>00073     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> R, <span class="keyword">typename</span> T&gt;
+<a name="l00074"></a><a class="code" href="classlib_1_1OPFImpl.html">00074</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OPFImpl.html">OPFImpl</a> : <span class="keyword">public</span> <a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;R, T&gt;
+<a name="l00075"></a>00075     {
+<a name="l00076"></a>00076         <span class="keyword">public</span>:
+<a name="l00077"></a>00077             <a class="code" href="classlib_1_1OPFImpl.html">OPFImpl</a>(F f) : f_(f) { }
+<a name="l00078"></a>00078             R operator()(T t) { <span class="keywordflow">return</span> (*f_)(t); }
+<a name="l00079"></a>00079         <span class="keyword">private</span>:
+<a name="l00080"></a>00080             F f_;
+<a name="l00081"></a>00081     };
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> T&gt;
+<a name="l00084"></a><a class="code" href="classlib_1_1OPFImpl_3_01F_00_01void_00_01T_01_4.html">00084</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OPFImpl.html">OPFImpl</a>&lt;F, void, T&gt; : <span class="keyword">public</span> <a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;void, T&gt;
+<a name="l00085"></a>00085     {
+<a name="l00086"></a>00086         <span class="keyword">public</span>:
+<a name="l00087"></a>00087             <a class="code" href="classlib_1_1OPFImpl.html">OPFImpl</a>(F f) : f_(f) { }
+<a name="l00088"></a>00088             <span class="keywordtype">void</span> operator()(T t) { (*f_)(t); }
+<a name="l00089"></a>00089         <span class="keyword">private</span>:
+<a name="l00090"></a>00090             F f_;
+<a name="l00091"></a>00091     };
+<a name="l00092"></a>00092 
+<a name="l00093"></a>00093     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> R&gt;
+<a name="l00094"></a><a class="code" href="classlib_1_1OPFImpl_3_01F_00_01R_00_01void_01_4.html">00094</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OPFImpl.html">OPFImpl</a>&lt;F, R, void&gt; : <span class="keyword">public</span> <a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;R, void&gt;
+<a name="l00095"></a>00095     {
+<a name="l00096"></a>00096         <span class="keyword">public</span>:
+<a name="l00097"></a>00097             <a class="code" href="classlib_1_1OPFImpl.html">OPFImpl</a>(F f) : f_(f) { }
+<a name="l00098"></a>00098             R operator()( ) { <span class="keywordflow">return</span> (*f_)(); }
+<a name="l00099"></a>00099         <span class="keyword">private</span>:
+<a name="l00100"></a>00100             F f_;
+<a name="l00101"></a>00101     };
+<a name="l00102"></a>00102 
+<a name="l00103"></a>00103     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT, <span class="keyword">typename</span> R, <span class="keyword">typename</span> T&gt;
+<a name="l00104"></a><a class="code" href="classlib_1_1OPFMImpl.html">00104</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl</a> : <span class="keyword">public</span> <a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;R, T&gt;
+<a name="l00105"></a>00105     {
+<a name="l00106"></a>00106         <span class="keyword">typedef</span> R (TT::*fn_t)(T);
+<a name="l00107"></a>00107 
+<a name="l00108"></a>00108         <span class="keyword">public</span>:
+<a name="l00109"></a>00109             <a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl</a>(TT *t, fn_t f) : t_(t), f_(f) { }
+<a name="l00110"></a>00110             R operator()(T t) { <span class="keywordflow">return</span> (t_-&gt;*f_)(t); }
+<a name="l00111"></a>00111         <span class="keyword">private</span>:
+<a name="l00112"></a>00112             TT *t_;
+<a name="l00113"></a>00113             fn_t f_;
+<a name="l00114"></a>00114     };
+<a name="l00115"></a>00115 
+<a name="l00116"></a>00116     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT, <span class="keyword">typename</span> T&gt;
+<a name="l00117"></a><a class="code" href="classlib_1_1OPFMImpl_3_01TT_00_01void_00_01T_01_4.html">00117</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl</a>&lt;TT, void, T&gt; : <span class="keyword">public</span> <a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;void, T&gt;
+<a name="l00118"></a>00118     {
+<a name="l00119"></a>00119         <span class="keyword">typedef</span> void (TT::*fn_t)(T);
+<a name="l00120"></a>00120 
+<a name="l00121"></a>00121         <span class="keyword">public</span>:
+<a name="l00122"></a>00122             <a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl</a>(TT *t, fn_t f) : t_(t), f_(f) { }
+<a name="l00123"></a>00123             <span class="keywordtype">void</span> operator()(T t) { (t_-&gt;*f_)(t); }
+<a name="l00124"></a>00124         <span class="keyword">private</span>:
+<a name="l00125"></a>00125             TT *t_;
+<a name="l00126"></a>00126             fn_t f_;
+<a name="l00127"></a>00127     };
+<a name="l00128"></a>00128 
+<a name="l00129"></a>00129     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT, <span class="keyword">typename</span> R&gt;
+<a name="l00130"></a><a class="code" href="classlib_1_1OPFMImpl_3_01TT_00_01R_00_01void_01_4.html">00130</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl</a>&lt;TT, R, void&gt; : <span class="keyword">public</span> <a class="code" href="structlib_1_1OPFImplBase.html">OPFImplBase</a>&lt;R, void&gt;
+<a name="l00131"></a>00131     {
+<a name="l00132"></a>00132         <span class="keyword">typedef</span> R (TT::*fn_t)(void);
+<a name="l00133"></a>00133 
+<a name="l00134"></a>00134         <span class="keyword">public</span>:
+<a name="l00135"></a>00135             <a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl</a>(TT *t, fn_t f) : t_(t), f_(f) { }
+<a name="l00136"></a>00136             R operator()( ) { <span class="keywordflow">return</span> (t_-&gt;*f_)(); }
+<a name="l00137"></a>00137         <span class="keyword">private</span>:
+<a name="l00138"></a>00138             TT *t_;
+<a name="l00139"></a>00139             fn_t f_;
+<a name="l00140"></a>00140     };
+<a name="l00141"></a>00141 
+<a name="l00142"></a>00142     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> R, <span class="keyword">typename</span> T&gt;
+<a name="l00143"></a><a class="code" href="classlib_1_1OneParamFtor.html">00143</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>
+<a name="l00144"></a>00144     {
+<a name="l00145"></a>00145         <span class="keyword">public</span>:
+<a name="l00146"></a>00146             <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>( ) { }
+<a name="l00147"></a>00147             <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;
+<a name="l00148"></a>00148                 <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>(F f) : f_(<span class="keyword">new</span> <a class="code" href="classlib_1_1OPFImpl.html">OPFImpl&lt;F, R, T&gt;</a>(f)) { }
+<a name="l00149"></a>00149             <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT&gt;
+<a name="l00150"></a>00150                 <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>(TT *t, R (TT::*f)(T)) : f_(<span class="keyword">new</span> <a class="code" href="classlib_1_1OPFMImpl.html">OPFMImpl&lt;TT, R, T&gt;</a>(t, f)) { }
+<a name="l00151"></a>00151             R operator()(T t) { <span class="keywordflow">return</span> (*f_)(t); }
+<a name="l00152"></a>00152             operator bool( )<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">bool</span><span class="keyword">&gt;</span>(f_); }
+<a name="l00153"></a>00153         <span class="keyword">private</span>:
+<a name="l00154"></a>00154             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;OPFImplBase&lt;R, T&gt;</a> &gt; f_;
+<a name="l00155"></a>00155     };
+<a name="l00156"></a>00156 
+<a name="l00157"></a>00157     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;
+<a name="l00158"></a><a class="code" href="classlib_1_1OneParamFtor_3_01void_00_01T_01_4.html">00158</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>&lt;void, T&gt;
+<a name="l00159"></a>00159     {
+<a name="l00160"></a>00160         <span class="keyword">public</span>:
+<a name="l00161"></a>00161             <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>( ) { }
+<a name="l00162"></a>00162             <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;
+<a name="l00163"></a>00163                 <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>(F f) : f_(<span class="keyword">new</span> <a class="code" href="classlib_1_1OPFImpl_3_01F_00_01void_00_01T_01_4.html">OPFImpl&lt;F, void, T&gt;</a>(f)) { }
+<a name="l00164"></a>00164             <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT&gt;
+<a name="l00165"></a>00165                 <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>(TT *t, <span class="keywordtype">void</span> (TT::*f)(T)) : f_(<span class="keyword">new</span> <a class="code" href="classlib_1_1OPFMImpl_3_01TT_00_01void_00_01T_01_4.html">OPFMImpl&lt;TT, void, T&gt;</a>(t, f)) { }
+<a name="l00166"></a>00166             <span class="keywordtype">void</span> operator()(T t) { (*f_)(t); }
+<a name="l00167"></a>00167             operator bool( )<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">bool</span><span class="keyword">&gt;</span>(f_); }
+<a name="l00168"></a>00168         <span class="keyword">private</span>:
+<a name="l00169"></a>00169             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;OPFImplBase&lt;void, T&gt;</a> &gt; f_;
+<a name="l00170"></a>00170     };
+<a name="l00171"></a>00171 
+<a name="l00172"></a>00172     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> R&gt;
+<a name="l00173"></a><a class="code" href="classlib_1_1OneParamFtor_3_01R_00_01void_01_4.html">00173</a>     <span class="keyword">class </span><a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>&lt;R, void&gt;
+<a name="l00174"></a>00174     {
+<a name="l00175"></a>00175         <span class="keyword">public</span>:
+<a name="l00176"></a>00176             <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>( ) { }
+<a name="l00177"></a>00177             <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;
+<a name="l00178"></a>00178                 <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>(F f) : f_(<span class="keyword">new</span> <a class="code" href="classlib_1_1OPFImpl_3_01F_00_01R_00_01void_01_4.html">OPFImpl&lt;F, R, void&gt;</a>(f)) { }
+<a name="l00179"></a>00179             <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT&gt;
+<a name="l00180"></a>00180                 <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor</a>(TT *t, R (TT::*f)(<span class="keywordtype">void</span>)) : f_(<span class="keyword">new</span> <a class="code" href="classlib_1_1OPFMImpl_3_01TT_00_01R_00_01void_01_4.html">OPFMImpl&lt;TT, R, void&gt;</a>(t, f)) { }
+<a name="l00181"></a>00181             R operator()( ) { <span class="keywordflow">return</span> (*f_)(); }
+<a name="l00182"></a>00182             operator bool( )<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">bool</span><span class="keyword">&gt;</span>(f_); }
+<a name="l00183"></a>00183         <span class="keyword">private</span>:
+<a name="l00184"></a>00184             <a class="code" href="classlib_1_1SmartPtr.html" title="Smart pointer class for automatic life time management.">SmartPtr&lt;OPFImplBase&lt;R, void&gt;</a> &gt; f_;
+<a name="l00185"></a>00185     };
+<a name="l00186"></a>00186 
+<a name="l00187"></a>00187     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> R, <span class="keyword">typename</span> T&gt;
+<a name="l00188"></a>00188     <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor&lt;R, T&gt;</a> toFtor(R (*f)(T))
+<a name="l00189"></a>00189     {
+<a name="l00190"></a>00190         <span class="keywordflow">return</span> <a class="code" href="classlib_1_1OneParamFtor.html">OneParamFtor&lt;R, T&gt;</a>(f);
+<a name="l00191"></a>00191     }
+<a name="l00192"></a>00192 
+<a name="l00193"></a>00193     <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TT, <span class="keyword">typename</span> R, <span class="keyword">typename</span> T&gt;
+<a name="l00194"></a>00194     OneParamFtor&lt;R, T&gt; toFtor(TT *t, R (TT::*f)(T))
+<a name="l00195"></a>00195     {
+<a name="l00196"></a>00196         <span class="keywordflow">return</span> OneParamFtor&lt;R, T&gt;(t, f);
+<a name="l00197"></a>00197     }
+<a name="l00198"></a>00198 }
+<a name="l00199"></a>00199 
+<a name="l00200"></a>00200 <span class="preprocessor">#endif</span>
+<a name="l00201"></a>00201 <span class="preprocessor"></span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -141,7 +292,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:08 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:32:50 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

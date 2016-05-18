@@ -81,7 +81,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -99,7 +99,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a>  </div>
@@ -107,68 +106,81 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">hw::HWAccessImpl Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<!-- doxytag: class="hw::HWAccessImpl" --><!-- doxytag: inherits="LockableClass&lt; HWAccessImpl &gt;" -->
-<p>Interface for direct hardware access.  
- <a href="classhw_1_1HWAccessImpl.html#details">More...</a></p>
-
-<p><code>#include &lt;<a class="el" href="HWAccess_8h_source.html">HWAccess.h</a>&gt;</code></p>
-<div class="dynheader">
+<!-- doxytag: class="hw::HWAccessImpl" --><!-- doxytag: inherits="LockableObject&lt; HWAccessImpl &gt;" --><div class="dynheader">
 Inheritance diagram for hw::HWAccessImpl:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classhw_1_1HWAccessImpl.png" usemap="#hw::HWAccessImpl_map" alt=""/>
   <map id="hw::HWAccessImpl_map" name="hw::HWAccessImpl_map">
-<area href="classlib_1_1LockableClass.html" alt="lib::LockableClass&lt; HWAccessImpl &gt;" shape="rect" coords="0,0,221,24"/>
+<area href="classlib_1_1LockableObject.html" alt="lib::LockableObject&lt; HWAccessImpl &gt;" shape="rect" coords="0,0,227,24"/>
 </map>
  </div></div>
 
 <p><a href="classhw_1_1HWAccessImpl-members.html">List of all members.</a></p>
 <table class="memberdecls">
-<tr><td colspan="2"><h2><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhw_1_1HWAccessImpl_1_1Lock.html">Lock</a></td></tr>
 <tr><td colspan="2"><h2><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5f8005e124e07a3ac178acfa803e1fc"></a><!-- doxytag: member="hw::HWAccessImpl::Super" ref="ae5f8005e124e07a3ac178acfa803e1fc" args="" -->
-typedef <a class="el" href="classlib_1_1LockableClass.html">lib::LockableClass</a><br class="typebreak"/>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7de4f74d426941b15cb6cab9b6224c9d"></a><!-- doxytag: member="hw::HWAccessImpl::Super" ref="a7de4f74d426941b15cb6cab9b6224c9d" args="" -->
+typedef <a class="el" href="classlib_1_1LockableObject.html">lib::LockableObject</a><br class="typebreak"/>
 &lt; <a class="el" href="classhw_1_1HWAccessImpl.html">HWAccessImpl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Super</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a186a877f84d573354903cadfc9251edd"></a><!-- doxytag: member="hw::HWAccessImpl::SingletonInst" ref="a186a877f84d573354903cadfc9251edd" args="" -->
 typedef <a class="el" href="classlib_1_1Singleton.html">lib::Singleton</a><br class="typebreak"/>
 &lt; <a class="el" href="classhw_1_1HWAccessImpl.html">HWAccessImpl</a>, <br class="typebreak"/>
 <a class="el" href="structlib_1_1SingletonConcurrency_1_1MultiThreaded.html">lib::SingletonConcurrency::MultiThreaded</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>SingletonInst</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09d37ac5553c01756defad7b109766f0"></a><!-- doxytag: member="hw::HWAccessImpl::Lock" ref="a09d37ac5553c01756defad7b109766f0" args="" -->
+typedef Super::Lock&#160;</td><td class="memItemRight" valign="bottom"><b>Lock</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f6eb8221f8b51c121523c3ea150c66a"></a><!-- doxytag: member="hw::HWAccessImpl::port_t" ref="a3f6eb8221f8b51c121523c3ea150c66a" args="" -->
 typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>port_t</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe50ddedcf624e2d17b038124ea936b9"></a><!-- doxytag: member="hw::HWAccessImpl::pin_t" ref="afe50ddedcf624e2d17b038124ea936b9" args="" -->
 typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>pin_t</b></td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4231ffdc751a74ea5c904a148a670558"></a><!-- doxytag: member="hw::HWAccessImpl::in" ref="a4231ffdc751a74ea5c904a148a670558" args="(port_t) const " -->
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>in</b> (port_t) const </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab59cbcb9e51ea4176ae4685d95519d94"></a><!-- doxytag: member="hw::HWAccessImpl::out" ref="ab59cbcb9e51ea4176ae4685d95519d94" args="(port_t, pin_t) const " -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>out</b> (port_t, pin_t) const </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e23a418c1112e5798ff30861434ec43"></a><!-- doxytag: member="hw::HWAccessImpl::setBits" ref="a1e23a418c1112e5798ff30861434ec43" args="(port_t, pin_t) const " -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setBits</b> (port_t, pin_t) const </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50421d6efd1aa2ec2d8444ca87af0415"></a><!-- doxytag: member="hw::HWAccessImpl::resetBits" ref="a50421d6efd1aa2ec2d8444ca87af0415" args="(port_t, pin_t) const " -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>resetBits</b> (port_t, pin_t) const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a044e50b8ed5a8e9a18272e68a6277c5e"></a><!-- doxytag: member="hw::HWAccessImpl::in" ref="a044e50b8ed5a8e9a18272e68a6277c5e" args="(port_t)" -->
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>in</b> (port_t)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4bd9137884d287841f84a9e81cb251c1"></a><!-- doxytag: member="hw::HWAccessImpl::out" ref="a4bd9137884d287841f84a9e81cb251c1" args="(port_t, pin_t)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>out</b> (port_t, pin_t)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aca2afe43957b4c300707242968f289ca"></a><!-- doxytag: member="hw::HWAccessImpl::setBits" ref="aca2afe43957b4c300707242968f289ca" args="(port_t, pin_t)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setBits</b> (port_t, pin_t)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8b9f875f9793762ec133a2b4e82ff51"></a><!-- doxytag: member="hw::HWAccessImpl::resetBits" ref="ae8b9f875f9793762ec133a2b4e82ff51" args="(port_t, pin_t)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>resetBits</b> (port_t, pin_t)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae25471cc0af1594e03e5cecc0d819574"></a><!-- doxytag: member="hw::HWAccessImpl::initThread" ref="ae25471cc0af1594e03e5cecc0d819574" args="()" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initThread</b> ()</td></tr>
 <tr><td colspan="2"><h2><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adbf939d31f6ea3d33b4f8d23505e732e"></a><!-- doxytag: member="hw::HWAccessImpl::DIO_BASE" ref="adbf939d31f6ea3d33b4f8d23505e732e" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>DIO_BASE</b> = 0x300</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af0b8892d1e81d0b51a5175af58767e4a"></a><!-- doxytag: member="hw::HWAccessImpl::AIO_BASE" ref="af0b8892d1e81d0b51a5175af58767e4a" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>AIO_BASE</b> = 0x320</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af60ae84c105c4cb4debeb55906b3ca86"></a><!-- doxytag: member="hw::HWAccessImpl::PORT_A" ref="af60ae84c105c4cb4debeb55906b3ca86" args="" -->
-static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_A</b> = 0x300</td></tr>
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_A</b> = DIO_BASE + 0</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1856f35f63cf196e746528a06de20896"></a><!-- doxytag: member="hw::HWAccessImpl::PORT_B" ref="a1856f35f63cf196e746528a06de20896" args="" -->
-static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_B</b> = 0x301</td></tr>
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_B</b> = DIO_BASE + 1</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10f95f78e9a2af59581bbe0080d2f8b1"></a><!-- doxytag: member="hw::HWAccessImpl::PORT_C" ref="a10f95f78e9a2af59581bbe0080d2f8b1" args="" -->
-static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_C</b> = 0x302</td></tr>
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_C</b> = DIO_BASE + 2</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a92dffb6bb886ac80ecf9ef4e1f335059"></a><!-- doxytag: member="hw::HWAccessImpl::DIO_IRQ_CHECK" ref="a92dffb6bb886ac80ecf9ef4e1f335059" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>DIO_IRQ_CHECK</b> = DIO_BASE + 0x18</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac77dd6b1dca623053f800ef6aac8ec08"></a><!-- doxytag: member="hw::HWAccessImpl::DIO_IRQ_RESET" ref="ac77dd6b1dca623053f800ef6aac8ec08" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>DIO_IRQ_RESET</b> = DIO_BASE + 0x0f</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a465159d9ae2d4ec835729a41c8faf039"></a><!-- doxytag: member="hw::HWAccessImpl::DIO_IRQ_MASK" ref="a465159d9ae2d4ec835729a41c8faf039" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>DIO_IRQ_MASK</b> = DIO_BASE + 0x0b</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3e345f6198bbee4e66a6810ae8e0185"></a><!-- doxytag: member="hw::HWAccessImpl::DIO_IRQ" ref="ad3e345f6198bbee4e66a6810ae8e0185" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>DIO_IRQ</b> = 11</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8fa93615146e8c204f3a57ee84f2354e"></a><!-- doxytag: member="hw::HWAccessImpl::AIO_LOW" ref="a8fa93615146e8c204f3a57ee84f2354e" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>AIO_LOW</b> = AIO_BASE + 2</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a145cf7957c54b52fbf3983e87cb23893"></a><!-- doxytag: member="hw::HWAccessImpl::AIO_HIGH" ref="a145cf7957c54b52fbf3983e87cb23893" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>AIO_HIGH</b> = AIO_BASE + 3</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d8a96c0655534984c4c7f50db6f9430"></a><!-- doxytag: member="hw::HWAccessImpl::AIO_CONVERT" ref="a8d8a96c0655534984c4c7f50db6f9430" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>AIO_CONVERT</b> = AIO_BASE + 2</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69e41a586330f6c0d78e4430bfcabe85"></a><!-- doxytag: member="hw::HWAccessImpl::AIO_START_CONVERSION" ref="a69e41a586330f6c0d78e4430bfcabe85" args="" -->
+static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>AIO_START_CONVERSION</b> = 0x10</td></tr>
 </table>
-<hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>Interface for direct hardware access. </p>
-<p>The HWAccess singleton offers read/write operations to the three ports of the hw unit. </p>
-</div></div><!-- contents -->
+</div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -180,7 +192,7 @@ static const port_t&#160;</td><td class="memItemRight" valign="bottom"><b>PORT_C
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:10 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:32:52 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

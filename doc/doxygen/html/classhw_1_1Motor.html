@@ -81,7 +81,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,7 +109,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <!-- doxytag: class="hw::Motor" --><!-- doxytag: inherits="LockableObject&lt; Motor &gt;" -->
-<p>Client interface for controlling the conveyor belt and electromagnetic switch.  
+<p>Interface for controlling the motors. Client interface for controlling the conveyor belt and electromagnetic switch. Defines different states that the motors can enter.  
  <a href="classhw_1_1Motor.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Motor_8h_source.html">Motor.h</a>&gt;</code></p>
@@ -151,14 +151,15 @@ Public Member Functions</h2></td></tr>
 <tr><td colspan="2"><h2><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a619b6538418709df7ad7a279549d81a3"></a><!-- doxytag: member="hw::Motor::SWITCH" ref="a619b6538418709df7ad7a279549d81a3" args="" -->
-static const pid_t&#160;</td><td class="memItemRight" valign="bottom"><b>SWITCH</b> = 0x10</td></tr>
+static const pid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhw_1_1Motor.html#a619b6538418709df7ad7a279549d81a3">SWITCH</a> = 0x10</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">port A pin 4 <br/></td></tr>
 <tr><td colspan="2"><h2><a name="friends"></a>
 Friends</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aebc4f835051e712d46f169c054df7084"></a><!-- doxytag: member="hw::Motor::Actuator" ref="aebc4f835051e712d46f169c054df7084" args="" -->
 class&#160;</td><td class="memItemRight" valign="bottom"><b>Actuator</b></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>Client interface for controlling the conveyor belt and electromagnetic switch. </p>
+<div class="textblock"><p>Interface for controlling the motors. Client interface for controlling the conveyor belt and electromagnetic switch. Defines different states that the motors can enter. </p>
 </div><hr/><h2>Member Function Documentation</h2>
 <a class="anchor" id="a6f31b69e33d7c293339252eae2e2e997"></a><!-- doxytag: member="hw::Motor::controlBelt" ref="a6f31b69e33d7c293339252eae2e2e997" args="(pid_t dir, pid_t speed)" -->
 <div class="memitem">
@@ -193,7 +194,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Actuator</b></td></t
   </table>
   </dd>
 </dl>
-<p>If <code>dir == Direction::NONE</code> <em>or</em> <code>speed == Speed::STOP</code> the conveyor belt is turned of, but never suppressed. </p>
+<p>If <code>dir == <a class="el" href="structhw_1_1Motor_1_1Direction.html#a876f8450323454dab9f86a46694510b4" title="no pin">Direction::NONE</a></code> <em>or</em> <code>speed == <a class="el" href="structhw_1_1Motor_1_1Speed.html#a1ce13403d7c77e711b1ec99d210c9042" title="port A pin 3">Speed::STOP</a></code> the conveyor belt is turned off, but never suppressed. </p>
 
 </div>
 </div>
@@ -228,7 +229,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Actuator</b></td></t
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -240,7 +241,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Actuator</b></td></t
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:11 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:32:53 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

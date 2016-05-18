@@ -94,61 +94,61 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00013"></a>00013 {
 <a name="l00014"></a>00014     <span class="keyword">class </span>Actuator;
 <a name="l00015"></a>00015 
-<a name="l00021"></a><a class="code" href="classhw_1_1LED.html">00021</a>     <span class="keyword">class </span><a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a> : <span class="keyword">public</span> lib::LockableObject&lt;LED&gt;
-<a name="l00022"></a>00022     {
-<a name="l00023"></a>00023         <span class="keyword">public</span>:
-<a name="l00024"></a>00024             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1LockableObject.html">lib::LockableObject&lt;LED&gt;</a> <a class="code" href="classlib_1_1LockableObject.html">Super</a>;
-<a name="l00025"></a>00025             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">lib::Singleton&lt;LED, lib::SingletonConcurrency::MultiThreaded&gt;</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">SingletonInst</a>;
-<a name="l00026"></a>00026             <span class="keyword">typedef</span> Super::Lock Lock;
-<a name="l00027"></a>00027 
-<a name="l00028"></a>00028             <span class="keyword">typedef</span> uint32_t led_t;
-<a name="l00029"></a>00029             <span class="keyword">static</span> <span class="keyword">const</span> led_t GREEN  = MXT_PINPORT(HWAccessImpl::PORT_A, 0x20); <span class="comment">// port A pin 5</span>
-<a name="l00030"></a>00030             <span class="keyword">static</span> <span class="keyword">const</span> led_t YELLOW = MXT_PINPORT(HWAccessImpl::PORT_A, 0x40); <span class="comment">// port A pin 6</span>
-<a name="l00031"></a>00031             <span class="keyword">static</span> <span class="keyword">const</span> led_t RED    = MXT_PINPORT(HWAccessImpl::PORT_A, 0x80); <span class="comment">// port A pin 7</span>
-<a name="l00032"></a>00032             <span class="keyword">static</span> <span class="keyword">const</span> led_t START  = MXT_PINPORT(HWAccessImpl::PORT_C, 0x01); <span class="comment">// port C pin 0</span>
-<a name="l00033"></a>00033             <span class="keyword">static</span> <span class="keyword">const</span> led_t RESET  = MXT_PINPORT(HWAccessImpl::PORT_C, 0x02); <span class="comment">// port C pin 1</span>
-<a name="l00034"></a>00034             <span class="keyword">static</span> <span class="keyword">const</span> led_t Q1     = MXT_PINPORT(HWAccessImpl::PORT_C, 0x04); <span class="comment">// port C pin 2</span>
-<a name="l00035"></a>00035             <span class="keyword">static</span> <span class="keyword">const</span> led_t Q2     = MXT_PINPORT(HWAccessImpl::PORT_C, 0x08); <span class="comment">// port C pin 3</span>
-<a name="l00036"></a>00036             <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> CLED = 7;
-<a name="l00037"></a>00037 
-<a name="l00038"></a>00038         <span class="keyword">public</span>:
-<a name="l00039"></a>00039             <span class="keywordtype">void</span> turnOn(led_t led) { activate(led, <span class="keyword">true</span>); }
-<a name="l00040"></a>00040             <span class="keywordtype">void</span> turnOff(led_t led) { activate(led, <span class="keyword">false</span>); }
-<a name="l00041"></a>00041             <span class="keywordtype">void</span> activate(led_t, <span class="keywordtype">bool</span>);
-<a name="l00042"></a>00042             <span class="keywordtype">void</span> blink(led_t, <span class="keyword">const</span> <a class="code" href="classlib_1_1Time.html" title="Data class representing a timeframe with microsecond accuracy.">lib::Time</a>&amp;);
-<a name="l00043"></a>00043         <span class="keyword">private</span>:
-<a name="l00044"></a>00044             <span class="keywordtype">void</span> sendActivate(led_t, <span class="keywordtype">bool</span>);
-<a name="l00045"></a>00045             <span class="keywordtype">void</span> doActivate(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
-<a name="l00046"></a>00046             <span class="keywordtype">void</span> blink_thread(led_t);
-<a name="l00047"></a>00047             <span class="keyword">static</span> <span class="keywordtype">int</span> get_led_id(led_t);
-<a name="l00048"></a>00048 
-<a name="l00049"></a>00049         <span class="keyword">private</span>:
-<a name="l00050"></a>00050             <a class="code" href="classlib_1_1qnx_1_1Connection.html">lib::qnx::Connection</a> con_;
-<a name="l00051"></a>00051             <a class="code" href="classlib_1_1Timer.html" title="Timer that allows scheduling of functors.">lib::Timer</a> blinkers_[CLED];
-<a name="l00052"></a>00052             <span class="keywordtype">bool</span> blinkState_[CLED];
-<a name="l00053"></a>00053 
-<a name="l00054"></a>00054         <span class="keyword">public</span>:
-<a name="l00055"></a>00055             <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a>( );
-<a name="l00056"></a>00056             ~<a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a>( ) { }
-<a name="l00057"></a>00057         <span class="keyword">private</span>:
-<a name="l00058"></a>00058             <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a>(<span class="keyword">const</span> <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a>&amp;);
-<a name="l00059"></a>00059             <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs.">LED</a>&amp;);
-<a name="l00060"></a>00060 
-<a name="l00061"></a>00061             <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>;
-<a name="l00062"></a>00062     };
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064     <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">LED::SingletonInst</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">LEDs</a>;
-<a name="l00065"></a>00065 }
-<a name="l00066"></a>00066 
-<a name="l00067"></a>00067 <span class="preprocessor">#endif</span>
-<a name="l00068"></a>00068 <span class="preprocessor"></span>
+<a name="l00022"></a><a class="code" href="classhw_1_1LED.html">00022</a>     <span class="keyword">class </span><a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a> : <span class="keyword">public</span> lib::LockableObject&lt;LED&gt;
+<a name="l00023"></a>00023     {
+<a name="l00024"></a>00024         <span class="keyword">public</span>:
+<a name="l00025"></a>00025             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1LockableObject.html">lib::LockableObject&lt;LED&gt;</a> <a class="code" href="classlib_1_1LockableObject.html">Super</a>;
+<a name="l00026"></a>00026             <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">lib::Singleton&lt;LED, lib::SingletonConcurrency::MultiThreaded&gt;</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">SingletonInst</a>;
+<a name="l00027"></a>00027             <span class="keyword">typedef</span> Super::Lock Lock;
+<a name="l00028"></a>00028 
+<a name="l00029"></a>00029             <span class="keyword">typedef</span> uint32_t led_t;
+<a name="l00030"></a>00030             <span class="keyword">static</span> <span class="keyword">const</span> led_t GREEN  = MXT_PINPORT(HWAccessImpl::PORT_A, 0x20); <span class="comment">//&lt; port A pin 5</span>
+<a name="l00031"></a>00031             <span class="keyword">static</span> <span class="keyword">const</span> led_t YELLOW = MXT_PINPORT(HWAccessImpl::PORT_A, 0x40); <span class="comment">//&lt; port A pin 6</span>
+<a name="l00032"></a>00032             <span class="keyword">static</span> <span class="keyword">const</span> led_t RED    = MXT_PINPORT(HWAccessImpl::PORT_A, 0x80); <span class="comment">//&lt; port A pin 7</span>
+<a name="l00033"></a>00033             <span class="keyword">static</span> <span class="keyword">const</span> led_t START  = MXT_PINPORT(HWAccessImpl::PORT_C, 0x01); <span class="comment">//&lt; port C pin 0</span>
+<a name="l00034"></a>00034             <span class="keyword">static</span> <span class="keyword">const</span> led_t RESET  = MXT_PINPORT(HWAccessImpl::PORT_C, 0x02); <span class="comment">//&lt; port C pin 1</span>
+<a name="l00035"></a>00035             <span class="keyword">static</span> <span class="keyword">const</span> led_t Q1     = MXT_PINPORT(HWAccessImpl::PORT_C, 0x04); <span class="comment">//&lt; port C pin 2</span>
+<a name="l00036"></a>00036             <span class="keyword">static</span> <span class="keyword">const</span> led_t Q2     = MXT_PINPORT(HWAccessImpl::PORT_C, 0x08); <span class="comment">//&lt; port C pin 3</span>
+<a name="l00037"></a>00037             <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> CLED = 7; <span class="comment">//&lt; Defines Size of LED Array</span>
+<a name="l00038"></a>00038 
+<a name="l00039"></a>00039         <span class="keyword">public</span>:
+<a name="l00040"></a>00040             <span class="keywordtype">void</span> turnOn(led_t led) { activate(led, <span class="keyword">true</span>); }
+<a name="l00041"></a>00041             <span class="keywordtype">void</span> turnOff(led_t led) { activate(led, <span class="keyword">false</span>); }
+<a name="l00042"></a>00042             <span class="keywordtype">void</span> activate(led_t, <span class="keywordtype">bool</span>);
+<a name="l00043"></a>00043             <span class="keywordtype">void</span> blink(led_t, <span class="keyword">const</span> <a class="code" href="classlib_1_1Time.html" title="Data class representing a timeframe with microsecond accuracy.">lib::Time</a>&amp;);
+<a name="l00044"></a>00044         <span class="keyword">private</span>:
+<a name="l00045"></a>00045             <span class="keywordtype">void</span> sendActivate(led_t, <span class="keywordtype">bool</span>);
+<a name="l00046"></a>00046             <span class="keywordtype">void</span> doActivate(<span class="keyword">const</span> <span class="keywordtype">void</span> *);
+<a name="l00047"></a>00047             <span class="keywordtype">void</span> blink_thread(led_t);
+<a name="l00048"></a>00048             <span class="keyword">static</span> <span class="keywordtype">int</span> get_led_id(led_t);
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050         <span class="keyword">private</span>:
+<a name="l00051"></a>00051             <a class="code" href="classlib_1_1qnx_1_1Connection.html">lib::qnx::Connection</a> con_;
+<a name="l00052"></a>00052             <a class="code" href="classlib_1_1Timer.html" title="Timer that allows scheduling of functors.">lib::Timer</a> blinkers_[CLED];
+<a name="l00053"></a>00053             <span class="keywordtype">bool</span> blinkState_[CLED];
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055         <span class="keyword">public</span>:
+<a name="l00056"></a>00056             <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a>( );
+<a name="l00057"></a>00057             ~<a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a>( ) { }
+<a name="l00058"></a>00058         <span class="keyword">private</span>:
+<a name="l00059"></a>00059             <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a>(<span class="keyword">const</span> <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a>&amp;);
+<a name="l00060"></a>00060             <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classhw_1_1LED.html" title="Allows access to LEDs. Offers an interface for accessing LEDs on the hw unit. LEDs are defined as Pin...">LED</a>&amp;);
+<a name="l00061"></a>00061 
+<a name="l00062"></a>00062             <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classhw_1_1Actuator.html" title="Singular access point to actuators.">Actuator</a>;
+<a name="l00063"></a>00063     };
+<a name="l00064"></a>00064 
+<a name="l00065"></a>00065     <span class="keyword">typedef</span> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">LED::SingletonInst</a> <a class="code" href="classlib_1_1Singleton.html" title="Template for convenient Singleton creation.">LEDs</a>;
+<a name="l00066"></a>00066 }
+<a name="l00067"></a>00067 
+<a name="l00068"></a>00068 <span class="preprocessor">#endif</span>
+<a name="l00069"></a>00069 <span class="preprocessor"></span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -160,7 +160,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:08 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:32:50 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

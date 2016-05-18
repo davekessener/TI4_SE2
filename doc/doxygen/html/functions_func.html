@@ -80,6 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
     </ul>
   </div>
 </div>
@@ -103,6 +104,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>elapsed()
 : <a class="el" href="classlib_1_1Timer.html#addfe92d6b95d84c919c385a9ca45112b">lib::Timer</a>
 </li>
+<li>entering()
+: <a class="el" href="classhw_1_1Sensor.html#a7c15a4a9a7449804bf0154a2f5e39656">hw::Sensor</a>
+</li>
+<li>handlePulse()
+: <a class="el" href="classhw_1_1Sensor.html#aaee5e7e96b06759649433eab03edf11e">hw::Sensor</a>
+</li>
 <li>instance()
 : <a class="el" href="classlib_1_1Singleton.html#a83d48b8cf66dd7ba3ba3c2e90a5c3af6">lib::Singleton&lt; T, TM, P &gt;</a>
 </li>
@@ -112,14 +119,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>joinable()
 : <a class="el" href="classlib_1_1Thread.html#adab4da419408f71973d1066eaa8b88ba">lib::Thread</a>
 </li>
-<li>operator=()
-: <a class="el" href="classlib_1_1Thread.html#a85e66d1d8fbe6ebae3c2ad44f7c1167b">lib::Thread</a>
-</li>
 <li>run()
 : <a class="el" href="classlib_1_1Thread.html#a4a27508e6fdf3ce368313ef34d7f501d">lib::Thread</a>
 </li>
 <li>sync()
-: <a class="el" href="classlib_1_1Timer.html#ae4aa1f97d2c29f50da023e6d51eafb51">lib::Timer</a>
+: <a class="el" href="classlib_1_1Timer.html#a0cbb1af33ca1d55cf32cdf94c36d28f2">lib::Timer</a>
 </li>
 <li>Thread()
 : <a class="el" href="classlib_1_1Thread.html#a6b00d27f3b44c637dc1c032668f50f24">lib::Thread</a>
@@ -137,7 +141,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -149,7 +153,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2016 09:41:16 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 18 2016 10:33:01 for TI4_SE2 by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

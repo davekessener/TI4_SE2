@@ -13,8 +13,8 @@ var searchData=
   ['merge',['Merge',['../structlib_1_1Merge.html',1,'lib']]],
   ['merge_3c_20f_2c_20t_2c_20nil_20_3e',['Merge< F, T, Nil >',['../structlib_1_1Merge_3_01F_00_01T_00_01Nil_01_4.html',1,'lib']]],
   ['motor',['Motor',['../classhw_1_1Motor.html',1,'hw']]],
-  ['multithreaded',['MultiThreaded',['../classlib_1_1RingBufferConcurrency_1_1MultiThreaded.html',1,'lib::RingBufferConcurrency']]],
   ['multithreaded',['MultiThreaded',['../structlib_1_1SingletonConcurrency_1_1MultiThreaded.html',1,'lib::SingletonConcurrency']]],
+  ['multithreaded',['MultiThreaded',['../classlib_1_1RingBufferConcurrency_1_1MultiThreaded.html',1,'lib::RingBufferConcurrency']]],
   ['multithreaded_3c_20ringbuffer_3c_20data_5fptr_2c_20n_2c_20lib_3a_3aringbufferconcurrency_3a_3amultithreaded_20_3e_20_3e',['MultiThreaded< RingBuffer< Data_ptr, N, lib::RingBufferConcurrency::MultiThreaded > >',['../classlib_1_1RingBufferConcurrency_1_1MultiThreaded.html',1,'lib::RingBufferConcurrency']]],
   ['mutex',['Mutex',['../classlib_1_1Mutex.html',1,'lib']]]
 ];
