@@ -37,20 +37,193 @@ void connection(const std::string& device, const bool active)
 	try
 	{
 		Connection c(device, active);
-		std::string msg("Hello, World!");
-
-
+		//! Empty String
+		std::string msg0("");
+		//! String filled with multiple NUL
+        std::string msg1("");
+		for(unsigned int i=0; i<=10; i++)
+		{
+			unsigned char c = 0;
+			msg6.push_back(c);
+		}
+		//! String with single char
+		std::string msg2("ß");
+		//! String with multiple characters
+		std::string msg3("Hello");
+		//! String starting with space
+		std::string msg4(" World!");
+		//! String with a whole sentence
+		std::string msg5("Hello, World!");
+		//! String with all ASCII chars
+		std::string msg6("");
+		for(unsigned char c=33; c<=127; c++)
+			msg6.push_back(c);
+		//! Long String with all ASCII chars
+		std::string msg7("");
+		for(unsigned char i=0; i<=255; i++)
+			for(unsigned char c=32; c<=127; c++)
+				msg7.push_back(c);
+		//! String special chars except for NUL	
+		std::string msg8("");
+		for(unsigned char c=1; c<=33; c++)
+			msg8.push_back(c);
+		//! Extended ASCII Table Test
+		std::string msg9("");
+		for(unsigned char c=128; c<=255; c++)
+			msg8.push_back(c);
+		
 		while(!c.connected()) Time::ms(100).wait();
 
 
-		if(active) c.sendData(Data::get(msg.c_str(), msg.length() + 1));
+		if(active) 
+			c.sendData(Data::get(msg0.c_str(), msg0.length() + 1));
 
 		Data_ptr p = c.receiveData();
 
-		if(!active) c.sendData(p);
-
-
+		if(!active) 
+			c.sendData(p);
+		
 		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg0.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg1.c_str(), msg1.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg1.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg2.c_str(), msg2.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg2.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg3.c_str(), msg3.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg3.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg4.c_str(), msg4.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg4.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg5.c_str(), msg5.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg5.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg6.c_str(), msg6.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg6.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg7.c_str(), msg7.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg7.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg8.c_str(), msg8.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg8.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
+		
+		if(active) 
+			c.sendData(Data::get(msg9.c_str(), msg9.length() + 1));
+
+		Data_ptr p = c.receiveData();
+
+		if(!active) 
+			c.sendData(p);
+		
+		log->MXT_LOG("received string \"%s\"", (const char *) p->data());
+		
+		if(msg9.compare((const char *) p->data()) != 0)
+			log->MXT_LOGL(LogLevel::WARNING, "[Send and received Strings are not equal]");
+		else
+			log->MXT_LOG("Received String is equal to sent String");
 
 
 		while(!c.doneWriting()) Time::ms(100).wait();
