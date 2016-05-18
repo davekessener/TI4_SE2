@@ -11,8 +11,9 @@
 
 namespace hw
 {
-/**
- * Singular access point to actuators.
+/*! \class Actuator
+ *  \brief Singular access point to actuators.
+ *
  * The Actuator class encapsulates access to
  * all actuators of the attached hw unit,
  * including LEDs, the conveyor belt and the

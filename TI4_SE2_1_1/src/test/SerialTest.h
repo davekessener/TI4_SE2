@@ -3,6 +3,7 @@
 
 namespace test
 {
+	//! Starts the Test Routine
 	void connections( );
 }
 

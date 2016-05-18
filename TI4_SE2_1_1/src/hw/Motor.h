@@ -9,8 +9,10 @@ namespace hw
 {
 	class Actuator;
 
-/**
+/*! \class Motor
+ * \brief Interface for controlling the motors.
  * Client interface for controlling the conveyor belt and electromagnetic switch.
+ * Defines different states that the motors can enter.
  */
 	class Motor : public lib::LockableObject<Motor>
 	{
@@ -22,16 +24,16 @@ namespace hw
 
 			struct Direction
 			{
-				static const pid_t NONE  = 0x00; // no pin
-				static const pid_t RIGHT = 0x01; // port A pin 0
-				static const pid_t LEFT  = 0x02; // port A pin 1
+				static const pid_t NONE  = 0x00; //!< no pin
+				static const pid_t RIGHT = 0x01; //!< port A pin 0
+				static const pid_t LEFT  = 0x02; //!< port A pin 1
 			};
 
 			struct Speed
 			{
-				static const pid_t FAST = 0x00; // no pin
-				static const pid_t SLOW = 0x04; // port A pin 2
-				static const pid_t STOP = 0x08; // port A pin 3
+				static const pid_t FAST = 0x00; //!< no pin
+				static const pid_t SLOW = 0x04; //!< port A pin 2
+				static const pid_t STOP = 0x08; //!< port A pin 3
 			};
 
 			struct State
@@ -40,7 +42,7 @@ namespace hw
 				static const pid_t CLOSE = 1;
 			};
 
-			static const pid_t SWITCH = 0x10; // port A pin 4
+			static const pid_t SWITCH = 0x10; //!< port A pin 4
 
 		public:
 			/** Controls conveyor belt.
@@ -48,7 +50,7 @@ namespace hw
 			 * @param speed <tt>Speed</tt> of the conveyor belt.
 			 *
 			 * If <tt>dir == Direction::NONE</tt> <i>or</i> <tt>speed == Speed::STOP</tt>
-			 * the conveyor belt is turned of, but never suppressed.
+			 * the conveyor belt is turned off, but never suppressed.
 			 */
 			void controlBelt(pid_t dir, pid_t speed);
 			/** Controls electromagnetic switch.
