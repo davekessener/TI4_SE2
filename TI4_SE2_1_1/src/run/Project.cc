@@ -160,7 +160,8 @@ void Project::calibrateDistances(Time slow, Time fast, Time toHM, Time puk)
 	speeds_[SPEED_FAST] = Speed(fast);
 
 	pukWidth_ = speeds_[SPEED_SLOW].in(puk);
-	hmPos_ = speeds_[SPEED_SLOW].in(toHM) + pukWidth_ / 4;
+	hmPos_ = speeds_[SPEED_SLOW].in(toHM) + 3 * pukWidth_ / 4;
+	endPos_ = lib::Speed::reference - pukWidth_;
 
 	config_.setTimes(slow, fast, toHM, puk);
 }

@@ -33,8 +33,8 @@ void Running::enter(void)
 	std::cout << "entering running" << std::endl;
 	setNext(State::THIS);
 	uint32_t w = project_.getPukWidth();
-	scKick_ = w / 3;
 	scKeep_ = 3 * w;
+	scKick_ = w / 2;
 	Motors::instance().controlBelt(Motor::Direction::RIGHT, getSpeed(speed_));
 }
 
@@ -101,11 +101,11 @@ void Running::process(const Event& event)
 					handleSwitch();
 				break;
 			case SensorEvent::Sensors::STOP:
-				if(e.value())
-				{
-					stopping_ = true;
-				}
-				break;
+//				if(e.value())
+//				{
+//					stopping_ = true;
+//				}
+//				break;
 			case SensorEvent::Sensors::ESTOP:
 				MXT_TODO_ERROR; //TODO
 				break;

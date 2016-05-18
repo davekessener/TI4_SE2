@@ -43,7 +43,7 @@ void runHM(Sensor &sensors)
 		return;
 	}
 
-#define LINES 6
+#define LINES 20
 #define COLS 10
 
 	int n = values.size() / LINES, p = 0, s = values.size();

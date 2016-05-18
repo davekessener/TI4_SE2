@@ -12,11 +12,11 @@ int main(int argc, char *argv[])
 //	test::actuators();
 //	test::connections();
 //	test::timers();
-//	test::sensors();
+	test::sensors();
 
-	haw::Project p;
-
-	p.run();
+//	haw::Project p;
+//
+//	p.run();
 
 	return 0;
 }

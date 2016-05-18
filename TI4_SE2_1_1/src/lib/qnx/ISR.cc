@@ -10,6 +10,15 @@
 #include "lib/macro.h"
 #include "lib/qnx/ISR.h"
 
+#define MXT_DIO_BASE 0x300
+#define MXT_DIO_PORT_A (MXT_DIO_BASE + 0)
+#define MXT_DIO_PORT_B (MXT_DIO_BASE + 1)
+#define MXT_DIO_PORT_C (MXT_DIO_BASE + 2)
+#define MXT_DIO_IRQ_RESET (MXT_DIO_BASE + 0xf)
+#define MXT_DIO_IRQ_SET (MXT_DIO_BASE + 0xb)
+#define MXT_DIO_IRQ_CHECK (MXT_DIO_BASE + 0x18)
+#define MXT_DIO_IRQ 11
+
 using lib::log::Logger_ptr;
 
 Logger_ptr getLog(void)
@@ -35,8 +44,11 @@ struct sigevent event;
 const struct sigevent* handle_isr(void* arg, int id)
 {
     struct sigevent* event = (struct sigevent*) arg;
-    out8(0x30f, 0);
-    uint32_t w = (in8(0x302) << 4) | in8(0x301);
+    int f = in8(MXT_DIO_IRQ_CHECK);
+
+    if(!(f & 0xa)) return NULL;
+
+    uint32_t w = (in8(MXT_DIO_PORT_C) << 4) | in8(MXT_DIO_PORT_B);
 
     event->sigev_notify = SIGEV_PULSE ;
     event->__sigev_un1.__sigev_coid = coid;
@@ -49,11 +61,11 @@ const struct sigevent* handle_isr(void* arg, int id)
 
 void registerISR(void)
 {
-    out8(0x30F, 0);
-    out8(0x30B, 0b11111001);
+    out8(MXT_DIO_IRQ_RESET, 0);
+    out8(MXT_DIO_IRQ_SET, 0b11111001);
 
     SIGEV_PULSE_INIT(&event, coid, SIGEV_PULSE_PRIO_INHERIT, 0, 0);
-    isr_id = InterruptAttach(11, handle_isr, &event, sizeof(event), 0);
+    isr_id = InterruptAttach(MXT_DIO_IRQ, handle_isr, &event, sizeof(event), 0);
 
     if(isr_id < 0)
     	MXT_TODO_ERROR; //TODO
@@ -67,8 +79,8 @@ void unregisterISR(void)
     if(InterruptDetach(isr_id) < 0)
     	MXT_TODO_ERROR; //TODO
 
-    out8(0x30B, 0b11111111);
-    out8(0x30F,0);
+    out8(MXT_DIO_IRQ_SET, 0b11111111);
+    out8(MXT_DIO_IRQ_RESET,0);
 
     getLog()->MXT_LOG("done unregistering isr");
 }
