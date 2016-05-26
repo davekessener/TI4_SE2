@@ -31,14 +31,14 @@ namespace haw
 			lib::Speed getSpeed(int s) const { return speeds_[s]; }
 			uint32_t getPukWidth( ) const { return pukWidth_; }
 			uint32_t hmPosition( ) const { return hmPos_; }
-			uint32_t endPosition( ) const { return lib::Speed::reference - pukWidth_*3/2; }
+			uint32_t endPosition( ) const { return endPos_; }
 		private:
 			void processEvents(State_ptr);
 		private:
 			HM hm_;
 			Config config_;
 			lib::Speed speeds_[CSPEEDS];
-			uint32_t pukWidth_, hmPos_;
+			uint32_t pukWidth_, hmPos_, endPos_;
 	};
 }
 

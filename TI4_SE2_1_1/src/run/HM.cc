@@ -1,7 +1,7 @@
 #include "run/HM.h"
 #include "hw/Sensor.h"
 
-#define MXT_CSAMP 8
+#define MXT_CSAMP 24
 
 namespace haw
 {
