@@ -15,7 +15,7 @@ Sensor::Sensor(void) : running_(false), height_(0)
 {
 	for(int i = 0 ; i < VAR_COUNT ; ++i)
 	{
-		vals_[i] = flags_[i] = false;
+		vals_[i] = false;
 	}
 
 	hm_thread_.reset(new lib::Thread(lib::wrapInFtor(this, &Sensor::manageHM)));
@@ -43,7 +43,7 @@ void Sensor::shutdown(void)
 	}
 }
 
-uint16_t get_height(void)
+uint16_t Sensor::readHM(void)
 {
 	HWAccessImpl &hw = HWAccess::instance();
 	uint16_t height;
@@ -60,7 +60,7 @@ uint16_t get_height(void)
 
 void Sensor::manageHM(void)
 {
-	lib::Time delay = lib::Time::us(500);
+	lib::Time delay = lib::Time::us(200);
 	lib::Timer fps;
 
 	running_ = true;
@@ -69,20 +69,13 @@ void Sensor::manageHM(void)
 
 	while(running_)
 	{
-		uint16_t h = get_height();
+		uint16_t h = readHM();
 
 		height_ = ~h;
 
 		fps.sync(delay);
 	}
 }
-
-//! Pulse Handler
-/*! \fn handlePulse
- * Handles pulses that are regularly send to the Sensor class. 
- * To refresh the state of the sensors and the flags.
- * @param pulse <tt>Pulse</tt> from the copying of data from the sensor register.
- */
 
 void Sensor::handlePulse(uint32_t pulse)
 {
@@ -97,10 +90,11 @@ void Sensor::handlePulse(uint32_t pulse)
 		if(y != vals_[i])
 		{
 			vals_[i] = y;
-			flags_[i] = true;
+			notify(i);
 		}
 	}
 }
 
 }
+
 

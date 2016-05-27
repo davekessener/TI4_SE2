@@ -1,29 +1,24 @@
 #ifndef HAW_HW_LED_H
 #define HAW_HW_LED_H
 
-#include <hw/HWAccess.h>
-#include <lib/macro.h>
-#include <lib/TimeP.h>
-#include <lib/Timer.h>
-#include <lib/Singleton.hpp>
-#include <lib/qnx/Channel.h>
-#include <lib/concurrent/Lock.hpp>
+#include "hw/HWAccess.h"
+#include "lib/macro.h"
+#include "lib/TimeP.h"
+#include "lib/Timer.h"
+#include "lib/concurrent/Lock.hpp"
 
 namespace hw
 {
 	class Actuator;
 
-/*! \class LED
- *  \brief Allows access to LEDs.
+/** Allows access to LEDs.
  * Offers an interface for accessing LEDs on the hw unit.
- * LEDs are defined as Pins.
  * Implements blinking functionality via lib::Timer.
  */
 	class LED : public lib::LockableObject<LED>
 	{
 		public:
 			typedef lib::LockableObject<LED> Super;
-			typedef lib::Singleton<LED, lib::SingletonConcurrency::MultiThreaded> SingletonInst;
 			typedef Super::Lock Lock;
 
 			typedef uint32_t led_t;
@@ -42,27 +37,21 @@ namespace hw
 			void activate(led_t, bool);
 			void blink(led_t, const lib::Time&);
 		private:
-			void sendActivate(led_t, bool);
-			void doActivate(const void *);
 			void blink_thread(led_t);
 			static int get_led_id(led_t);
 
 		private:
-			lib::qnx::Connection con_;
 			lib::Timer blinkers_[CLED];
 			bool blinkState_[CLED];
 
-		public:
-			LED( );
-			~LED( ) { }
 		private:
+			LED( ) { }
+			~LED( ) { }
 			LED(const LED&);
 			LED& operator=(const LED&);
 
 			friend class Actuator;
 	};
-
-	typedef LED::SingletonInst LEDs;
 }
 
 #endif

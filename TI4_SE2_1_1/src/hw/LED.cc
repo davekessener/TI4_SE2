@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "hw/LED.h"
-#include "hw/Actuator.h"
 #include "lib/Data.h"
 
 namespace hw
@@ -11,13 +10,6 @@ using lib::Data;
 
 namespace
 {
-	struct led_activate_packet
-	{
-		uint8_t cmd;
-		LED::led_t led;
-		bool f;
-	};
-
 	template<typename T, typename TT>
 	struct Ftor
 	{
@@ -30,17 +22,13 @@ namespace
 	};
 }
 
-LED::LED(void) : con_(Actuators::instance().getChannel().connect())
-{
-}
-
 void LED::activate(led_t led, bool f)
 {
 	Lock guard(this);
 
 	blinkers_[get_led_id(led)].deactivate();
 
-	sendActivate(led, f);
+	(HWAccess::instance().*(f ? &HWAccessImpl::setBits : &HWAccessImpl::resetBits))(MXT_PORT(led), MXT_PINS(led));
 }
 
 void LED::blink(led_t led, const lib::Time& f)
@@ -53,33 +41,13 @@ void LED::blink(led_t led, const lib::Time& f)
 
 // # ---------------------------------------------------------------------------
 
-void LED::sendActivate(led_t led, bool f)
-{
-	Lock guard(this);
-
-	led_activate_packet p;
-
-	p.cmd = Actuator::LED_ACTIVATE;
-	p.led = led;
-	p.f = f;
-
-	con_.send(Data::get(p));
-}
-
-void LED::doActivate(const void *d)
-{
-	const led_activate_packet *p = static_cast<const led_activate_packet *>(d);
-
-	(HWAccess::instance().*(p->f ? &HWAccessImpl::setBits : &HWAccessImpl::resetBits))(MXT_PORT(p->led), MXT_PINS(p->led));
-}
-
 void LED::blink_thread(led_t led)
 {
 	Lock guard(this);
 
 	int id = get_led_id(led);
 	blinkState_[id] = !blinkState_[id];
-	sendActivate(led, blinkState_[id]);
+	activate(led, blinkState_[id]);
 	blinkers_[id].reset();
 }
 
@@ -102,4 +70,5 @@ int LED::get_led_id(led_t led)
 }
 
 }
+
 
